@@ -15,7 +15,7 @@
 // class _RegistrationState extends State<Registration> {
 //   final _formKey = GlobalKey<FormState>();
 //   final _scaffoldKey = GlobalKey<ScaffoldState>();
-//
+
 //   TextEditingController emailCont = TextEditingController();
 //   TextEditingController passCont = TextEditingController();
 //   TextEditingController nameCont = TextEditingController();
