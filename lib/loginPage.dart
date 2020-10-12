@@ -61,8 +61,6 @@ class _LoginPageState extends State<LoginPage> {
 
     );
 
-
-
     final registrationText = Text("Do not have an account??",
           textAlign: TextAlign.center,
           style: style.copyWith(
@@ -119,7 +117,8 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(
                   height: 25.0,
                   child: GestureDetector(
-                    onTap: (){print("Registration Page");},
+                    onTap: (){
+                      Navigator.push(context,MaterialPageRoute(builder:(context)=>Registration()));},
                     child: signUpText,
                   ),
                 ),
