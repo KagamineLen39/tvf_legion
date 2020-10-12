@@ -147,7 +147,7 @@ class _Registration2State extends State<Registration2> {
                     Flexible(
                       child:Text("${selectedDate.toLocal()}".split(' ')[0],
                         style: style.copyWith(
-                          color: Colors.blueAccent, fontWeight: FontWeight.bold)),
+                          color: Colors.blueAccent, fontWeight: FontWeight.bold))
                     ),
                     SizedBox(height: 20.0,),
                    Flexible(
