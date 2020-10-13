@@ -1,3 +1,4 @@
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tvf_legion/verificationPage.dart';
@@ -16,44 +17,52 @@ class _PhoneNumberState extends State<PhoneNumber> {
         centerTitle: true,
         title: Text(
           "Enter Phone Number",
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
+        style: TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
         ),
       ),
+
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
+
           entryRow(),
-          SizedBox(height: 10),
+
+          SizedBox(height:10),
+
           enteredNumberButton(),
+
         ],
       ),
     );
+
   }
 
-  entryRow() {
+  entryRow(){
     return Row(
       children: <Widget>[
         Expanded(
           child: phoneNumberLabel(),
         ),
-        Flexible(
-          child: numberTextBox(),
-        ),
+          Flexible(
+            child:numberTextBox(),
+          ),
+
+
       ],
     );
   }
 
-  phoneNumberLabel() {
+  phoneNumberLabel(){
     return Text(
-      "Phone Number:",
-      style: TextStyle(
-        fontSize: 20,
-        fontWeight: FontWeight.bold,
-      ),
+        "Phone Number:",
+        style: TextStyle(
+          fontSize:20,
+          fontWeight: FontWeight.bold,
+    ),
     );
   }
 
@@ -61,48 +70,53 @@ class _PhoneNumberState extends State<PhoneNumber> {
     return SizedBox(),
   }*/
 
-  numberTextBox() {
+  numberTextBox(){
     return TextField(
       decoration: InputDecoration(
-        contentPadding: EdgeInsets.only(left: 20, top: 10, bottom: 10),
+        contentPadding: EdgeInsets.only(left: 20, top: 10,bottom:10),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(30),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(30),
         ),
+
         counterText: "",
       ),
       style: TextStyle(
         fontSize: 24,
       ),
+
       keyboardType: TextInputType.number,
       maxLength: 10,
+
     );
   }
 
-  enteredNumberButton() {
+  enteredNumberButton(){
+
     return SizedBox(
-      height: 50,
-      width: 400,
-      child: RaisedButton(
-        color: Color(0xff01A0C7),
-        child: Text(
-          "Next",
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
+        height:50,
+        width:400,
+
+        child:RaisedButton(
+          color: Color(0xff01A0C7),
+          child:Text(
+            "Next",
+            style: TextStyle(
+              fontSize:24,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
           ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+          onPressed:(){
+            Navigator.push(context,MaterialPageRoute(builder:(context)=>Verification()));
+          },
+
         ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30),
-        ),
-        onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => Verification()));
-        },
-      ),
     );
   }
 }
