@@ -1,5 +1,6 @@
 //import 'package:tvf_legion/registrationPage.dart';
 import 'package:flutter/material.dart';
+import 'package:tvf_legion/phoneNumber.dart';
 
 class Registration2 extends StatefulWidget {
   @override
@@ -106,7 +107,9 @@ class _Registration2State extends State<Registration2> {
             .size
             .width,
         padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(context,MaterialPageRoute(builder:(context)=> PhoneNumber()));
+        },
         child: Text("Next",
             textAlign: TextAlign.right,
             style: style.copyWith(
@@ -144,12 +147,14 @@ class _Registration2State extends State<Registration2> {
                           style: style.copyWith(
                               color: Colors.black, fontWeight: FontWeight.bold)),
                     ),
+
+
                     Flexible(
                       child:Text("${selectedDate.toLocal()}".split(' ')[0],
                         style: style.copyWith(
                           color: Colors.blueAccent, fontWeight: FontWeight.bold))
                     ),
-                    SizedBox(height: 20.0,),
+                    SizedBox(height: 20.0, width:50),
                    Flexible(
                     child:dateButton,
                   ),
