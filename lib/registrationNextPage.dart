@@ -12,7 +12,7 @@ class _Registration2State extends State<Registration2> {
 
   @override
   Widget build(BuildContext context) {
-    List gender=["Male","Female"];
+    List gender = ["Male", "Female"];
     String select;
     Row addRadioButton(int btnValue, String title) {
       return Row(
@@ -22,10 +22,10 @@ class _Registration2State extends State<Registration2> {
             activeColor: Theme.of(context).primaryColor,
             value: gender[btnValue],
             groupValue: select,
-            onChanged: (value){
+            onChanged: (value) {
               setState(() {
                 print(value);
-                select=value;
+                select = value;
               });
             },
           ),
@@ -41,9 +41,7 @@ class _Registration2State extends State<Registration2> {
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             hintText: "Username",
             border:
-            OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))
-        )
-    );
+                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))));
 
     final genderRadioButton = Container(
       child: Column(
@@ -52,19 +50,17 @@ class _Registration2State extends State<Registration2> {
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              Text('Gender:',textAlign: TextAlign.center,
-                style: style.copyWith(
-                    color: Colors.black, fontWeight: FontWeight.bold)),
+              Text('Gender:',
+                  textAlign: TextAlign.center,
+                  style: style.copyWith(
+                      color: Colors.black, fontWeight: FontWeight.bold)),
               addRadioButton(0, 'Male'),
               addRadioButton(1, 'Female'),
-
             ],
           ),
         ],
       ),
     );
-
-
 
     DateTime selectedDate = DateTime.now();
     Future<Null> _selectDate(BuildContext context) async {
@@ -78,22 +74,19 @@ class _Registration2State extends State<Registration2> {
           selectedDate = picked;
         });
     }
+
     final dateButton = Material(
       elevation: 5.0,
       borderRadius: BorderRadius.circular(30.0),
       color: Color(0xff01A0C7),
       child: MaterialButton(
-        minWidth: MediaQuery
-            .of(context)
-            .size
-            .width,
+        minWidth: MediaQuery.of(context).size.width,
         padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () => _selectDate(context),
         child: Text("Select date",
             textAlign: TextAlign.center,
             style: style.copyWith(
-                color: Colors.white, fontWeight: FontWeight.bold
-            )),
+                color: Colors.white, fontWeight: FontWeight.bold)),
       ),
     );
 
@@ -102,19 +95,16 @@ class _Registration2State extends State<Registration2> {
       borderRadius: BorderRadius.circular(30.0),
       color: Color(0xff01A0C7),
       child: MaterialButton(
-        minWidth: MediaQuery
-            .of(context)
-            .size
-            .width,
+        minWidth: MediaQuery.of(context).size.width,
         padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          Navigator.push(context,MaterialPageRoute(builder:(context)=> PhoneNumber()));
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => PhoneNumber()));
         },
         child: Text("Next",
             textAlign: TextAlign.right,
             style: style.copyWith(
-                color: Colors.white, fontWeight: FontWeight.bold
-            )),
+                color: Colors.white, fontWeight: FontWeight.bold)),
       ),
     );
 
@@ -124,7 +114,8 @@ class _Registration2State extends State<Registration2> {
           color: Colors.white,
           child: Padding(
             padding: const EdgeInsets.all(36.0),
-            child: Column(
+            child: SingleChildScrollView(
+                child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -135,44 +126,37 @@ class _Registration2State extends State<Registration2> {
                     fit: BoxFit.contain,
                   ),
                 ),
-
                 SizedBox(height: 15.0),
                 userNameTextField,
-                SizedBox(width: double.infinity,height: 15.0),
+                SizedBox(width: double.infinity, height: 15.0),
                 genderRadioButton,
                 new Row(
                   children: <Widget>[
                     Flexible(
-                      child: Text('Birth date:',textAlign: TextAlign.left,
+                      child: Text('Birth date:',
+                          textAlign: TextAlign.left,
                           style: style.copyWith(
-                              color: Colors.black, fontWeight: FontWeight.bold)),
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold)),
                     ),
-
-
                     Flexible(
-                      child:Text("${selectedDate.toLocal()}".split(' ')[0],
-                        style: style.copyWith(
-                          color: Colors.blueAccent, fontWeight: FontWeight.bold))
+                        child: Text("${selectedDate.toLocal()}".split(' ')[0],
+                            style: style.copyWith(
+                                color: Colors.blueAccent,
+                                fontWeight: FontWeight.bold))),
+                    SizedBox(height: 20.0, width: 30),
+                    Flexible(
+                      child: dateButton,
                     ),
-                    SizedBox(height: 20.0, width:50),
-                   Flexible(
-                    child:dateButton,
-                  ),
-                ],
-
+                  ],
                 ),
                 SizedBox(height: 15.0),
                 nextButton,
               ],
-
-
-                )
-
-            ),
-
+            )),
           ),
         ),
-      );
-
+      ),
+    );
   }
 }

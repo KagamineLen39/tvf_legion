@@ -62,73 +62,79 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     final registrationText = Text("Do not have an account??",
-          textAlign: TextAlign.center,
-          style: style.copyWith(
+      textAlign: TextAlign.center,
+      style: style.copyWith(
           color: Colors.black, fontWeight: FontWeight.bold
-          ),
+      ),
     );
 
     final signUpText = Text("Sign Up Now",
       textAlign: TextAlign.center,
-        style: style.copyWith(
-          color:Colors.blue, fontWeight: FontWeight.bold
-        ),
+      style: style.copyWith(
+          color: Colors.blue, fontWeight: FontWeight.bold
+      ),
     );
 
     return Scaffold(
-      body: Center(
-        child: Container(
-          color: Colors.white,
-          child: Padding(
-            padding: const EdgeInsets.all(36.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                SizedBox(
-                  height: 155.0,
-                  child: Image.asset(
-                    "assets/images/logo.png",
-                    fit: BoxFit.contain,
-                  ),
-                ),
-                SizedBox(height: 45.0),
-                emailTextField,
-                SizedBox(height: 25.0),
-                passwordTextField,
-                SizedBox(
-                  width: double.infinity,
-                  height: 25.0,
-                    child: GestureDetector(
-                        onTap: (){print("Forget Password Page");},
-                        child: forgetPasswordText,
-                    )
-                ),
+        body: Center(
+          child: Container(
+            color: Colors.white,
+            child: Padding(
+              padding: const EdgeInsets.all(36.0),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    SizedBox(
+                      height: 155.0,
+                      child: Image.asset(
+                        "assets/images/logo.png",
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                    SizedBox(height: 45.0),
+                    emailTextField,
+                    SizedBox(height: 25.0),
+                    passwordTextField,
+                    SizedBox(
+                        width: double.infinity,
+                        height: 25.0,
+                        child: GestureDetector(
+                          onTap: () {
+                            print("Forget Password Page");
+                          },
+                          child: forgetPasswordText,
+                        )
+                    ),
 
-                SizedBox(
-                  height: 15.0,
-                ),
-                loginButton,
-                SizedBox(
-                  height: 15.0,
+                    SizedBox(
+                      height: 15.0,
+                    ),
+                    loginButton,
+                    SizedBox(
+                      height: 15.0,
 
-                ),
-                registrationText,
-                SizedBox(
-                  height: 25.0,
-                  child: GestureDetector(
-                    onTap: (){
-                      Navigator.push(context,MaterialPageRoute(builder:(context)=>Registration()));},
-                    child: signUpText,
-                  ),
-                ),
+                    ),
+                    registrationText,
+                    SizedBox(
+                      height: 25.0,
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(context, MaterialPageRoute(
+                              builder: (context) => Registration()));
+                        },
+                        child: signUpText,
+                      ),
+                    ),
 
 
-              ],
+                  ],
+                ),
+              ),
             ),
           ),
         ),
-      ),
     );
   }
 }
