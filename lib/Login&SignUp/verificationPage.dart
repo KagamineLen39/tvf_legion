@@ -397,7 +397,7 @@ class OTPNum extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 60,
+      width: 50,
       child: TextField(
         controller: textEditingController,
         enabled: false,
