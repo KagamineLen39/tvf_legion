@@ -1,6 +1,6 @@
 //import 'package:tvf_legion/loginPage.dart';
 import 'package:flutter/material.dart';
-import 'package:tvf_legion/registrationNextPage.dart';
+import 'file:///C:/Users/James/Desktop/DetailBooking/Booking-Detail/tvf_legion/lib/Login&SignUp/registrationNextPage.dart';
 
 class Registration extends StatefulWidget {
   @override
@@ -19,7 +19,9 @@ class _RegistrationState extends State<Registration> {
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             hintText: "First Name",
             border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))));
+                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))
+        )
+    );
 
     final lastNameTextField = TextField(
         obscureText: false,
@@ -28,7 +30,9 @@ class _RegistrationState extends State<Registration> {
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             hintText: "Last Name",
             border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))));
+                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))
+        )
+    );
 
     final emailTextField = TextField(
         obscureText: false,
@@ -37,7 +41,9 @@ class _RegistrationState extends State<Registration> {
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             hintText: "Email",
             border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))));
+                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))
+        )
+    );
 
     final passwordTextField = TextField(
         obscureText: true,
@@ -46,7 +52,9 @@ class _RegistrationState extends State<Registration> {
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             hintText: "Password",
             border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))));
+                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))
+        )
+    );
 
     final confirmPasswordTextField = TextField(
         obscureText: true,
@@ -55,7 +63,9 @@ class _RegistrationState extends State<Registration> {
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             hintText: "Confirm Password",
             border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))));
+                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))
+        )
+    );
 
     final nextButton = Material(
       elevation: 5.0,
@@ -71,9 +81,11 @@ class _RegistrationState extends State<Registration> {
         child: Text("Next",
             textAlign: TextAlign.right,
             style: style.copyWith(
-                color: Colors.white, fontWeight: FontWeight.bold)),
+                color: Colors.white, fontWeight: FontWeight.bold)
+        ),
       ),
     );
+
     return Scaffold(
       body: Center(
         child: Container(
@@ -92,6 +104,7 @@ class _RegistrationState extends State<Registration> {
                       fit: BoxFit.contain,
                     ),
                   ),
+
                   new Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[

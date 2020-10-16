@@ -1,6 +1,6 @@
 //import 'package:tvf_legion/registrationPage.dart';
 import 'package:flutter/material.dart';
-import 'package:tvf_legion/phoneNumber.dart';
+import 'file:///C:/Users/James/Desktop/DetailBooking/Booking-Detail/tvf_legion/lib/Login&SignUp/phoneNumber.dart';
 
 class Registration2 extends StatefulWidget {
   @override
@@ -116,30 +116,30 @@ class _Registration2State extends State<Registration2> {
             padding: const EdgeInsets.all(36.0),
             child: SingleChildScrollView(
                 child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                SizedBox(
-                  height: 100.0,
-                  child: Image.asset(
-                    "assets/images/logo.png",
-                    fit: BoxFit.contain,
-                  ),
-                ),
-                SizedBox(height: 15.0),
-                userNameTextField,
-                SizedBox(width: double.infinity, height: 15.0),
-                genderRadioButton,
-                new Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Flexible(
-                      child: Text('Birth date:',
+                    SizedBox(
+                      height: 100.0,
+                      child: Image.asset(
+                      "assets/images/logo.png",
+                      fit: BoxFit.contain,
+                    ),
+                    ),
+                  SizedBox(height: 15.0),
+                    userNameTextField,
+                  SizedBox(width: double.infinity, height: 15.0),
+                    genderRadioButton,
+                  new Row(
+                    children: <Widget>[
+                      Flexible(
+                        child: Text('Birth date:',
                           textAlign: TextAlign.left,
                           style: style.copyWith(
                               color: Colors.black,
                               fontWeight: FontWeight.bold)),
-                    ),
-                    Flexible(
+                      ),
+                      SizedBox(
                         child: Text("${selectedDate.toLocal()}".split(' ')[0],
                             style: style.copyWith(
                                 color: Colors.blueAccent,
@@ -149,10 +149,10 @@ class _Registration2State extends State<Registration2> {
                       child: dateButton,
                     ),
                   ],
-                ),
-                SizedBox(height: 15.0),
-                nextButton,
-              ],
+                 ),
+                  SizedBox(height: 15.0),
+                    nextButton,
+                ],
             )),
           ),
         ),

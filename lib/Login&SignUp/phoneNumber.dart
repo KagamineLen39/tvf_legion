@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:tvf_legion/verificationPage.dart';
+import 'file:///C:/Users/James/Desktop/DetailBooking/Booking-Detail/tvf_legion/lib/Login&SignUp/verificationPage.dart';
 
 class PhoneNumber extends StatefulWidget {
   @override
@@ -26,10 +26,26 @@ class _PhoneNumberState extends State<PhoneNumber> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
+
+          logo(),
+
           entryRow(),
+
           SizedBox(height: 10),
+
           enteredNumberButton(),
         ],
+      ),
+    );
+  }
+
+  logo(){
+    return SizedBox(
+      height: 155.0,
+      child: Image(
+        image: NetworkImage(
+          ("https://imgur.com/a/n6Q8WSH"),
+        ),
       ),
     );
   }

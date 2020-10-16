@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tvf_legion/registrationPage.dart';
+import 'file:///C:/Users/James/Desktop/DetailBooking/Booking-Detail/tvf_legion/lib/Login&SignUp/registrationPage.dart';
 
 
 class LoginPage extends StatefulWidget {
