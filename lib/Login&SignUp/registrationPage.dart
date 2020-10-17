@@ -10,10 +10,20 @@ class Registration extends StatefulWidget {
 class _RegistrationState extends State<Registration> {
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
 
+  final fKey = GlobalKey<FormState>();
+
+  TextEditingController firstNameController = new TextEditingController();
+  TextEditingController lastNameController = new TextEditingController();
+  TextEditingController emailController = new TextEditingController();
+  TextEditingController passwordController = new TextEditingController();
+  TextEditingController cPasswordController = new TextEditingController();
+
+
   @override
   Widget build(BuildContext context) {
-    final firstNameTextField = TextField(
+    final firstNameTextField = TextFormField(
         obscureText: false,
+        controller: firstNameController,
         style: style,
         decoration: InputDecoration(
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
@@ -23,8 +33,9 @@ class _RegistrationState extends State<Registration> {
         )
     );
 
-    final lastNameTextField = TextField(
+    final lastNameTextField = TextFormField(
         obscureText: false,
+        controller: lastNameController,
         style: style,
         decoration: InputDecoration(
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
@@ -34,8 +45,9 @@ class _RegistrationState extends State<Registration> {
         )
     );
 
-    final emailTextField = TextField(
+    final emailTextField = TextFormField(
         obscureText: false,
+        controller: emailController,
         style: style,
         decoration: InputDecoration(
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
@@ -45,8 +57,9 @@ class _RegistrationState extends State<Registration> {
         )
     );
 
-    final passwordTextField = TextField(
+    final passwordTextField = TextFormField(
         obscureText: true,
+        controller: passwordController,
         style: style,
         decoration: InputDecoration(
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
@@ -56,8 +69,9 @@ class _RegistrationState extends State<Registration> {
         )
     );
 
-    final confirmPasswordTextField = TextField(
+    final confirmPasswordTextField = TextFormField(
         obscureText: true,
+        controller: cPasswordController,
         style: style,
         decoration: InputDecoration(
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
