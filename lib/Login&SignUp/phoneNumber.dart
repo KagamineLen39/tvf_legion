@@ -24,10 +24,18 @@ class _PhoneNumberState extends State<PhoneNumber> {
         ),
       ),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
 
-          logo(),
+          Flexible(
+            child:SizedBox(
+              height: 155.0,
+              child: Image.asset(
+                "assets/images/logo.png",
+                fit: BoxFit.contain,
+              ),
+            ),
+          ),
 
           entryRow(),
 
@@ -35,17 +43,6 @@ class _PhoneNumberState extends State<PhoneNumber> {
 
           enteredNumberButton(),
         ],
-      ),
-    );
-  }
-
-  logo(){
-    return SizedBox(
-      height: 155.0,
-      child: Image(
-        image: NetworkImage(
-          ("https://imgur.com/a/n6Q8WSH"),
-        ),
       ),
     );
   }
