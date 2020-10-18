@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'file:///C:/Users/James/Desktop/DetailBooking/Booking-Detail/tvf_legion/lib/Login&SignUp/registrationPage.dart';
-
+import 'package:tvf_legion/Login&SignUp/registrationPage.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -10,9 +9,25 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
 
+  final fKey = GlobalKey<FormState>();
+
+  loginCheck(){
+    if(fKey.currentState.validate()){
+
+    }
+  }
+
+  signUpClicked(){
+    Navigator.push(context,
+        MaterialPageRoute(builder:(context)=> Registration()));
+  }
+
   @override
   Widget build(BuildContext context) {
-    final emailTextField = TextField(
+    final emailTextField = TextFormField(
+        validator: (v){
+          return v.isEmpty ? "Please enter a valid email" : null;
+        },
         obscureText: false,
         style: style,
         decoration: InputDecoration(
@@ -23,7 +38,10 @@ class _LoginPageState extends State<LoginPage> {
         )
     );
 
-    final passwordTextField = TextField(
+    final passwordTextField = TextFormField(
+      validator: (v){
+        return v.isEmpty ?'Please enter a proper password' : null;
+      },
         obscureText: true,
         style: style,
         decoration: InputDecoration(
@@ -44,7 +62,9 @@ class _LoginPageState extends State<LoginPage> {
             .size
             .width,
         padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-        onPressed: () {},
+        onPressed: () {
+          loginCheck();
+        },
         child: Text("Login",
             textAlign: TextAlign.center,
             style: style.copyWith(
@@ -53,7 +73,7 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
 
-    final forgetPasswordText = Text("Forget Password",
+    final forgetPasswordText = Text("Forgot Password",
         textAlign: TextAlign.right,
         style: style.copyWith(
             color: Colors.blue, fontWeight: FontWeight.bold
@@ -61,7 +81,7 @@ class _LoginPageState extends State<LoginPage> {
 
     );
 
-    final registrationText = Text("Do not have an account??",
+    final registrationText = Text("Don't have an account??",
       textAlign: TextAlign.center,
       style: style.copyWith(
           color: Colors.black, fontWeight: FontWeight.bold
@@ -76,64 +96,80 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     return Scaffold(
-        body: Center(
-          child: Container(
+      appBar: AppBar(
+        backgroundColor: Color(0xff01A0C7),
+        centerTitle: true,
+        title: Text(
+          "Enter Phone Number",
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
             color: Colors.white,
-            child: Padding(
-              padding: const EdgeInsets.all(36.0),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    SizedBox(
-                      height: 155.0,
-                      child: Image.asset(
-                        "assets/images/logo.png",
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                    SizedBox(height: 45.0),
-                    emailTextField,
-                    SizedBox(height: 25.0),
-                    passwordTextField,
-                    SizedBox(
-                        width: double.infinity,
-                        height: 25.0,
-                        child: GestureDetector(
-                          onTap: () {
-                            print("Forget Password Page");
-                          },
-                          child: forgetPasswordText,
-                        )
-                    ),
+          ),
+        ),
+      ),
 
-                    SizedBox(
-                      height: 15.0,
-                    ),
-                    loginButton,
-                    SizedBox(
-                      height: 15.0,
-
-                    ),
-                    registrationText,
-                    SizedBox(
-                      height: 25.0,
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => Registration()));
-                        },
-                        child: signUpText,
-                      ),
-                    ),
-
-
-                  ],
-                ),
+        body: ListView(
+          children: <Widget>[
+            SizedBox(
+              height: 155.0,
+              child: Image.asset(
+                "assets/images/logo.png",
+                fit: BoxFit.contain,
               ),
             ),
-          ),
+
+            SizedBox(
+              child:Form(
+                key: fKey,
+
+                child: Column(
+                  children: <Widget>[
+                    emailTextField,
+
+                    SizedBox(height: 10),
+
+                    passwordTextField,
+                  ],
+                ),
+
+              ),
+            ),
+
+            SizedBox(
+                width: double.infinity,
+                height: 25.0,
+                child: GestureDetector(
+                  onTap: () {
+                    print("Forget Password Page");
+                    },
+                  child: forgetPasswordText,
+                )
+            ),
+
+            SizedBox(
+              height: 15.0,
+            ),
+            loginButton,
+            SizedBox(
+              height: 15.0,
+            ),
+            registrationText,
+
+            SizedBox(
+
+              height: 25.0,
+
+              child: GestureDetector(
+                onTap: () {
+                  signUpClicked();
+                  },
+                child: signUpText,
+              ),
+            ),
+
+
+          ],
         ),
     );
   }

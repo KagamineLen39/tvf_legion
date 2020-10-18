@@ -53,6 +53,7 @@ class _RegistrationState extends State<Registration> {
         )
     );
 
+
     final emailTextField = TextFormField(
         validator: (val){
           return RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(val) ? null : "Enter a proper email";

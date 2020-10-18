@@ -8,6 +8,17 @@ class PhoneNumber extends StatefulWidget {
 }
 
 class _PhoneNumberState extends State<PhoneNumber> {
+
+  final fKey = GlobalKey<FormState>();
+
+  phoneSignUp(){
+    if(fKey.currentState.validate()){
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => Verification()));
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,15 +59,17 @@ class _PhoneNumberState extends State<PhoneNumber> {
   }
 
   entryRow() {
-    return Row(
-      children: <Widget>[
-        Expanded(
-          child: phoneNumberLabel(),
-        ),
-        Flexible(
-          child: numberTextBox(),
-        ),
-      ],
+    return Center(
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: phoneNumberLabel(),
+          ),
+          Flexible(
+            child: numberTextBox(),
+          ),
+        ],
+      ),
     );
   }
 
@@ -75,22 +88,28 @@ class _PhoneNumberState extends State<PhoneNumber> {
   }*/
 
   numberTextBox() {
-    return TextField(
-      decoration: InputDecoration(
-        contentPadding: EdgeInsets.only(left: 20, top: 10, bottom: 10),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30),
+    return Form(
+      key: fKey,
+      child: TextFormField(
+        validator:(val){
+          return val.isEmpty && val.length<10? "Enter a valid phone number":null;
+        },
+        decoration: InputDecoration(
+          contentPadding: EdgeInsets.only(left: 20, top: 10, bottom: 10),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+          counterText: "",
         ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30),
+        style: TextStyle(
+          fontSize: 24,
         ),
-        counterText: "",
+        keyboardType: TextInputType.number,
+        maxLength: 10,
       ),
-      style: TextStyle(
-        fontSize: 24,
-      ),
-      keyboardType: TextInputType.number,
-      maxLength: 10,
     );
   }
 
@@ -112,8 +131,7 @@ class _PhoneNumberState extends State<PhoneNumber> {
           borderRadius: BorderRadius.circular(30),
         ),
         onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => Verification()));
+          phoneSignUp();
         },
       ),
     );
