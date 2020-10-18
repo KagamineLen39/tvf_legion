@@ -157,6 +157,7 @@ class _RegistrationState extends State<Registration> {
         ),
       ),
       body: ListView(
+        padding: EdgeInsets.all(10),
         children: <Widget>[
           SizedBox(
             height: 100.0,

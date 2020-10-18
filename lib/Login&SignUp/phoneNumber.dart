@@ -34,26 +34,28 @@ class _PhoneNumberState extends State<PhoneNumber> {
           ),
         ),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-
-          Flexible(
-            child:SizedBox(
-              height: 155.0,
-              child: Image.asset(
-                "assets/images/logo.png",
-                fit: BoxFit.contain,
+      body: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            Flexible(
+              child:SizedBox(
+                height: 155.0,
+                child: Image.asset(
+                  "assets/images/logo.png",
+                  fit: BoxFit.contain,
+                ),
               ),
             ),
-          ),
 
-          entryRow(),
+            entryRow(),
 
-          SizedBox(height: 10),
+            SizedBox(height: 10),
 
-          enteredNumberButton(),
-        ],
+            enteredNumberButton(),
+          ],
+        ),
       ),
     );
   }
