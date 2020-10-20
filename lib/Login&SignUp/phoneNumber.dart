@@ -93,9 +93,6 @@ class _PhoneNumberState extends State<PhoneNumber> {
     return Form(
       key: fKey,
       child: TextFormField(
-        validator:(val){
-          return val.isEmpty && val.length<10? "Enter a valid phone number":null;
-        },
         decoration: InputDecoration(
           contentPadding: EdgeInsets.only(left: 20, top: 10, bottom: 10),
           enabledBorder: OutlineInputBorder(
@@ -106,9 +103,13 @@ class _PhoneNumberState extends State<PhoneNumber> {
           ),
           counterText: "",
         ),
+
         style: TextStyle(
           fontSize: 24,
         ),
+        validator:(val){
+          return val.length<10? "Enter a valid phone number":null;
+        },
         keyboardType: TextInputType.number,
         maxLength: 10,
       ),

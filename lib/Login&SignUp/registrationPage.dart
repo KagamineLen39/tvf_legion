@@ -1,7 +1,5 @@
 //import 'package:tvf_legion/loginPage.dart';
 import 'package:flutter/material.dart';
-import 'package:tvf_legion/Login&SignUp/loginPage.dart';
-import 'file:///C:/Users/James/Desktop/DetailBooking/Booking-Detail/tvf_legion/lib/Login&SignUp/registrationNextPage.dart';
 import 'package:tvf_legion/services/auth.dart';
 
 class Registration extends StatefulWidget {
@@ -14,6 +12,27 @@ class _RegistrationState extends State<Registration> {
 
   final fKey = GlobalKey<FormState>();
 
+  bool isLoading = false;
+  AuthMethods authMethods= new AuthMethods();
+
+  signUp()async{
+    if(fKey.currentState.validate()){
+      setState(() {
+        isLoading = true;
+      });
+
+      authMethods.signUp(emailController.text, passwordController.text).then(
+              (result){
+                print(result);
+            if(result!=null){
+              Navigator.pushReplacement(context, MaterialPageRoute(
+                  builder: (context) => Registration()
+              ));
+            }
+          });
+    }
+  }
+
   TextEditingController firstNameController = new TextEditingController();
   TextEditingController lastNameController = new TextEditingController();
   TextEditingController emailController = new TextEditingController();
@@ -25,7 +44,7 @@ class _RegistrationState extends State<Registration> {
   Widget build(BuildContext context) {
     final firstNameTextField = TextFormField(
       validator: (val){
-        return val.isEmpty && val.length<3? "Invalid Entry": null;
+        return val.length<2? "Invalid Entry": null;
       },
         obscureText: false,
         controller: firstNameController,
@@ -40,7 +59,7 @@ class _RegistrationState extends State<Registration> {
 
     final lastNameTextField = TextFormField(
         validator: (val){
-          return val.isEmpty && val.length<3? "Invalid Entry": null;
+          return val.length<2? "Invalid Entry": null;
         },
         obscureText: false,
         controller: lastNameController,
@@ -99,32 +118,6 @@ class _RegistrationState extends State<Registration> {
         )
     );
 
-    bool isLoading = false;
-    AuthMethods authMethods= new AuthMethods();
-
-    signUp()async{
-      if(fKey.currentState.validate()){
-        setState(() {
-          isLoading = true;
-        });
-
-        await authMethods.signUp(emailController.text, passwordController.text).then(
-            (result){
-              if(result!=null){
-                Navigator.pushReplacement(context, MaterialPageRoute(
-                  builder: (context) => LoginPage()
-                ));
-              }
-            });
-      }
-    }
-
-    newSignUp(){
-      if(fKey.currentState.validate()){
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => Registration2()));
-      }
-    }
 
     final nextButton = Material(
       elevation: 5.0,
@@ -134,7 +127,7 @@ class _RegistrationState extends State<Registration> {
         minWidth: MediaQuery.of(context).size.width,
         padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          newSignUp();
+          signUp();
         },
         child: Text("Next",
             textAlign: TextAlign.right,
@@ -145,7 +138,17 @@ class _RegistrationState extends State<Registration> {
     );
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: isLoading?AppBar(
+        centerTitle: true,
+        backgroundColor: Color(0xff01A0C7),
+        title: Text(
+          "Loading...",
+          style: TextStyle(
+              fontSize: 25,
+              fontWeight: FontWeight.bold
+          ),
+        ),
+      ):AppBar(
         centerTitle: true,
         backgroundColor: Color(0xff01A0C7),
         title: Text(
@@ -156,7 +159,9 @@ class _RegistrationState extends State<Registration> {
           ),
         ),
       ),
-      body: ListView(
+      body: isLoading?Container(
+        child:Center(child: CircularProgressIndicator(),),
+      ):ListView(
         padding: EdgeInsets.all(10),
         children: <Widget>[
           SizedBox(

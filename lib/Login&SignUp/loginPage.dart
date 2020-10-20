@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tvf_legion/Login&SignUp/ForgotPassword.dart';
 import 'package:tvf_legion/Login&SignUp/registrationPage.dart';
 
 class LoginPage extends StatefulWidget {
@@ -26,7 +27,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     final emailTextField = TextFormField(
         validator: (v){
-          return v.isEmpty ? "Please enter a valid email" : null;
+          return RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(v) ? null:"Enter a valid email";
         },
         obscureText: false,
         style: style,
@@ -42,7 +43,7 @@ class _LoginPageState extends State<LoginPage> {
 
     final passwordTextField = TextFormField(
       validator: (v){
-        return v.isEmpty ?'Please enter a proper password' : null;
+        return v.length<6 ?'Please enter a proper password' : null;
       },
         obscureText: true,
         style: style,
@@ -144,7 +145,8 @@ class _LoginPageState extends State<LoginPage> {
                 height: 25.0,
                 child: GestureDetector(
                   onTap: () {
-                    print("Forget Password Page");
+                    Navigator.push(context,
+                        MaterialPageRoute(builder:(context)=> ForgotPassword()));
                     },
                   child: forgetPasswordText,
                 )
