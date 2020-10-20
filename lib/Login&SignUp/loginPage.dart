@@ -103,7 +103,7 @@ class _LoginPageState extends State<LoginPage> {
         backgroundColor: Color(0xff01A0C7),
         centerTitle: true,
         title: Text(
-          "Enter Phone Number",
+          "Login",
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,

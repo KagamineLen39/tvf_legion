@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'file:///C:/Users/James/Desktop/DetailBooking/Booking-Detail/tvf_legion/lib/Login&SignUp/verificationPage.dart';
+import 'package:tvf_legion/Login&SignUp/verificationPage.dart';
 
 class PhoneNumber extends StatefulWidget {
   @override

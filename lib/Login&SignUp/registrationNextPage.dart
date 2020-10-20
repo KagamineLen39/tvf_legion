@@ -1,6 +1,6 @@
 //import 'package:tvf_legion/registrationPage.dart';
 import 'package:flutter/material.dart';
-import 'file:///C:/Users/James/Desktop/DetailBooking/Booking-Detail/tvf_legion/lib/Login&SignUp/phoneNumber.dart';
+import 'package:tvf_legion/Login&SignUp/phoneNumber.dart';
 
 class Registration2 extends StatefulWidget {
   @override
@@ -67,7 +67,7 @@ class _Registration2State extends State<Registration2> {
       final DateTime picked = await showDatePicker(
           context: context,
           initialDate: selectedDate,
-          firstDate: DateTime(2015, 8),
+          firstDate: DateTime(1900, 1),
           lastDate: DateTime(2101));
       if (picked != null && picked != selectedDate)
         setState(() {
