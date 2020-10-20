@@ -1,5 +1,6 @@
 //import 'package:tvf_legion/loginPage.dart';
 import 'package:flutter/material.dart';
+import 'package:tvf_legion/Login&SignUp/registrationNextPage.dart';
 import 'package:tvf_legion/services/auth.dart';
 
 class Registration extends StatefulWidget {
@@ -21,14 +22,12 @@ class _RegistrationState extends State<Registration> {
         isLoading = true;
       });
 
-      authMethods.signUp(emailController.text, passwordController.text).then(
-              (result){
-                print(result);
-            if(result!=null){
+      authMethods.signUp(emailController.text,
+          passwordController.text).then((result){
+            /*print("${result.uid}");*/
               Navigator.pushReplacement(context, MaterialPageRoute(
-                  builder: (context) => Registration()
+                  builder:(context)=> Registration2(),
               ));
-            }
           });
     }
   }
