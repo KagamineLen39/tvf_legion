@@ -22,7 +22,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           ),
         ),
       ),
-
     );
   }
 }

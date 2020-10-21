@@ -8,16 +8,14 @@ class PhoneNumber extends StatefulWidget {
 }
 
 class _PhoneNumberState extends State<PhoneNumber> {
-
   final fKey = GlobalKey<FormState>();
 
-  phoneSignUp(){
-    if(fKey.currentState.validate()){
+  phoneSignUp() {
+    if (fKey.currentState.validate()) {
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => Verification()));
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +38,7 @@ class _PhoneNumberState extends State<PhoneNumber> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             Flexible(
-              child:SizedBox(
+              child: SizedBox(
                 height: 155.0,
                 child: Image.asset(
                   "assets/images/logo.png",
@@ -48,11 +46,8 @@ class _PhoneNumberState extends State<PhoneNumber> {
                 ),
               ),
             ),
-
             entryRow(),
-
             SizedBox(height: 10),
-
             enteredNumberButton(),
           ],
         ),
@@ -103,12 +98,11 @@ class _PhoneNumberState extends State<PhoneNumber> {
           ),
           counterText: "",
         ),
-
         style: TextStyle(
           fontSize: 24,
         ),
-        validator:(val){
-          return val.length<10? "Enter a valid phone number":null;
+        validator: (val) {
+          return val.length < 10 ? "Enter a valid phone number" : null;
         },
         keyboardType: TextInputType.number,
         maxLength: 10,

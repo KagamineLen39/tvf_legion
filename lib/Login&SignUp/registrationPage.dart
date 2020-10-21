@@ -14,23 +14,26 @@ class _RegistrationState extends State<Registration> {
   final fKey = GlobalKey<FormState>();
 
   bool isLoading = false;
-  AuthMethods authMethods= new AuthMethods();
+  AuthMethods authMethods = new AuthMethods();
 
-  signUp()async{
-    if(fKey.currentState.validate()){
+  signUp() async {
+    if (fKey.currentState.validate()) {
       setState(() {
         isLoading = true;
       });
 
-      authMethods.signUp(emailController.text, passwordController.text).then(
-              (result){
-                print(result);
-            if(result!=null){
-              Navigator.pushReplacement(context, MaterialPageRoute(
+      authMethods
+          .signUp(emailController.text, passwordController.text)
+          .then((result) {
+        print(result);
+        if (result != null) {
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
                 builder: (context) => Registration2(),
               ));
-            }
-          });
+        }
+      });
     }
   }
 
@@ -40,13 +43,75 @@ class _RegistrationState extends State<Registration> {
   TextEditingController passwordController = new TextEditingController();
   TextEditingController cPasswordController = new TextEditingController();
 
+  String nameValidate(String name) {
+    String fNValidate =
+        r"^[a-zA-Z']+$";
+    String error;
+    if (name.isEmpty) {
+      error = "This field is required" ;
+    } else if (name.isNotEmpty) {
+      if (!RegExp(fNValidate).hasMatch(name))
+        error = "Enter a valid name";
+      else
+        error = null;
+    }
+    return error;
+  }
+
+  String eValidate(String e) {
+    String eValidate =
+        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+";
+    String error;
+    if (e.isEmpty) {
+      error = "Email is required" ;
+    } else if (e.isNotEmpty) {
+      //if(check value from the database if is it a valid email) INSERT AUTHENTICATION HERE <------------------------ JAMES
+      //error = "This email is already been used by the other user";
+      //else
+      if (!RegExp(eValidate).hasMatch(e))
+        error = "Invalid email address";
+      else
+        error = null;
+    }
+    return error;
+  }
+
+  String pwdValidate(String p) {
+    String passValidate = r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$';
+    String error;
+    if (p.isEmpty) {
+      error = "Password is required";
+    } else if (p.isNotEmpty) {
+        if (p.length<8)
+          error = "This field must have at least 8 characters";
+        else if (!RegExp(passValidate).hasMatch(p))
+          error = "Must contain at least an uppercase, lowercase, number, special character";
+        else
+          error = null;
+    }
+    return error;
+  }
+
+  String checkMatchPassword(String cP){
+    String error;
+    if (cP.isEmpty){
+      error = "Confirm Password is required";
+    }
+    else if(cP.isNotEmpty){
+      if(cP !=passwordController.text){
+        error = "Password is not match. Please re-enter";
+      }
+      return error;
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
     final firstNameTextField = TextFormField(
-      validator: (val){
-        return val.length<2? "Invalid Entry": null;
-      },
+        validator: (val) {
+          return nameValidate(val);
+        },
         obscureText: false,
         controller: firstNameController,
         style: style,
@@ -54,13 +119,11 @@ class _RegistrationState extends State<Registration> {
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             hintText: "First Name",
             border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))
-        )
-    );
+                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))));
 
     final lastNameTextField = TextFormField(
-        validator: (val){
-          return val.length<2? "Invalid Entry": null;
+        validator: (val) {
+          return nameValidate(val);
         },
         obscureText: false,
         controller: lastNameController,
@@ -69,14 +132,11 @@ class _RegistrationState extends State<Registration> {
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             hintText: "Last Name",
             border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))
-        )
-    );
-
+                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))));
 
     final emailTextField = TextFormField(
-        validator: (val){
-          return RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(val) ? null : "Enter a proper email";
+        validator: (val) {
+          return eValidate(val);
         },
         obscureText: false,
         controller: emailController,
@@ -85,13 +145,11 @@ class _RegistrationState extends State<Registration> {
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             hintText: "Email",
             border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))
-        )
-    );
+                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))));
 
     final passwordTextField = TextFormField(
-        validator:  (val){
-          return val.length < 6 ? "Please re-enter password" : null;
+        validator: (val) {
+          return pwdValidate(val);
         },
         obscureText: true,
         controller: passwordController,
@@ -100,13 +158,11 @@ class _RegistrationState extends State<Registration> {
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             hintText: "Password",
             border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))
-        )
-    );
+                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))));
 
     final confirmPasswordTextField = TextFormField(
-        validator:  (val){
-          return val.length < 6? "Please re-enter password" : null;
+        validator: (val) {
+          return checkMatchPassword(val);
         },
         obscureText: true,
         controller: cPasswordController,
@@ -115,10 +171,7 @@ class _RegistrationState extends State<Registration> {
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             hintText: "Confirm Password",
             border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))
-        )
-    );
-
+                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))));
 
     final nextButton = Material(
       elevation: 5.0,
@@ -133,73 +186,70 @@ class _RegistrationState extends State<Registration> {
         child: Text("Next",
             textAlign: TextAlign.right,
             style: style.copyWith(
-                color: Colors.white, fontWeight: FontWeight.bold)
-        ),
+                color: Colors.white, fontWeight: FontWeight.bold)),
       ),
     );
 
     return Scaffold(
-      appBar: isLoading?AppBar(
-        centerTitle: true,
-        backgroundColor: Color(0xff01A0C7),
-        title: Text(
-          "Loading...",
-          style: TextStyle(
-              fontSize: 25,
-              fontWeight: FontWeight.bold
-          ),
-        ),
-      ):AppBar(
-        centerTitle: true,
-        backgroundColor: Color(0xff01A0C7),
-        title: Text(
-          "Sign Up",
-          style: TextStyle(
-              fontSize: 25,
-              fontWeight: FontWeight.bold
-          ),
-        ),
-      ),
-      body: isLoading?Container(
-        child:Center(child: CircularProgressIndicator(),),
-      ):ListView(
-        padding: EdgeInsets.all(10),
-        children: <Widget>[
-          SizedBox(
-            height: 100.0,
-            child: Image.asset(
-              "assets/images/logo.png",
-              fit: BoxFit.contain,
+      appBar: isLoading
+          ? AppBar(
+              centerTitle: true,
+              backgroundColor: Color(0xff01A0C7),
+              title: Text(
+                "Loading...",
+                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+              ),
+            )
+          : AppBar(
+              centerTitle: true,
+              backgroundColor: Color(0xff01A0C7),
+              title: Text(
+                "Sign Up",
+                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+              ),
             ),
-          ),
-
-          Form(
-            key:fKey,
-            child: Column(
+      body: isLoading
+          ? Container(
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            )
+          : ListView(
+              padding: EdgeInsets.all(10),
               children: <Widget>[
-                new Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    SizedBox(width: 5.0, height: 30.0),
-                    new Flexible(child: firstNameTextField),
-                    SizedBox(width: 5.0, height: 30.0),
-                    new Flexible(child: lastNameTextField),
-                  ],
+                SizedBox(
+                  height: 100.0,
+                  child: Image.asset(
+                    "assets/images/logo.png",
+                    fit: BoxFit.contain,
+                  ),
                 ),
-                SizedBox(height: 15.0),
-                emailTextField,
-                SizedBox(height: 15.0),
-                passwordTextField,
-                SizedBox(height: 15.0),
-                confirmPasswordTextField,
+                Form(
+                  key: fKey,
+                  child: Column(
+                    children: <Widget>[
+                      new Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          SizedBox(width: 5.0, height: 30.0),
+                          new Flexible(child: firstNameTextField),
+                          SizedBox(width: 5.0, height: 30.0),
+                          new Flexible(child: lastNameTextField),
+                        ],
+                      ),
+                      SizedBox(height: 15.0),
+                      emailTextField,
+                      SizedBox(height: 15.0),
+                      passwordTextField,
+                      SizedBox(height: 15.0),
+                      confirmPasswordTextField,
+                    ],
+                  ),
+                ),
+                SizedBox(height: 25.0),
+                nextButton,
               ],
             ),
-          ),
-
-          SizedBox(height: 25.0),
-          nextButton,
-        ],
-      ),
     );
   }
 }
