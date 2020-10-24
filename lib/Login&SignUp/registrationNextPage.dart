@@ -162,22 +162,22 @@ class _Registration2State extends State<Registration2> {
             padding: const EdgeInsets.all(36.0),
             child: SingleChildScrollView(
                 child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                SizedBox(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                   SizedBox(
                   height: 300.0,
-                  child: Image.asset(
+                       child: Image.asset(
                     "assets/images/logo.png",
                     fit: BoxFit.contain,
                   ),
                 ),
-                SizedBox(height: 15.0),
-                userNameTextField,
-                SizedBox(height: 15.0),
-                genderRadioButton,
-                new Row(
-                  children: <Widget>[
+                  SizedBox(height: 15.0),
+                    userNameTextField,
+                  SizedBox(height: 15.0),
+                    genderRadioButton,
+                   new Row(
+                     children: <Widget>[
                     SizedBox(height: 20.0, width: 20),
                     Text('Birth date:',
                           textAlign: TextAlign.left,
@@ -193,9 +193,9 @@ class _Registration2State extends State<Registration2> {
                     dateButton,
                 ],
                 ),
-                SizedBox(height: 15.0),
-                nextButton,
-              ],
+                   SizedBox(height: 15.0),
+                     nextButton,
+                ],
             )),
           ),
         ),

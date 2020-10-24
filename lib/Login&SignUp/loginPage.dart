@@ -131,17 +131,11 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
 
-      body: Center(
-        child:Container(
-          color:Colors.white,
-            child:Padding(
-              padding: EdgeInsets.all(10),
-                  child:Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
+      body: ListView(
+        padding: EdgeInsets.all(15),
         children: <Widget>[
           SizedBox(
-            height: 300.0,
+            height: 150.0,
             child: Image.asset(
               "assets/images/logo.png",
               fit: BoxFit.contain,
@@ -190,9 +184,6 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ],
       ),
-    ),
-    ),
-    ),
     );
   }
 }
