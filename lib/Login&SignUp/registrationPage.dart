@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:tvf_legion/Login&SignUp/registrationNextPage.dart';
 import 'package:tvf_legion/services/auth.dart';
+import 'package:tvf_legion/services/database.dart';
 
 class Registration extends StatefulWidget {
   @override
@@ -15,9 +16,18 @@ class _RegistrationState extends State<Registration> {
 
   bool isLoading = false;
   AuthMethods authMethods = new AuthMethods();
+  Database database = new Database();
 
   signUp() async {
+
     if (fKey.currentState.validate()) {
+
+      Map<String, String> userInfoMap = {
+        "fName" : firstNameController.text,
+        "lName" : lastNameController.text,
+        "email" : emailController.text,
+      };
+
       setState(() {
         isLoading = true;
       });
@@ -25,7 +35,9 @@ class _RegistrationState extends State<Registration> {
       authMethods
           .signUp(emailController.text, passwordController.text)
           .then((result) {
-        print(result);
+
+            database.uploadUserInfo(userInfoMap);
+            
         if (result != null) {
           Navigator.pushReplacement(
               context,
