@@ -1,5 +1,6 @@
 import 'dart:async';
 //import 'package:tvf_legion/registrationPage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:tvf_legion/Login&SignUp/phoneNumber.dart';
 
@@ -12,6 +13,31 @@ class _Registration2State extends State<Registration2> {
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
 
   final fKey = GlobalKey<FormState>();
+
+  final db = Firestore.instance;
+  DocumentSnapshot _currentDocument;
+
+  _updateInfo() async{
+    await db.collection("Users").document(_currentDocument.documentID).updateData({
+      'username': userNameController.text,
+    });
+  }
+
+  signUpUpdate() async {
+
+    if (fKey.currentState.validate()) {
+
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => PhoneNumber(),
+            )
+        );
+    }
+  }
+
+
+
 
   TextEditingController userNameController = new TextEditingController();
 
@@ -50,6 +76,8 @@ class _Registration2State extends State<Registration2> {
       ],
     );
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -131,8 +159,8 @@ class _Registration2State extends State<Registration2> {
         minWidth: MediaQuery.of(context).size.width,
         padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => PhoneNumber()));
+          _updateInfo();
+          signUpUpdate();
         },
         child: Text("Next",
             textAlign: TextAlign.right,
@@ -155,50 +183,45 @@ class _Registration2State extends State<Registration2> {
         ),
       ),
 
-      body: Center(
-        child: Container(
-          color: Colors.white,
-          child: Padding(
-            padding: const EdgeInsets.all(36.0),
-            child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                   SizedBox(
-                  height: 300.0,
-                       child: Image.asset(
-                    "assets/images/logo.png",
-                    fit: BoxFit.contain,
-                  ),
-                ),
-                  SizedBox(height: 15.0),
-                    userNameTextField,
-                  SizedBox(height: 15.0),
-                    genderRadioButton,
-                   new Row(
-                     children: <Widget>[
-                    SizedBox(height: 20.0, width: 20),
-                    Text('Birth date:',
-                          textAlign: TextAlign.left,
-                          style: style.copyWith(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold)),
-                    SizedBox(height: 20.0, width: 20),
-                    Text("${selectedDate.toLocal()}".split(' ')[0],
-                              style: style.copyWith(
-                                    color: Colors.blueAccent,
-                                    fontWeight: FontWeight.bold)),
-                    SizedBox(height: 20.0, width: 20),
-                    dateButton,
-                ],
-                ),
-                   SizedBox(height: 15.0),
-                     nextButton,
-                ],
-            )),
-          ),
+      body: ListView(
+        padding: EdgeInsets.all(10),
+
+        children: <Widget>[
+         SizedBox(
+        height: 150.0,
+             child: Image.asset(
+          "assets/images/logo.png",
+          fit: BoxFit.contain,
         ),
+      ),
+
+        Form(
+          key: fKey,
+          child: userNameTextField,
+        ),
+
+        SizedBox(height: 15.0),
+          genderRadioButton,
+         new Row(
+           children: <Widget>[
+          SizedBox(height: 20.0, width: 20),
+          Text('Birth date:',
+                textAlign: TextAlign.left,
+                style: style.copyWith(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold)),
+          SizedBox(height: 20.0, width: 20),
+          Text("${selectedDate.toLocal()}".split(' ')[0],
+                    style: style.copyWith(
+                          color: Colors.blueAccent,
+                          fontWeight: FontWeight.bold)),
+          SizedBox(height: 20.0, width: 20),
+          dateButton,
+      ],
+      ),
+         SizedBox(height: 15.0),
+           nextButton,
+      ],
       ),
     );
   }

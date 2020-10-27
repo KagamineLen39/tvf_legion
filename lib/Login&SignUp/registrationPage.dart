@@ -23,9 +23,9 @@ class _RegistrationState extends State<Registration> {
     if (fKey.currentState.validate()) {
 
       Map<String, String> userInfoMap = {
-        "fName" : firstNameController.text,
-        "lName" : lastNameController.text,
-        "email" : emailController.text,
+        "fName" : firstNameController.text.trim(),
+        "lName" : lastNameController.text.trim(),
+        "email" : emailController.text.trim(),
       };
 
       setState(() {
@@ -33,18 +33,16 @@ class _RegistrationState extends State<Registration> {
       });
 
       authMethods
-          .signUp(emailController.text, passwordController.text)
+          .signUp(emailController.text.trim(), passwordController.text)
           .then((result) {
 
             database.uploadUserInfo(userInfoMap);
-            
-        if (result != null) {
+
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                 builder: (context) => Registration2(),
               ));
-        }
       });
     }
   }
@@ -62,7 +60,7 @@ class _RegistrationState extends State<Registration> {
     if (name.isEmpty) {
       error = "This field is required" ;
     } else if (name.isNotEmpty) {
-      if (!RegExp(fNValidate).hasMatch(name))
+      if (!RegExp(fNValidate).hasMatch(name.trim()))
         error = "Enter a valid name";
       else
         error = null;
@@ -80,7 +78,7 @@ class _RegistrationState extends State<Registration> {
       //if(check value from the database if is it a valid email) INSERT AUTHENTICATION HERE <------------------------ JAMES
       //error = "This email is already been used by the other user";
       //else
-      if (!RegExp(eValidate).hasMatch(e))
+      if (!RegExp(eValidate).hasMatch(e.trim()))
         error = "Invalid email address";
       else
         error = null;
@@ -96,7 +94,7 @@ class _RegistrationState extends State<Registration> {
     } else if (p.isNotEmpty) {
         if (p.length<8)
           error = "This field must have at least 8 characters";
-        else if (!RegExp(passValidate).hasMatch(p))
+        else if (!RegExp(passValidate).hasMatch(p.trim()))
           error = "Must contain at least an uppercase, lowercase, number, special character";
         else
           error = null;
