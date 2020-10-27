@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tvf_legion/Login&SignUp/ForgotPassword.dart';
+import 'package:tvf_legion/Login&SignUp/homePage.dart';
 import 'package:tvf_legion/Login&SignUp/registrationPage.dart';
 
 
@@ -92,7 +93,9 @@ class _LoginPageState extends State<LoginPage> {
         minWidth: MediaQuery.of(context).size.width,
         padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          loginCheck();
+          //loginCheck();
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) =>HomePage()));
         },
         child: Text("Login",
             textAlign: TextAlign.center,
