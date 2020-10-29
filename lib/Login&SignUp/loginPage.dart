@@ -1,7 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:tvf_legion/Login&SignUp/ForgotPassword.dart';
 import 'package:tvf_legion/Login&SignUp/homePage.dart';
 import 'package:tvf_legion/Login&SignUp/registrationPage.dart';
+import 'package:tvf_legion/services/auth.dart';
+import 'package:tvf_legion/services/database.dart';
+import 'package:tvf_legion/services/helper.dart';
 
 
 class LoginPage extends StatefulWidget {
@@ -15,16 +19,41 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController loginPasswordController = new TextEditingController();
   final fKey = GlobalKey<FormState>();
 
-  loginCheck() {
-    if (fKey.currentState.validate()) {}
+  Database _database = new Database();
+  AuthMethods authMethods = new AuthMethods();
+  bool isLoading = false;
+  QuerySnapshot snapshotUserInfo;
+
+  loginCheck() async{
+    if (fKey.currentState.validate()) {
+
+      await authMethods.emailSignIn(loginEmailController.text, loginPasswordController.text).then((val)async{
+        if(val != null) {
+          _database.getUserByUserEmail(loginEmailController.text).then((val){
+            snapshotUserInfo = val;
+            Helper.savedUserEmail(snapshotUserInfo.documents[0].data["email"]);
+            print(snapshotUserInfo.documents[0].data["email"]);
+
+          });
+
+          setState(() {
+            isLoading=true;
+          });
+
+          Helper.savedLoggedIn(true);
+
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => HomePage())
+          );
+        }
+      });
+    }
   }
 
   signUpClicked() {
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => Registration()));
   }
-
-  emailLoginValidator() {}
 
   String eValidate(String e) {
     String eValidate =
@@ -33,9 +62,6 @@ class _LoginPageState extends State<LoginPage> {
     if (e.isEmpty) {
       error = "Email is required" ;
     } else if (e.isNotEmpty) {
-      //if(check value from the database if is it a valid email) INSERT AUTHENTICATION HERE <------------------------ JAMES
-      //error = "Account is not existing";
-      //else
       if (!RegExp(eValidate).hasMatch(e))
       error = "Please enter a valid email address";
       else
@@ -50,9 +76,6 @@ class _LoginPageState extends State<LoginPage> {
     if (pass.isEmpty) {
       error = "Password is required";
     } else if (pass.isNotEmpty) {
-      //if(check value from the database if is it the same password to that email) INSERT AUTHENTICATION HERE <------------------------ JAMES
-      //error = "Invalid Password";
-      //else
       error = null;
     }
     return error;
@@ -93,9 +116,7 @@ class _LoginPageState extends State<LoginPage> {
         minWidth: MediaQuery.of(context).size.width,
         padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          //loginCheck();
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) =>HomePage()));
+          loginCheck();
         },
         child: Text("Login",
             textAlign: TextAlign.center,
@@ -121,7 +142,15 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: isLoading
+          ? AppBar(
+        centerTitle: true,
+        backgroundColor: Color(0xff01A0C7),
+        title: Text(
+          "Loading...",
+          style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+        ),)
+          : AppBar(
         backgroundColor: Color(0xff01A0C7),
         centerTitle: true,
         title: Text(
@@ -134,7 +163,12 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
 
-      body: ListView(
+      body:isLoading
+          ? Container(
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),)
+          :  ListView(
         padding: EdgeInsets.all(15),
         children: <Widget>[
           SizedBox(

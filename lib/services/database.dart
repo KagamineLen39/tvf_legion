@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Database{
 
-  getUsername(String username){
-
+  getUserByUserEmail(String userEmail)async{
+    return await Firestore.instance.collection("Users").getDocuments();
   }
 
   uploadUserInfo(userMap){

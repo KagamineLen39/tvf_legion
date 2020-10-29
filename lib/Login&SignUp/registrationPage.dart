@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tvf_legion/Login&SignUp/registrationNextPage.dart';
 import 'package:tvf_legion/services/auth.dart';
 import 'package:tvf_legion/services/database.dart';
+import 'package:tvf_legion/services/helper.dart';
 
 class Registration extends StatefulWidget {
   @override
@@ -28,6 +29,8 @@ class _RegistrationState extends State<Registration> {
         "email" : emailController.text.trim(),
       };
 
+      Helper.savedUserEmail(emailController.text.trim());
+
       setState(() {
         isLoading = true;
       });
@@ -37,6 +40,7 @@ class _RegistrationState extends State<Registration> {
           .then((result) {
 
             database.uploadUserInfo(userInfoMap);
+            Helper.savedLoggedIn(true);
 
           Navigator.pushReplacement(
               context,
