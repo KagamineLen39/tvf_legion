@@ -42,6 +42,7 @@ class _RegistrationState extends State<Registration> {
             database.uploadUserInfo(userInfoMap);
             Helper.savedLoggedIn(true);
 
+
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(

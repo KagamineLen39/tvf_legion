@@ -11,7 +11,9 @@ class AuthMethods {
   Future emailSignIn(String email, String password) async {
     try {
       AuthResult result = await _auth.signInWithEmailAndPassword(
-          email: email, password: password);
+          email: email, password: password
+      );
+
 
       FirebaseUser firebaseUser = result.user;
 
@@ -24,8 +26,20 @@ class AuthMethods {
   Future signUp(String email, String password) async {
     try {
       AuthResult result = await _auth.createUserWithEmailAndPassword(
-          email: email, password: password);
+          email: email, password: password,
+
+      );
+
       FirebaseUser firebaseUser = result.user;
+
+      try{
+        firebaseUser.sendEmailVerification();
+        return firebaseUser.uid;
+      }catch(e){
+        print("Error occur sending verification email");
+        print(e.toString());
+      }
+
       return _userFromFirebaseUser(firebaseUser);
     } catch (e) {
       print(e.toString());
@@ -37,6 +51,7 @@ class AuthMethods {
       return await _auth.sendPasswordResetEmail(email: email);
     } catch (e) {
       print(e.toString());
+      print("Email Not existing");
     }
   }
 
