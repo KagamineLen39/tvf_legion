@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tvf_legion/Login&SignUp/loginPage.dart';
-import 'package:tvf_legion/Login&SignUp/registrationNextPage.dart';
-
 
 void main() => runApp(MaterialApp(
-      home: Registration2(),
+      home: LoginPage(),
     ));

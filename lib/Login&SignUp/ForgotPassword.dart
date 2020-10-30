@@ -78,7 +78,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         isLoading = true;
       });
 
-      Navigator.pushReplacement(context,
+      Navigator.pushReplacement(
+        context,
           MaterialPageRoute(builder: (context) => LoginPage()),
       );
     }

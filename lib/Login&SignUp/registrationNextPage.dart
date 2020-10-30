@@ -35,11 +35,11 @@ class _Registration2State extends State<Registration2> {
 
     if (fKey.currentState.validate()) {
 
-        Navigator.pushReplacement(
+        Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => PhoneNumber(),
-            )
+            ),
         );
     }
   }
