@@ -17,6 +17,8 @@ class _Registration2State extends State<Registration2> {
   List gender = ["Male", "Female","Prefer not to say"];
   String select;
   User _user = User();
+  bool isLoading = false;
+
 
   TextEditingController userNameController = new TextEditingController();
   DateTime selectedDate = DateTime.now();
@@ -24,7 +26,7 @@ class _Registration2State extends State<Registration2> {
   final fKey = GlobalKey<FormState>();
   final db = Firestore.instance;
   Database database = new Database();
-  /*DocumentSnapshot _currentDocument;*/
+
 
   signUpUpdate() async {
 
@@ -38,6 +40,10 @@ class _Registration2State extends State<Registration2> {
     };
 
     if (fKey.currentState.validate()) {
+
+      setState(() {
+        isLoading = true;
+      });
 
       database.uploadUserInfo(userInfoMap);
 
@@ -176,7 +182,16 @@ class _Registration2State extends State<Registration2> {
     );
 
     return Scaffold(
-      appBar: AppBar(
+      appBar:  isLoading
+          ? AppBar(
+        centerTitle: true,
+        backgroundColor: Color(0xff01A0C7),
+        title: Text(
+          "Loading...",
+          style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+        ),
+      )
+          : AppBar(
         backgroundColor: Color(0xff01A0C7),
         centerTitle: true,
         title: Text(
@@ -189,7 +204,13 @@ class _Registration2State extends State<Registration2> {
         ),
       ),
 
-      body: ListView(
+      body: isLoading
+          ? Container(
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      )
+          : ListView(
         padding: EdgeInsets.all(10),
 
         children: <Widget>[

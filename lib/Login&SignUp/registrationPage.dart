@@ -28,10 +28,6 @@ class _RegistrationState extends State<Registration> {
 
   signUp(){
 
-    firstNameController = _user.fName as TextEditingController;
-    lastNameController = _user.lName as TextEditingController;
-    emailController = _user.email as TextEditingController;
-
     if (fKey.currentState.validate()) {
 
       setState(() {
