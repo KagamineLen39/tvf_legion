@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:tvf_legion/Login&SignUp/phoneNumber.dart';
+import 'package:tvf_legion/modal/user.dart';
+import 'package:tvf_legion/services/database.dart';
 
 class Registration2 extends StatefulWidget {
   @override
@@ -14,26 +16,30 @@ class _Registration2State extends State<Registration2> {
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
   List gender = ["Male", "Female","Prefer not to say"];
   String select;
+  User _user = User();
 
   TextEditingController userNameController = new TextEditingController();
   DateTime selectedDate = DateTime.now();
 
   final fKey = GlobalKey<FormState>();
   final db = Firestore.instance;
-  DocumentSnapshot _currentDocument;
-
-
-  _updateInfo() async{
-    await db.collection("Users").document(_currentDocument.documentID[0]).updateData({
-      'username': userNameController.text,
-      'gender': select,
-      'DoB': selectedDate,
-    });
-  }
+  Database database = new Database();
+  /*DocumentSnapshot _currentDocument;*/
 
   signUpUpdate() async {
 
+    Map<String, String> userInfoMap = {
+      "fName": _user.fName,
+      "lName": _user.lName,
+      "email": _user.email,
+      "username": _user.userName,
+      "gender": _user.gender,
+      "Date of Birth": _user.DoB,
+    };
+
     if (fKey.currentState.validate()) {
+
+      database.uploadUserInfo(userInfoMap);
 
         Navigator.push(
             context,
@@ -88,6 +94,11 @@ class _Registration2State extends State<Registration2> {
 
   @override
   Widget build(BuildContext context) {
+
+    _user.userName = userNameController.text.trimRight();
+    _user.gender = select;
+    _user.DoB = "$selectedDate.toLocal()}".split(' ')[0];
+
 
     String nameValidate(String uName) {
       String nameValidate =
@@ -155,7 +166,6 @@ class _Registration2State extends State<Registration2> {
         minWidth: MediaQuery.of(context).size.width,
         padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          _updateInfo();
           signUpUpdate();
         },
         child: Text("Next",

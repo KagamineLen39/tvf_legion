@@ -14,9 +14,13 @@ class AuthMethods {
           email: email, password: password
       );
 
-
-      FirebaseUser firebaseUser = result.user;
-
+      FirebaseUser firebaseUser;
+      if(result != null) {
+         firebaseUser = result.user;
+        if(firebaseUser != null){
+          print("Log In: $firebaseUser");
+        }
+      }
       return _userFromFirebaseUser(firebaseUser);
     } catch (e) {
       print(e.toString());

@@ -1,9 +1,8 @@
-//import 'package:tvf_legion/loginPage.dart';
 import 'package:flutter/material.dart';
 import 'package:tvf_legion/Login&SignUp/registrationNextPage.dart';
+import 'package:tvf_legion/modal/user.dart';
 import 'package:tvf_legion/services/auth.dart';
-import 'package:tvf_legion/services/database.dart';
-import 'package:tvf_legion/services/helper.dart';
+
 
 class Registration extends StatefulWidget {
   @override
@@ -17,19 +16,23 @@ class _RegistrationState extends State<Registration> {
 
   bool isLoading = false;
   AuthMethods authMethods = new AuthMethods();
-  Database database = new Database();
 
-  signUp() async {
+  final User _user = new User();
+
+  TextEditingController firstNameController = new TextEditingController();
+  TextEditingController lastNameController = new TextEditingController();
+  TextEditingController emailController = new TextEditingController();
+  TextEditingController passwordController = new TextEditingController();
+  TextEditingController cPasswordController = new TextEditingController();
+
+
+  signUp(){
+
+    firstNameController = _user.fName as TextEditingController;
+    lastNameController = _user.lName as TextEditingController;
+    emailController = _user.email as TextEditingController;
 
     if (fKey.currentState.validate()) {
-
-      Map<String, String> userInfoMap = {
-        "fName" : firstNameController.text.trim(),
-        "lName" : lastNameController.text.trim(),
-        "email" : emailController.text.trim(),
-      };
-
-      Helper.savedUserEmail(emailController.text.trim());
 
       setState(() {
         isLoading = true;
@@ -39,11 +42,11 @@ class _RegistrationState extends State<Registration> {
           .signUp(emailController.text.trim(), passwordController.text)
           .then((result) {
 
-            database.uploadUserInfo(userInfoMap);
-            Helper.savedLoggedIn(true);
+        _user.fName = firstNameController.text.trim();
+        _user.lName = lastNameController.text.trim();
+        _user.email = emailController.text.trim();
 
-
-          Navigator.pushReplacement(
+        Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                 builder: (context) => Registration2(),
@@ -52,11 +55,7 @@ class _RegistrationState extends State<Registration> {
     }
   }
 
-  TextEditingController firstNameController = new TextEditingController();
-  TextEditingController lastNameController = new TextEditingController();
-  TextEditingController emailController = new TextEditingController();
-  TextEditingController passwordController = new TextEditingController();
-  TextEditingController cPasswordController = new TextEditingController();
+
 
   String nameValidate(String name) {
     String fNValidate =
@@ -123,6 +122,8 @@ class _RegistrationState extends State<Registration> {
 
   @override
   Widget build(BuildContext context) {
+
+
     final firstNameTextField = TextFormField(
         validator: (val) {
           return nameValidate(val);
@@ -187,6 +188,7 @@ class _RegistrationState extends State<Registration> {
             hintText: "Confirm Password",
             border:
                 OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))));
+
 
     final nextButton = Material(
       elevation: 5.0,
