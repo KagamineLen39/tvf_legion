@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tvf_legion/Login&SignUp/ForgotPassword.dart';
-import 'package:tvf_legion/Login&SignUp/homePage.dart';
+import 'package:tvf_legion/ApplicationPage/homePage.dart';
 import 'package:tvf_legion/Login&SignUp/registrationPage.dart';
+import 'package:tvf_legion/MenuPage/Friends.dart';
 
 
 class LoginPage extends StatefulWidget {

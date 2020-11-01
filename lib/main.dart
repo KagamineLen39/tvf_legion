@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tvf_legion/Login&SignUp/loginPage.dart';
+import 'package:tvf_legion/ApplicationPage/homePage.dart';
 
 void main() => runApp(MaterialApp(
-      home: LoginPage(),
+      home: HomePage(),
     ));
