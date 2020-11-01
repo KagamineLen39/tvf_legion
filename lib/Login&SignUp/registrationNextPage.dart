@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:tvf_legion/Login&SignUp/homePage.dart';
+import 'package:tvf_legion/ApplicationPage/homePage.dart';
 import 'package:tvf_legion/modal/user.dart';
 import 'package:tvf_legion/services/database.dart';
 
