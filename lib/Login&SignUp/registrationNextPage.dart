@@ -1,11 +1,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-<<<<<<< Updated upstream
 import 'package:tvf_legion/ApplicationPage/homePage.dart';
-=======
-import 'package:tvf_legion/ApplicationPage/chatPage.dart';
->>>>>>> Stashed changes
 import 'package:tvf_legion/modal/user.dart';
 import 'package:tvf_legion/services/database.dart';
 
@@ -52,12 +48,9 @@ class _Registration2State extends State<Registration2> {
 
       database.uploadUserInfo(userInfoMap);
 
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => (HomePage()),
-          )
-        );
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context)=> HomePage())
+      );
     }
   }
 

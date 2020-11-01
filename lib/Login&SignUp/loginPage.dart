@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:tvf_legion/Login&SignUp/ForgotPassword.dart';
 import 'package:tvf_legion/ApplicationPage/homePage.dart';
 import 'package:tvf_legion/Login&SignUp/registrationPage.dart';
-import 'package:tvf_legion/MenuPage/Friends.dart';
 import 'package:tvf_legion/services/auth.dart';
+import 'package:tvf_legion/services/database.dart';
+import 'package:tvf_legion/services/helper.dart';
 
 
 class LoginPage extends StatefulWidget {
@@ -42,6 +44,16 @@ class _LoginPageState extends State<LoginPage> {
         setState(() {
           isLoading = true;
         });
+
+        QuerySnapshot userInfoSnapshot =
+        await Database().getUserByUserEmail(loginEmailController.text);
+
+        Helper.savedLoggedIn(true);
+        Helper.savedUserName(
+            userInfoSnapshot.documents[0].data["userName"]);
+        Helper.savedUserEmail(
+            userInfoSnapshot.documents[0].data["userEmail"]);
+
         Navigator.push(
             context, MaterialPageRoute(builder: (context) =>HomePage())
         );
