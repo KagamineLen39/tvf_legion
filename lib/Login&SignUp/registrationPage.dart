@@ -17,16 +17,19 @@ class _RegistrationState extends State<Registration> {
   bool isLoading = false;
   AuthMethods authMethods = new AuthMethods();
 
-  final User _user = new User();
-
   TextEditingController firstNameController = new TextEditingController();
   TextEditingController lastNameController = new TextEditingController();
   TextEditingController emailController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
   TextEditingController cPasswordController = new TextEditingController();
 
-
   signUp(){
+
+    final userData = User(
+      fName: firstNameController.text.trim(),
+      lName: lastNameController.text.trim(),
+      email: emailController.text.trim(),
+    );
 
     if (fKey.currentState.validate()) {
 
@@ -37,10 +40,6 @@ class _RegistrationState extends State<Registration> {
       authMethods
           .signUp(emailController.text.trim(), passwordController.text)
           .then((result) {
-
-        _user.fName = firstNameController.text.trim();
-        _user.lName = lastNameController.text.trim();
-        _user.email = emailController.text.trim();
 
         Navigator.pushReplacement(
               context,

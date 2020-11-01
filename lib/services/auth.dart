@@ -24,6 +24,7 @@ class AuthMethods {
       return _userFromFirebaseUser(firebaseUser);
     } catch (e) {
       print(e.toString());
+      return null;
     }
   }
 
@@ -47,6 +48,7 @@ class AuthMethods {
       return _userFromFirebaseUser(firebaseUser);
     } catch (e) {
       print(e.toString());
+      return null;
     }
   }
 
@@ -56,6 +58,7 @@ class AuthMethods {
     } catch (e) {
       print(e.toString());
       print("Email Not existing");
+      return null;
     }
   }
 
@@ -64,6 +67,7 @@ class AuthMethods {
       return await _auth.signOut();
     } catch (e) {
       print(e.toString());
+      return null;
     }
   }
 }

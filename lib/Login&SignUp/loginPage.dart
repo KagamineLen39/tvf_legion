@@ -27,25 +27,30 @@ class _LoginPageState extends State<LoginPage> {
   loginCheck() async{
     if (fKey.currentState.validate()) {
 
-      await authMethods.emailSignIn(loginEmailController.text, loginPasswordController.text).then((val)async{
-        if(val != null) {
-          _database.getUserByUserEmail(loginEmailController.text).then((val){
-            snapshotUserInfo = val;
-            Helper.savedUserEmail(snapshotUserInfo.documents[0].data["email"]);
-            print(snapshotUserInfo.documents[0].data["email"]);
+      await authMethods.emailSignIn(loginEmailController.text, loginPasswordController.text)
+          .then((result)async {
 
-          });
+        if(result != null) {
 
           setState(() {
             isLoading=true;
           });
 
+          snapshotUserInfo = await _database.getUserByUserEmail(loginEmailController.text);
+
           Helper.savedLoggedIn(true);
+          Helper.savedUserName(snapshotUserInfo.documents[0].data["username"]);
+          Helper.savedUserEmail(snapshotUserInfo.documents[0].data["email"]);
 
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => HomePage())
           );
+        }else{
+          setState(() {
+            isLoading = false;
+          });
         }
+
       });
     }
   }
@@ -76,7 +81,7 @@ class _LoginPageState extends State<LoginPage> {
     if (pass.isEmpty) {
       error = "Password is required";
     } else if (pass.isNotEmpty) {
-      error = null;
+        error = null;
     }
     return error;
   }
