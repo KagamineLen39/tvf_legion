@@ -22,15 +22,17 @@ class _LoginPageState extends State<LoginPage> {
   Database _database = new Database();
   AuthMethods authMethods = new AuthMethods();
   bool isLoading = false;
+  bool isLogin;
   QuerySnapshot snapshotUserInfo;
 
   loginCheck() async{
+
     if (fKey.currentState.validate()) {
 
-      await authMethods.emailSignIn(loginEmailController.text, loginPasswordController.text)
-          .then((result)async {
+      await authMethods.emailSignIn(loginEmailController.text, loginPasswordController.text).then((result)async {
 
         if(result != null) {
+          isLogin = true;
 
           setState(() {
             isLoading=true;
@@ -46,6 +48,7 @@ class _LoginPageState extends State<LoginPage> {
               context, MaterialPageRoute(builder: (context) => HomePage())
           );
         }else{
+          isLogin = false;
           setState(() {
             isLoading = false;
           });
@@ -81,7 +84,10 @@ class _LoginPageState extends State<LoginPage> {
     if (pass.isEmpty) {
       error = "Password is required";
     } else if (pass.isNotEmpty) {
-        error = null;
+        if(isLogin == false){
+          error ="Invalid email or password";
+        }else
+          error = null;
     }
     return error;
   }

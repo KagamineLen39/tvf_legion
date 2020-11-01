@@ -5,6 +5,7 @@ import 'package:tvf_legion/services/auth.dart';
 
 
 class Registration extends StatefulWidget {
+
   @override
   _RegistrationState createState() => _RegistrationState();
 }
@@ -13,7 +14,7 @@ class _RegistrationState extends State<Registration> {
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
 
   final fKey = GlobalKey<FormState>();
-
+  User userData = new User();
   bool isLoading = false;
   AuthMethods authMethods = new AuthMethods();
 
@@ -24,14 +25,10 @@ class _RegistrationState extends State<Registration> {
   TextEditingController cPasswordController = new TextEditingController();
 
   signUp(){
-
-    final userData = User(
-      fName: firstNameController.text.trim(),
-      lName: lastNameController.text.trim(),
-      email: emailController.text.trim(),
-    );
-
     if (fKey.currentState.validate()) {
+      userData.fName = firstNameController.text.trim();
+      userData.lName=lastNameController.text.trim();
+      userData.email =emailController.text.trim();
 
       setState(() {
         isLoading = true;
@@ -44,7 +41,7 @@ class _RegistrationState extends State<Registration> {
         Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => Registration2(),
+                builder: (context) => Registration2(userData: userData),
               ));
       });
     }
@@ -117,7 +114,6 @@ class _RegistrationState extends State<Registration> {
 
   @override
   Widget build(BuildContext context) {
-
 
     final firstNameTextField = TextFormField(
         validator: (val) {

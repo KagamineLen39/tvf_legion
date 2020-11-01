@@ -11,18 +11,12 @@ class AuthMethods {
   Future emailSignIn(String email, String password) async {
     try {
       AuthResult result = await _auth.signInWithEmailAndPassword(
-          email: email, password: password
-      );
+          email: email, password: password);
+      FirebaseUser user = result.user;
+      return _userFromFirebaseUser(user);
 
-      FirebaseUser firebaseUser;
-      if(result != null) {
-         firebaseUser = result.user;
-        if(firebaseUser != null){
-          print("Log In: $firebaseUser");
-        }
-      }
-      return _userFromFirebaseUser(firebaseUser);
-    } catch (e) {
+    }catch (e) {
+      print("Unable to find user");
       print(e.toString());
       return null;
     }

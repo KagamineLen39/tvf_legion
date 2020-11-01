@@ -1,12 +1,14 @@
 import 'dart:async';
-//import 'package:tvf_legion/registrationPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:tvf_legion/Login&SignUp/phoneNumber.dart';
+import 'package:tvf_legion/Login&SignUp/homePage.dart';
 import 'package:tvf_legion/modal/user.dart';
 import 'package:tvf_legion/services/database.dart';
 
 class Registration2 extends StatefulWidget {
+  final User userData;
+  Registration2({Key key,@required this.userData}):super(key:key);
+
   @override
   _Registration2State createState() => _Registration2State();
 }
@@ -16,7 +18,6 @@ class _Registration2State extends State<Registration2> {
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
   List gender = ["Male", "Female","Prefer not to say"];
   String select;
-  User _user = User();
   bool isLoading = false;
 
 
@@ -31,12 +32,12 @@ class _Registration2State extends State<Registration2> {
   signUpUpdate() async {
 
     Map<String, String> userInfoMap = {
-      "fName": _user.fName,
-      "lName": _user.lName,
-      "email": _user.email,
-      "username": _user.userName,
-      "gender": _user.gender,
-      "Date of Birth": _user.DoB,
+      "fName": widget.userData.fName,
+      "lName": widget.userData.lName,
+      "email": widget.userData.email,
+      "username": widget.userData.userName,
+      "gender": widget.userData.gender,
+      "Date of Birth": widget.userData.DoB,
     };
 
     if (fKey.currentState.validate()) {
@@ -50,8 +51,8 @@ class _Registration2State extends State<Registration2> {
         Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => PhoneNumber(),
-            ),
+              builder: (context) => (HomePage()),
+          )
         );
     }
   }
@@ -101,9 +102,9 @@ class _Registration2State extends State<Registration2> {
   @override
   Widget build(BuildContext context) {
 
-    _user.userName = userNameController.text.trimRight();
-    _user.gender = select;
-    _user.DoB = "$selectedDate.toLocal()}".split(' ')[0];
+    widget.userData.userName = userNameController.text.trimRight();
+    widget.userData.gender = select;
+    widget.userData.DoB = "$selectedDate.toLocal()}".split(' ')[0];
 
 
     String nameValidate(String uName) {
