@@ -1,47 +1,62 @@
 import 'dart:async';
-//import 'package:tvf_legion/registrationPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:tvf_legion/Login&SignUp/phoneNumber.dart';
+import 'package:tvf_legion/Login&SignUp/homePage.dart';
+import 'package:tvf_legion/modal/user.dart';
+import 'package:tvf_legion/services/database.dart';
 
 class Registration2 extends StatefulWidget {
+  final User userData;
+  Registration2({Key key,@required this.userData}):super(key:key);
+
   @override
   _Registration2State createState() => _Registration2State();
 }
 
 class _Registration2State extends State<Registration2> {
+
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
+  List gender = ["Male", "Female","Prefer not to say"];
+  String select;
+  bool isLoading = false;
+
+
+  TextEditingController userNameController = new TextEditingController();
+  DateTime selectedDate = DateTime.now();
 
   final fKey = GlobalKey<FormState>();
-
   final db = Firestore.instance;
-  DocumentSnapshot _currentDocument;
+  Database database = new Database();
 
-  _updateInfo() async{
-    await db.collection("Users").document(_currentDocument.documentID).updateData({
-      'username': userNameController.text,
-    });
-  }
 
   signUpUpdate() async {
 
+    Map<String, String> userInfoMap = {
+      "fName": widget.userData.fName,
+      "lName": widget.userData.lName,
+      "email": widget.userData.email,
+      "username": widget.userData.userName,
+      "gender": widget.userData.gender,
+      "Date of Birth": widget.userData.DoB,
+    };
+
     if (fKey.currentState.validate()) {
 
-        Navigator.pushReplacement(
+      setState(() {
+        isLoading = true;
+      });
+
+      database.uploadUserInfo(userInfoMap);
+
+        Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => PhoneNumber(),
-            )
+              builder: (context) => (HomePage()),
+          )
         );
     }
   }
 
-
-
-
-  TextEditingController userNameController = new TextEditingController();
-
-  DateTime selectedDate = DateTime.now();
 
   Future<Null> _selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
@@ -55,14 +70,14 @@ class _Registration2State extends State<Registration2> {
       });
   }
 
-  List gender = ["Male", "Female", "Prefer not to say"];
-  String select;
+
   Row addRadioButton(int btnValue, String title) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         Radio(
-          activeColor: Theme.of(context).primaryColor,
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          activeColor: Color(0xff01A0C7),
           value: gender[btnValue],
           groupValue: select,
           onChanged: (value) {
@@ -72,7 +87,12 @@ class _Registration2State extends State<Registration2> {
             });
           },
         ),
-        Text(title)
+        Text(title,
+        style: TextStyle(
+          fontSize:18,
+          fontFamily: 'Montserrat',
+        ),
+        ),
       ],
     );
   }
@@ -81,6 +101,11 @@ class _Registration2State extends State<Registration2> {
 
   @override
   Widget build(BuildContext context) {
+
+    widget.userData.userName = userNameController.text.trimRight();
+    widget.userData.gender = select;
+    widget.userData.DoB = "$selectedDate.toLocal()}".split(' ')[0];
+
 
     String nameValidate(String uName) {
       String nameValidate =
@@ -115,39 +140,28 @@ class _Registration2State extends State<Registration2> {
                 OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))));
 
     final genderRadioButton = Container(
+      
+      padding: EdgeInsets.fromLTRB(10,5,10,5),
+      
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
+
+        children: [
+          Text('Gender:',
+              textAlign: TextAlign.center,
+              style: style.copyWith(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold)
+          ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              Text('Gender:',
-                  textAlign: TextAlign.center,
-                  style: style.copyWith(
-                      color: Colors.black, fontWeight: FontWeight.bold)),
               addRadioButton(0, 'Male'),
               addRadioButton(1, 'Female'),
-              addRadioButton(2, 'Prefer not to say')
+              addRadioButton(2, "Prefer not to say"),
             ],
           ),
         ],
-      ),
-    );
-
-    final dateButton = Material(
-      elevation: 5.0,
-      borderRadius: BorderRadius.circular(30.0),
-      color: Color(0xff01A0C7),
-      child: MaterialButton(
-        //minWidth: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-        onPressed: () =>_selectDate(context),
-          child: Text("Select date",
-          textAlign: TextAlign.center,
-          style: style.copyWith(
-          color: Colors.white, fontWeight: FontWeight.bold
-          )
-          )
       ),
     );
 
@@ -159,7 +173,6 @@ class _Registration2State extends State<Registration2> {
         minWidth: MediaQuery.of(context).size.width,
         padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          _updateInfo();
           signUpUpdate();
         },
         child: Text("Next",
@@ -170,7 +183,16 @@ class _Registration2State extends State<Registration2> {
     );
 
     return Scaffold(
-      appBar: AppBar(
+      appBar:  isLoading
+          ? AppBar(
+        centerTitle: true,
+        backgroundColor: Color(0xff01A0C7),
+        title: Text(
+          "Loading...",
+          style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+        ),
+      )
+          : AppBar(
         backgroundColor: Color(0xff01A0C7),
         centerTitle: true,
         title: Text(
@@ -183,7 +205,13 @@ class _Registration2State extends State<Registration2> {
         ),
       ),
 
-      body: ListView(
+      body: isLoading
+          ? Container(
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      )
+          : ListView(
         padding: EdgeInsets.all(10),
 
         children: <Widget>[
@@ -200,29 +228,64 @@ class _Registration2State extends State<Registration2> {
           child: userNameTextField,
         ),
 
-        SizedBox(height: 15.0),
+          SizedBox(height: 15.0),
+
           genderRadioButton,
-         new Row(
-           children: <Widget>[
-          SizedBox(height: 20.0, width: 20),
-          Text('Birth date:',
-                textAlign: TextAlign.left,
-                style: style.copyWith(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold)),
-          SizedBox(height: 20.0, width: 20),
-          Text("${selectedDate.toLocal()}".split(' ')[0],
-                    style: style.copyWith(
-                          color: Colors.blueAccent,
-                          fontWeight: FontWeight.bold)),
-          SizedBox(height: 20.0, width: 20),
-          dateButton,
-      ],
-      ),
-         SizedBox(height: 15.0),
-           nextButton,
-      ],
+
+          SizedBox(height: 15.0),
+
+          birthdayRow(),
+
+          SizedBox(height: 15.0),
+
+          nextButton,
+        ],
       ),
     );
   }
+
+
+  birthdayRow(){
+    return  Row(
+
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
+      children: <Widget>[
+
+        Text('Birth date:',
+            textAlign: TextAlign.left,
+            style: style.copyWith(
+                color: Colors.black,
+                fontWeight: FontWeight.bold)),
+
+        Text("${selectedDate.toLocal()}".split(' ')[0],
+            style: style.copyWith(
+                color: Colors.blueAccent,
+                fontWeight: FontWeight.bold
+            ),
+        ),
+
+        dateButton()
+      ],
+    );
+  }
+
+  dateButton(){
+    return Material(
+      elevation: 5.0,
+      borderRadius: BorderRadius.circular(30.0),
+      color: Color(0xff01A0C7),
+      child: MaterialButton(
+          padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+          onPressed: () =>_selectDate(context),
+          child: Text("Select date",
+              textAlign: TextAlign.center,
+              style: style.copyWith(
+                  color: Colors.white, fontWeight: FontWeight.bold
+              ),
+          ),
+      ),
+    );
+  }
+
 }

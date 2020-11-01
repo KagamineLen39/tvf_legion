@@ -1,10 +1,11 @@
-//import 'package:tvf_legion/loginPage.dart';
 import 'package:flutter/material.dart';
 import 'package:tvf_legion/Login&SignUp/registrationNextPage.dart';
+import 'package:tvf_legion/modal/user.dart';
 import 'package:tvf_legion/services/auth.dart';
-import 'package:tvf_legion/services/database.dart';
+
 
 class Registration extends StatefulWidget {
+
   @override
   _RegistrationState createState() => _RegistrationState();
 }
@@ -13,20 +14,21 @@ class _RegistrationState extends State<Registration> {
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
 
   final fKey = GlobalKey<FormState>();
-
+  User userData = new User();
   bool isLoading = false;
   AuthMethods authMethods = new AuthMethods();
-  Database database = new Database();
 
-  signUp() async {
+  TextEditingController firstNameController = new TextEditingController();
+  TextEditingController lastNameController = new TextEditingController();
+  TextEditingController emailController = new TextEditingController();
+  TextEditingController passwordController = new TextEditingController();
+  TextEditingController cPasswordController = new TextEditingController();
 
+  signUp(){
     if (fKey.currentState.validate()) {
-
-      Map<String, String> userInfoMap = {
-        "fName" : firstNameController.text.trim(),
-        "lName" : lastNameController.text.trim(),
-        "email" : emailController.text.trim(),
-      };
+      userData.fName = firstNameController.text.trim();
+      userData.lName=lastNameController.text.trim();
+      userData.email =emailController.text.trim();
 
       setState(() {
         isLoading = true;
@@ -36,22 +38,16 @@ class _RegistrationState extends State<Registration> {
           .signUp(emailController.text.trim(), passwordController.text)
           .then((result) {
 
-            database.uploadUserInfo(userInfoMap);
-
-          Navigator.pushReplacement(
+        Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => Registration2(),
+                builder: (context) => Registration2(userData: userData),
               ));
       });
     }
   }
 
-  TextEditingController firstNameController = new TextEditingController();
-  TextEditingController lastNameController = new TextEditingController();
-  TextEditingController emailController = new TextEditingController();
-  TextEditingController passwordController = new TextEditingController();
-  TextEditingController cPasswordController = new TextEditingController();
+
 
   String nameValidate(String name) {
     String fNValidate =
@@ -118,6 +114,7 @@ class _RegistrationState extends State<Registration> {
 
   @override
   Widget build(BuildContext context) {
+
     final firstNameTextField = TextFormField(
         validator: (val) {
           return nameValidate(val);
@@ -182,6 +179,7 @@ class _RegistrationState extends State<Registration> {
             hintText: "Confirm Password",
             border:
                 OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))));
+
 
     final nextButton = Material(
       elevation: 5.0,
