@@ -1,7 +1,11 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+<<<<<<< Updated upstream
 import 'package:tvf_legion/ApplicationPage/homePage.dart';
+=======
+import 'package:tvf_legion/ApplicationPage/chatPage.dart';
+>>>>>>> Stashed changes
 import 'package:tvf_legion/modal/user.dart';
 import 'package:tvf_legion/services/database.dart';
 
