@@ -13,7 +13,10 @@ class AuthMethods {
       AuthResult result = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
       FirebaseUser user = result.user;
+
       return _userFromFirebaseUser(user);
+
+
 
     }catch (e) {
       print("Unable to find user");

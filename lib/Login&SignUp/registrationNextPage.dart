@@ -48,12 +48,9 @@ class _Registration2State extends State<Registration2> {
 
       database.uploadUserInfo(userInfoMap);
 
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => (HomePage()),
-          )
-        );
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context)=> HomePage())
+      );
     }
   }
 

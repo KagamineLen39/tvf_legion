@@ -1,8 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:tvf_legion/Login&SignUp/ForgotPassword.dart';
 import 'package:tvf_legion/ApplicationPage/homePage.dart';
 import 'package:tvf_legion/Login&SignUp/registrationPage.dart';
-import 'package:tvf_legion/MenuPage/Friends.dart';
+import 'package:tvf_legion/services/auth.dart';
+import 'package:tvf_legion/services/database.dart';
+import 'package:tvf_legion/services/helper.dart';
 
 
 class LoginPage extends StatefulWidget {
@@ -12,12 +15,50 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
+  AuthMethods _auth = new AuthMethods();
+  bool isLoading = false;
+
+  String email='';
+  String password = '';
+
   TextEditingController loginEmailController = new TextEditingController();
   TextEditingController loginPasswordController = new TextEditingController();
+
   final fKey = GlobalKey<FormState>();
 
-  loginCheck() {
-    if (fKey.currentState.validate()) {}
+  loginCheck()async{
+
+    email = loginEmailController.text;
+    password = loginPasswordController.text;
+
+    print(email + password);
+    dynamic result = await _auth.emailSignIn(loginEmailController.text, loginPasswordController.text);
+
+    if (fKey.currentState.validate()){
+
+      if(result == null){
+        setState(() {
+          isLoading = false;
+        });
+      }else{
+        setState(() {
+          isLoading = true;
+        });
+
+        QuerySnapshot userInfoSnapshot =
+        await Database().getUserByUserEmail(loginEmailController.text);
+
+        Helper.savedLoggedIn(true);
+        Helper.savedUserName(
+            userInfoSnapshot.documents[0].data["userName"]);
+        Helper.savedUserEmail(
+            userInfoSnapshot.documents[0].data["userEmail"]);
+
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) =>HomePage())
+        );
+      }
+    }
   }
 
   signUpClicked() {
@@ -34,9 +75,6 @@ class _LoginPageState extends State<LoginPage> {
     if (e.isEmpty) {
       error = "Email is required" ;
     } else if (e.isNotEmpty) {
-      //if(check value from the database if is it a valid email) INSERT AUTHENTICATION HERE <------------------------ JAMES
-      //error = "Account is not existing";
-      //else
       if (!RegExp(eValidate).hasMatch(e))
       error = "Please enter a valid email address";
       else
@@ -51,9 +89,7 @@ class _LoginPageState extends State<LoginPage> {
     if (pass.isEmpty) {
       error = "Password is required";
     } else if (pass.isNotEmpty) {
-      //if(check value from the database if is it the same password to that email) INSERT AUTHENTICATION HERE <------------------------ JAMES
-      //error = "Invalid Password";
-      //else
+
       error = null;
     }
     return error;
@@ -61,7 +97,9 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+
     final emailTextField = TextFormField(
+      controller: loginEmailController,
         validator: (v) {
           return eValidate(v);
         },
@@ -71,7 +109,9 @@ class _LoginPageState extends State<LoginPage> {
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             hintText: "Email",
             border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))));
+                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))
+        )
+    );
 
     final passwordTextField = TextFormField(
         controller: loginPasswordController,
@@ -94,9 +134,7 @@ class _LoginPageState extends State<LoginPage> {
         minWidth: MediaQuery.of(context).size.width,
         padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          //loginCheck();
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) =>HomePage()));
+          loginCheck();
         },
         child: Text("Login",
             textAlign: TextAlign.center,
@@ -122,7 +160,16 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     return Scaffold(
-      appBar: AppBar(
+      appBar:isLoading
+          ? AppBar(
+        centerTitle: true,
+        backgroundColor: Color(0xff01A0C7),
+        title: Text(
+          "Loading...",
+          style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+        ),
+      )
+          :  AppBar(
         backgroundColor: Color(0xff01A0C7),
         centerTitle: true,
         title: Text(
@@ -135,7 +182,13 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
 
-      body: ListView(
+      body: isLoading
+          ? Container(
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      )
+          : ListView(
         padding: EdgeInsets.all(15),
         children: <Widget>[
           SizedBox(
