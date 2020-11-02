@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:tvf_legion/ApplicationPage/profilePage.dart';
 
 class HomePage extends StatefulWidget {
 
@@ -23,11 +24,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       color: Colors.blue,
     ),
     Container(
-      color: Colors.yellow,
-    ),
-    Container(
       color: Colors.green,
     ),
+    ProfilePage(),
   ];
 
   @override
@@ -37,8 +36,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         items: [
           new Icon(Icons.home, size: 30),
           new Icon(Icons.chat, size: 30),
-          new Icon(Icons.person, size: 30),
-          new Icon(Icons.location_on, size: 30)
+          new Icon(Icons.location_on, size: 30),
+          new Icon(Icons.person, size: 30)
         ],
         color: Colors.white,
         buttonBackgroundColor: Colors. red,
@@ -50,75 +49,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         }
     );
 
-    final menuBar = Drawer(
-      child: ListView(
-        children: <Widget>[
-          new UserAccountsDrawerHeader(
-              accountName: new Text('Test'),
-              accountEmail: new Text('test@gmail.com'),
-              currentAccountPicture: new CircleAvatar(
-                backgroundImage: null),
-              ),
-          new ListTile(
-            title : new Text ('Friends '),
-            onTap: (){
-              Navigator.of(context).pop();
-              /*Navigator.push(
-                context,
-                new MaterialPageRoute(
-                  builder:(BuildContext context) => new Friends())*/}
-                  ),
-          new ListTile(
-              title : new Text ('Terms & Services '),
-              onTap: (){
-                Navigator.of(context).pop();
-                /*Navigator.push(
-                context,
-                new MaterialPageRoute(
-                  builder:(BuildContext context) => new Friends())*/}
-          ),
-          new ListTile(
-              title : new Text ('Privacy '),
-              onTap: (){
-                Navigator.of(context).pop();
-                /*Navigator.push(
-                context,
-                new MaterialPageRoute(
-                  builder:(BuildContext context) => new Friends())*/}
-          ),
-          new ListTile(
-              title : new Text ('Settings '),
-              onTap: (){
-                Navigator.of(context).pop();
-                /*Navigator.push(
-                context,
-                new MaterialPageRoute(
-                  builder:(BuildContext context) => new Friends())*/}
-          ),
-          new ListTile(
-              title : new Text ('About Us '),
-              onTap: (){
-                Navigator.of(context).pop();
-                /*Navigator.push(
-                context,
-                new MaterialPageRoute(
-                  builder:(BuildContext context) => new Friends())*/}
-          ),
-          new ListTile(
-              title : new Text ('Logout '),
-              onTap: (){
-                Navigator.of(context).pop();
-                /*Navigator.push(
-                context,
-                new MaterialPageRoute(
-                  builder:(BuildContext context) => new Friends())*/}
-          ),
-        ],
-      ),
-    );
+
     return Scaffold(
       bottomNavigationBar : homeNavigationBar,
-      drawer: menuBar,
       appBar: AppBar(
         backgroundColor: Color(0xff01A0C7),
         centerTitle: true,
