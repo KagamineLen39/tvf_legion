@@ -16,8 +16,6 @@ class AuthMethods {
 
       return _userFromFirebaseUser(user);
 
-
-
     }catch (e) {
       print("Unable to find user");
       print(e.toString());

@@ -18,6 +18,7 @@ class _LoginPageState extends State<LoginPage> {
   AuthMethods _auth = new AuthMethods();
   bool isLoading = false;
 
+  bool hasUser;
   String email='';
   String password = '';
 
@@ -32,7 +33,17 @@ class _LoginPageState extends State<LoginPage> {
     password = loginPasswordController.text;
 
     print(email + password);
-    dynamic result = await _auth.emailSignIn(loginEmailController.text, loginPasswordController.text);
+    dynamic result = await _auth.emailSignIn(email, password);
+
+    if(result == null){
+      setState(() {
+        hasUser = false;
+      });
+    }else{
+      setState(() {
+        hasUser = true;
+      });
+    }
 
     if (fKey.currentState.validate()){
 
@@ -90,8 +101,13 @@ class _LoginPageState extends State<LoginPage> {
       error = "Password is required";
     } else if (pass.isNotEmpty) {
 
-      error = null;
+      if(hasUser == false){
+        error="Invalid email or password";
+      }else{
+        error = null;
+      }
     }
+
     return error;
   }
 
