@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:tvf_legion/ApplicationPage/locationPage.dart';
 import 'package:tvf_legion/ApplicationPage/profilePage.dart';
 
 class HomePage extends StatefulWidget {
@@ -23,9 +24,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     Container(
       color: Colors.blue,
     ),
-    Container(
-      color: Colors.green,
-    ),
+    LocationPage(),
+
     ProfilePage(),
   ];
 
@@ -56,7 +56,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         backgroundColor: Color(0xff01A0C7),
         centerTitle: true,
         title: Text(
-          "???",
+          "Home Page",
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,

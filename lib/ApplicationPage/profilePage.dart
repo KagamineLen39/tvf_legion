@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:tvf_legion/Login&SignUp/loginPage.dart';
+import 'package:tvf_legion/services/auth.dart';
 
 
 class ProfilePage extends StatefulWidget {
@@ -10,6 +12,8 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage>{
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
+
+  AuthMethods _authMethods = new AuthMethods();
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +66,13 @@ class _ProfilePageState extends State<ProfilePage>{
         ),
       );
 
+      logOut(){
+        _authMethods.signOut();
+        Navigator.push(context,
+          MaterialPageRoute(builder: (context)=> LoginPage()),
+        );
+      }
+
     final friendBar = ListTile(
               title : new Text ('Friends ',style: style.copyWith(fontWeight: FontWeight.bold),),
               onTap: (){
@@ -112,42 +123,36 @@ class _ProfilePageState extends State<ProfilePage>{
             color: Colors.red,
           ),
           child:new ListTile(
-              title : new Text ('Logout ',style: style.copyWith(fontWeight: FontWeight.bold),),
+              title : new Text ('Logout ',style: style.copyWith(fontWeight: FontWeight.bold,color: Colors.white),),
               onTap: (){
-
-                /*Navigator.push(
-                context,
-                new MaterialPageRoute(
-                  builder:(BuildContext context) => new Friends())*/}
+                logOut();
+              }
           ),
           );
 
 
     return Scaffold(
-
       body: Center(
         child: Container(
           color: Colors.white,
-            child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    profilePic,
-                    userNameBar,
-                    genderBar,
-                    emailBar,
-                    birthDateBar,
-                    friendBar,
-                    termServicesBar,
-                    privacyBar,
-                    aboutUsBar,
-                    logOutBar,
-                 ]
+            child: ListView(
+
+              padding: EdgeInsets.fromLTRB(0, 15, 0, 0),
+                children:<Widget>[
+                  profilePic,
+                  userNameBar,
+                  genderBar,
+                  emailBar,
+                  birthDateBar,
+                  friendBar,
+                  termServicesBar,
+                  privacyBar,
+                  aboutUsBar,
+                  logOutBar,
+                ],
                 )
             ),
           ),
-        ),
     );
   }
 
