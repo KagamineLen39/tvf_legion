@@ -52,8 +52,7 @@ class AuthMethods {
       return await _auth.sendPasswordResetEmail(email: email);
     } catch (e) {
       print(e.toString());
-      print("Email Not existing");
-      return null;
+      return 0;
     }
   }
 

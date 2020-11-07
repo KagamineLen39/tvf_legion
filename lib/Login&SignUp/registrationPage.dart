@@ -17,6 +17,9 @@ class _RegistrationState extends State<Registration> {
   User userData = new User();
   bool isLoading = false;
   AuthMethods authMethods = new AuthMethods();
+  //String _error;
+  bool usedEmail;
+
 
   TextEditingController firstNameController = new TextEditingController();
   TextEditingController lastNameController = new TextEditingController();
@@ -24,26 +27,41 @@ class _RegistrationState extends State<Registration> {
   TextEditingController passwordController = new TextEditingController();
   TextEditingController cPasswordController = new TextEditingController();
 
-  signUp(){
+
+  signUp()async{
+
+    dynamic result = await authMethods.signUp(emailController.text.trim(), passwordController.text);
+
+    if(result == null){
+      setState(() {
+        usedEmail=true;
+      });
+    }else{
+      setState(() {
+        usedEmail=false;
+      });
+    }
+
     if (fKey.currentState.validate()) {
       userData.fName = firstNameController.text.trim();
       userData.lName=lastNameController.text.trim();
       userData.email =emailController.text.trim();
 
-      setState(() {
-        isLoading = true;
-      });
-
-      authMethods
-          .signUp(emailController.text.trim(), passwordController.text)
-          .then((result) {
-
-        Navigator.pushReplacement(
+        if(result== null){
+          setState(() {
+            isLoading = false;
+          });
+        }else{
+          setState(() {
+            isLoading = true;
+          });
+          Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                 builder: (context) => Registration2(userData: userData),
               ));
-      });
+        }
+
     }
   }
 
@@ -71,13 +89,15 @@ class _RegistrationState extends State<Registration> {
     if (e.isEmpty) {
       error = "Email is required" ;
     } else if (e.isNotEmpty) {
-      //if(check value from the database if is it a valid email) INSERT AUTHENTICATION HERE <------------------------ JAMES
-      //error = "This email is already been used by the other user";
-      //else
-      if (!RegExp(eValidate).hasMatch(e.trim()))
+
+      if (!RegExp(eValidate).hasMatch(e.trim())) {
         error = "Invalid email address";
-      else
-        error = null;
+      }else{
+        if(usedEmail == true){
+          error = "Email already in used";
+        }else
+          error = null;
+      }
     }
     return error;
   }
@@ -268,6 +288,7 @@ class _RegistrationState extends State<Registration> {
                 ),
                 SizedBox(height: 25.0),
                 nextButton,
+
               ],
             ),
     );
