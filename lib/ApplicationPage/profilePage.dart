@@ -2,6 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tvf_legion/Login&SignUp/loginPage.dart';
 import 'package:tvf_legion/services/auth.dart';
+/*import 'package:tvf_legion/modal/Constants.dart';
+import 'package:tvf_legion/services/database.dart';
+import 'package:tvf_legion/services/helper.dart';*/
 
 
 class ProfilePage extends StatefulWidget {
@@ -14,6 +17,36 @@ class _ProfilePageState extends State<ProfilePage>{
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
 
   AuthMethods _authMethods = new AuthMethods();
+  bool isLoading = false;
+
+  /*Database _database = new Database();
+
+  String username;
+
+  @override
+  void initState(){
+    getUserInfo();
+    super.initState();
+  }
+
+  getUserInfo() async {
+    Constants.userName = await Helper.getUserName();
+    _database.getUserByUserEmail(Constants.userName).then((snapshots){
+      setState(() {
+        username = snapshots;
+        print(username);
+      });
+    });
+  }*/
+
+
+  logOut(){
+    setState(() => isLoading = true);
+    _authMethods.signOut();
+    Navigator.pushReplacement(context,
+      MaterialPageRoute(builder: (context)=> LoginPage()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +62,7 @@ class _ProfilePageState extends State<ProfilePage>{
             leading:Icon(
               Icons.perm_identity,
             ),
-            title: Text('Username',)
+            title: Text('Username')
         ),
       );
 
@@ -65,13 +98,6 @@ class _ProfilePageState extends State<ProfilePage>{
             title: Text('Birth Date',)
         ),
       );
-
-      logOut(){
-        _authMethods.signOut();
-        Navigator.push(context,
-          MaterialPageRoute(builder: (context)=> LoginPage()),
-        );
-      }
 
     final friendBar = ListTile(
               title : new Text ('Friends ',style: style.copyWith(fontWeight: FontWeight.bold),),
@@ -132,7 +158,12 @@ class _ProfilePageState extends State<ProfilePage>{
 
 
     return Scaffold(
-      body: Center(
+      body: isLoading
+          ? Container(
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      ) : Center(
         child: Container(
           color: Colors.white,
             child: ListView(

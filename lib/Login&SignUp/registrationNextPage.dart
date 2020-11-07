@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:tvf_legion/ApplicationPage/homePage.dart';
 import 'package:tvf_legion/modal/user.dart';
 import 'package:tvf_legion/services/database.dart';
+import 'package:tvf_legion/services/helper.dart';
 
 class Registration2 extends StatefulWidget {
   final User userData;
@@ -39,6 +40,10 @@ class _Registration2State extends State<Registration2> {
       "gender": widget.userData.gender,
       "Date of Birth": widget.userData.DoB,
     };
+
+    Helper.savedUserEmail(widget.userData.email);
+    Helper.savedUserName(widget.userData.userName);
+    Helper.savedLoggedIn(true);
 
     if (fKey.currentState.validate()) {
 

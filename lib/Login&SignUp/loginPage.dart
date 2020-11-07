@@ -16,7 +16,9 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
   AuthMethods _auth = new AuthMethods();
+  Database _database = new Database();
   bool isLoading = false;
+  QuerySnapshot userInfoSnapshot;
 
   bool hasUser;
   String email='';
@@ -29,7 +31,7 @@ class _LoginPageState extends State<LoginPage> {
 
   loginCheck()async{
 
-    email = loginEmailController.text;
+    email = loginEmailController.text.trimRight();
     password = loginPasswordController.text;
 
     print(email + password);
@@ -52,20 +54,18 @@ class _LoginPageState extends State<LoginPage> {
           isLoading = false;
         });
       }else{
+
         setState(() {
           isLoading = true;
         });
 
-        QuerySnapshot userInfoSnapshot =
-        await Database().getUserByUserEmail(loginEmailController.text);
+        userInfoSnapshot = await _database.getUserByUserEmail(email);
 
-        Helper.savedLoggedIn(true);
-        Helper.savedUserName(
-            userInfoSnapshot.documents[0].data["userName"]);
-        Helper.savedUserEmail(
-            userInfoSnapshot.documents[0].data["userEmail"]);
+       Helper.savedLoggedIn(true);
+       Helper.savedUserName(userInfoSnapshot.documents[0].data["username"]);
+       Helper.savedUserEmail(userInfoSnapshot.documents[0].data["email"]);
 
-        Navigator.push(
+        Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) =>HomePage())
         );
       }

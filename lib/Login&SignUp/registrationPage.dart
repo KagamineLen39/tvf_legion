@@ -167,6 +167,18 @@ class _RegistrationState extends State<Registration> {
             border:
                 OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))));
 
+    final passwordHint = Container(
+      padding: EdgeInsets.all(10),
+      child:Text(
+        "Password minimum length must be 8 and must contain an uppercase,a lowercase, a number and a symbol",
+        textAlign: TextAlign.left,
+        style: TextStyle(
+          color: Colors.black38,
+          fontSize: 13,
+        ),
+      ),
+    );
+
     final confirmPasswordTextField = TextFormField(
         validator: (val) {
           return checkMatchPassword(val);
@@ -249,7 +261,7 @@ class _RegistrationState extends State<Registration> {
                       emailTextField,
                       SizedBox(height: 15.0),
                       passwordTextField,
-                      SizedBox(height: 15.0),
+                      passwordHint,
                       confirmPasswordTextField,
                     ],
                   ),

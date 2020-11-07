@@ -20,20 +20,18 @@ class Helper{
     return await prefs.setString(sharedPreferenceUserEmailKey, email);
   }
 
-
-  //getter
   static Future<void> getLogIn() async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return await prefs.getBool(sharedPreferenceUserLoggedInKey);
+    return prefs.getBool(sharedPreferenceUserLoggedInKey);
   }
 
   static Future<void> getUserName() async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return await prefs.getString(sharedPreferenceUserNameKey);
+    return prefs.getString(sharedPreferenceUserNameKey);
   }
 
   static Future<void> getUserEmail() async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return await prefs.getString(sharedPreferenceUserEmailKey);
+    return prefs.getString(sharedPreferenceUserEmailKey);
   }
 }
