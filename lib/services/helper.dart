@@ -1,37 +1,38 @@
 import "package:shared_preferences/shared_preferences.dart";
 
-class Helper{
-  static String sharedPreferenceUserLoggedInKey = "isUserLoggedIn";
+class Helper {
+  static String sharedPreferenceUserLoggedInKey = "isLoggedIn";
   static String sharedPreferenceUserNameKey = "usernameKey";
   static String sharedPreferenceUserEmailKey = "userEmailKey";
 
-  static Future<bool> savedLoggedIn(bool isUserLoggedIn) async{
+  static Future<void> savedLoggedIn(bool isUserLoggedIn) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return await prefs.setBool(sharedPreferenceUserLoggedInKey, isUserLoggedIn);
   }
 
-  static Future<bool> savedUserName(String username) async{
+  static Future<void> savedUserName(String username) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return await prefs.setString(sharedPreferenceUserNameKey, username);
   }
 
-  static Future<bool> savedUserEmail(String email) async{
+  static Future<void> savedUserEmail(String email) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return await prefs.setString(sharedPreferenceUserEmailKey, email);
   }
 
-  static Future<bool> getLogIn() async{
+  //getter
+  static Future<void> getLogIn() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(sharedPreferenceUserLoggedInKey);
+    return await prefs.getBool(sharedPreferenceUserLoggedInKey);
   }
 
-  static Future<String> getUserName() async{
+  static Future<void> getUserName() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString(sharedPreferenceUserNameKey);
+    return await prefs.getString(sharedPreferenceUserNameKey);
   }
 
-  static Future<String> getUserEmail() async{
+  static Future<void> getUserEmail() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString(sharedPreferenceUserEmailKey);
+    return await prefs.getString(sharedPreferenceUserEmailKey);
   }
 }

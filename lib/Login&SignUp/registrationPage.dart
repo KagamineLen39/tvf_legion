@@ -3,9 +3,7 @@ import 'package:tvf_legion/Login&SignUp/registrationNextPage.dart';
 import 'package:tvf_legion/modal/user.dart';
 import 'package:tvf_legion/services/auth.dart';
 
-
 class Registration extends StatefulWidget {
-
   @override
   _RegistrationState createState() => _RegistrationState();
 }
@@ -17,9 +15,6 @@ class _RegistrationState extends State<Registration> {
   User userData = new User();
   bool isLoading = false;
   AuthMethods authMethods = new AuthMethods();
-  //String _error;
-  bool usedEmail;
-
 
   TextEditingController firstNameController = new TextEditingController();
   TextEditingController lastNameController = new TextEditingController();
@@ -27,52 +22,33 @@ class _RegistrationState extends State<Registration> {
   TextEditingController passwordController = new TextEditingController();
   TextEditingController cPasswordController = new TextEditingController();
 
-
-  signUp()async{
-
-    dynamic result = await authMethods.signUp(emailController.text.trim(), passwordController.text);
-
-    if(result == null){
-      setState(() {
-        usedEmail=true;
-      });
-    }else{
-      setState(() {
-        usedEmail=false;
-      });
-    }
-
+  signUp() {
     if (fKey.currentState.validate()) {
       userData.fName = firstNameController.text.trim();
-      userData.lName=lastNameController.text.trim();
-      userData.email =emailController.text.trim();
+      userData.lName = lastNameController.text.trim();
+      userData.email = emailController.text.trim();
 
-        if(result== null){
-          setState(() {
-            isLoading = false;
-          });
-        }else{
-          setState(() {
-            isLoading = true;
-          });
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => Registration2(userData: userData),
-              ));
-        }
+      setState(() {
+        isLoading = true;
+      });
 
+      authMethods
+          .signUp(emailController.text.trim(), passwordController.text)
+          .then((result) {
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => Registration2(userData: userData),
+            ));
+      });
     }
   }
 
-
-
   String nameValidate(String name) {
-    String fNValidate =
-        r"^[a-zA-Z']+$";
+    String fNValidate = r"^[a-zA-Z']+$";
     String error;
     if (name.isEmpty) {
-      error = "This field is required" ;
+      error = "This field is required";
     } else if (name.isNotEmpty) {
       if (!RegExp(fNValidate).hasMatch(name.trim()))
         error = "Enter a valid name";
@@ -87,54 +63,51 @@ class _RegistrationState extends State<Registration> {
         r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+";
     String error;
     if (e.isEmpty) {
-      error = "Email is required" ;
+      error = "Email is required";
     } else if (e.isNotEmpty) {
-
-      if (!RegExp(eValidate).hasMatch(e.trim())) {
+      //if(check value from the database if is it a valid email) INSERT AUTHENTICATION HERE <------------------------ JAMES
+      //error = "This email is already been used by the other user";
+      //else
+      if (!RegExp(eValidate).hasMatch(e.trim()))
         error = "Invalid email address";
-      }else{
-        if(usedEmail == true){
-          error = "Email already in used";
-        }else
-          error = null;
-      }
+      else
+        error = null;
     }
     return error;
   }
 
   String pwdValidate(String p) {
-    String passValidate = r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$';
+    String passValidate =
+        r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$';
     String error;
     if (p.isEmpty) {
       error = "Password is required";
     } else if (p.isNotEmpty) {
-        if (p.length<8)
-          error = "This field must have at least 8 characters";
-        else if (!RegExp(passValidate).hasMatch(p.trim()))
-          error = "Must contain at least an uppercase, lowercase, number, special character";
-        else
-          error = null;
+      if (p.length < 8)
+        error = "This field must have at least 8 characters";
+      else if (!RegExp(passValidate).hasMatch(p.trim()))
+        error =
+            "Must contain at least an uppercase, lowercase, number, special character";
+      else
+        error = null;
     }
     return error;
   }
 
-  String checkMatchPassword(String cP){
+  String checkMatchPassword(String cP) {
     String error;
-    if (cP.isEmpty){
+    if (cP.isEmpty) {
       error = "Confirm Password is required";
-    }
-    else if(cP.isNotEmpty){
-      if(cP !=passwordController.text){
+    } else if (cP.isNotEmpty) {
+      if (cP != passwordController.text) {
         error = "Password is not match. Please re-enter";
       }
       return error;
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
-
     final firstNameTextField = TextFormField(
         validator: (val) {
           return nameValidate(val);
@@ -187,18 +160,6 @@ class _RegistrationState extends State<Registration> {
             border:
                 OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))));
 
-    final passwordHint = Container(
-      padding: EdgeInsets.all(10),
-      child:Text(
-        "Password minimum length must be 8 and must contain an uppercase,a lowercase, a number and a symbol",
-        textAlign: TextAlign.left,
-        style: TextStyle(
-          color: Colors.black38,
-          fontSize: 13,
-        ),
-      ),
-    );
-
     final confirmPasswordTextField = TextFormField(
         validator: (val) {
           return checkMatchPassword(val);
@@ -211,7 +172,6 @@ class _RegistrationState extends State<Registration> {
             hintText: "Confirm Password",
             border:
                 OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))));
-
 
     final nextButton = Material(
       elevation: 5.0,
@@ -281,14 +241,13 @@ class _RegistrationState extends State<Registration> {
                       emailTextField,
                       SizedBox(height: 15.0),
                       passwordTextField,
-                      passwordHint,
+                      SizedBox(height: 15.0),
                       confirmPasswordTextField,
                     ],
                   ),
                 ),
                 SizedBox(height: 25.0),
                 nextButton,
-
               ],
             ),
     );

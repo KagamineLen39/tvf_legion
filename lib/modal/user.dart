@@ -18,5 +18,4 @@ class User {
     this.DoB,
     this.phoneNumber,
   });
-
 }

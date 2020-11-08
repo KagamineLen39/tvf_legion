@@ -1,33 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
-class HomePage extends StatefulWidget {
-
+class ChatPage extends StatefulWidget {
   @override
-  _HomePageState createState() => _HomePageState();
+  _ChatPageState createState() => _ChatPageState();
 }
 
-class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
+class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-
-      appBar: AppBar(
-        backgroundColor: Color(0xff01A0C7),
-        centerTitle: true,
-        title: Text(
-          "???",
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
-      ),
-
       body: Center(
         child: Container(
           color: Colors.white,
@@ -35,15 +18,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             padding: const EdgeInsets.all(36.0),
             child: SingleChildScrollView(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                  ],
-                )),
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[],
+            )),
           ),
         ),
       ),
     );
   }
-
 }
