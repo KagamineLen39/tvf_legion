@@ -2,9 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tvf_legion/Login&SignUp/loginPage.dart';
 import 'package:tvf_legion/services/auth.dart';
-/*import 'package:tvf_legion/modal/Constants.dart';
+import 'package:tvf_legion/modal/Constants.dart';
 import 'package:tvf_legion/services/database.dart';
-import 'package:tvf_legion/services/helper.dart';*/
+import 'package:tvf_legion/services/helper.dart';
 
 
 class ProfilePage extends StatefulWidget {
@@ -19,7 +19,7 @@ class _ProfilePageState extends State<ProfilePage>{
   AuthMethods _authMethods = new AuthMethods();
   bool isLoading = false;
 
-  /*Database _database = new Database();
+  Database _database = new Database();
 
   String username;
 
@@ -31,13 +31,12 @@ class _ProfilePageState extends State<ProfilePage>{
 
   getUserInfo() async {
     Constants.userName = await Helper.getUserName();
-    _database.getUserByUserEmail(Constants.userName).then((snapshots){
+    _database.getUserbyUserName(Constants.userName).then((snapshots){
       setState(() {
         username = snapshots;
-        print(username);
       });
     });
-  }*/
+  }
 
 
   logOut(){
@@ -62,7 +61,7 @@ class _ProfilePageState extends State<ProfilePage>{
             leading:Icon(
               Icons.perm_identity,
             ),
-            title: Text('Username')
+            title: Text('$username')
         ),
       );
 

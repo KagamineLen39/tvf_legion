@@ -34,6 +34,7 @@ dependencies:
   shared_preferences: ^0.5.12+2
   google_maps_flutter: ^0.5.33
   geolocator: ^6.1.1
+  relative_scale: ^1.1.0
 
 dev_dependencies:
   flutter_test:

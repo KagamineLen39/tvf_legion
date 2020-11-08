@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:relative_scale/relative_scale.dart';
 import 'package:tvf_legion/ApplicationPage/homePage.dart';
 import 'package:tvf_legion/modal/user.dart';
 import 'package:tvf_legion/services/database.dart';
@@ -53,8 +54,9 @@ class _Registration2State extends State<Registration2> {
 
       database.uploadUserInfo(userInfoMap);
 
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context)=> HomePage())
+      Navigator.pushAndRemoveUntil(
+          context, MaterialPageRoute(builder: (context) =>HomePage()),
+          (Route<dynamic> route)=>false,
       );
     }
   }
@@ -91,7 +93,7 @@ class _Registration2State extends State<Registration2> {
         ),
         Text(title,
         style: TextStyle(
-          fontSize:18,
+          fontSize:15,
           fontFamily: 'Montserrat',
         ),
         ),
@@ -125,8 +127,6 @@ class _Registration2State extends State<Registration2> {
       }
       return error;
     }
-
-
 
     final userNameTextField = TextFormField(
         validator: (val) {
@@ -184,91 +184,105 @@ class _Registration2State extends State<Registration2> {
       ),
     );
 
-    return Scaffold(
-      appBar:  isLoading
-          ? AppBar(
-        centerTitle: true,
-        backgroundColor: Color(0xff01A0C7),
-        title: Text(
-          "Loading...",
-          style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-        ),
-      )
-          : AppBar(
-        backgroundColor: Color(0xff01A0C7),
-        centerTitle: true,
-        title: Text(
-          "Profile",
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
-      ),
+    return RelativeBuilder(
+      builder:(context, screenHeight, screenWidth, sy, sx) {
+          return Scaffold(
+            appBar: isLoading
+                ? AppBar(
+              centerTitle: true,
+              backgroundColor: Color(0xff01A0C7),
+              title: Text(
+                "Loading...",
+                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+              ),
+            )
+                : AppBar(
+              backgroundColor: Color(0xff01A0C7),
+              centerTitle: true,
+              title: Text(
+                "Profile",
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ),
 
-      body: isLoading
-          ? Container(
-        child: Center(
-          child: CircularProgressIndicator(),
-        ),
-      )
-          : ListView(
-        padding: EdgeInsets.all(10),
+            body: isLoading
+                ? Container(
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            )
+                : ListView(
+              padding: EdgeInsets.all(10),
 
-        children: <Widget>[
-         SizedBox(
-        height: 150.0,
-             child: Image.asset(
-          "assets/images/logo.png",
-          fit: BoxFit.contain,
-        ),
-      ),
+              children: <Widget>[
+                SizedBox(
+                  height: 150.0,
+                  child: Image.asset(
+                    "assets/images/logo.png",
+                    fit: BoxFit.contain,
+                  ),
+                ),
 
-        Form(
-          key: fKey,
-          child: userNameTextField,
-        ),
+                Form(
+                  key: fKey,
+                  child: userNameTextField,
+                ),
 
-          SizedBox(height: 15.0),
+                SizedBox(height: 15.0),
 
-          genderRadioButton,
+                genderRadioButton,
 
-          SizedBox(height: 15.0),
+                SizedBox(height: 15.0),
 
-          birthdayRow(),
+                birthdayRow(),
 
-          SizedBox(height: 15.0),
+                SizedBox(height: 15.0),
 
-          nextButton,
-        ],
-      ),
+                nextButton,
+              ],
+            ),
+          );
+        }
     );
   }
 
 
   birthdayRow(){
-    return  Row(
+    return  Container(
+      padding: EdgeInsets.fromLTRB(10,5,10,5),
+      child: Column(
 
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.start,
 
-      children: <Widget>[
+        children: [
+          Text('Birth date:',
+              textAlign: TextAlign.left,
+              style: style.copyWith(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold)),
 
-        Text('Birth date:',
-            textAlign: TextAlign.left,
-            style: style.copyWith(
-                color: Colors.black,
-                fontWeight: FontWeight.bold)),
+          Row(
 
-        Text("${selectedDate.toLocal()}".split(' ')[0],
-            style: style.copyWith(
-                color: Colors.blueAccent,
-                fontWeight: FontWeight.bold
-            ),
-        ),
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 
-        dateButton()
-      ],
+            children: <Widget>[
+
+              Text("${selectedDate.toLocal()}".split(' ')[0],
+                  style: style.copyWith(
+                      color: Colors.blueAccent,
+                      fontWeight: FontWeight.bold
+                  ),
+              ),
+
+              dateButton()
+            ],
+          ),
+        ],
+      ),
     );
   }
 
