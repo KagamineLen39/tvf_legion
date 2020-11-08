@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tvf_legion/ApplicationPage/chatPage.dart';
+import 'package:tvf_legion/ApplicationPage/homePage.dart';
 import 'package:tvf_legion/Login&SignUp/loginPage.dart';
 import 'package:tvf_legion/services/helper.dart';
 
@@ -14,9 +14,9 @@ class tvfLegion extends StatefulWidget {
 }
 
 class _tvfLegionState extends State<tvfLegion> {
-  bool isLoggedIn;
+  bool isLoggedIn = false;
 
-  /*@override
+  @override
   void initState(){
     getLoggedInState();
     super.initState();
@@ -30,23 +30,10 @@ class _tvfLegionState extends State<tvfLegion> {
     });
   }
 
-  _isLoggedIn(){
-
-    if(isLoggedIn != null){
-      if(isLoggedIn == true){
-        HomePage();
-      }else{
-        LoginPage();
-      }
-    }else{
-      LoginPage();
-    }
-  }*/
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: LoginPage(),
+      home: isLoggedIn? HomePage():LoginPage(),
     );
   }
 

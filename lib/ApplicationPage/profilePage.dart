@@ -40,11 +40,27 @@ class _ProfilePageState extends State<ProfilePage>{
 
 
   logOut(){
-    setState(() => isLoading = true);
-    _authMethods.signOut();
-    Navigator.pushReplacement(context,
-      MaterialPageRoute(builder: (context)=> LoginPage()),
-    );
+    dynamic result = _authMethods.signOut();
+
+    if(result == null){
+      setState(() {
+        isLoading = false;
+      });
+    }else{
+      try{
+        setState(() => isLoading = true);
+
+        Helper.savedLoggedIn(false);
+        print(Helper.getLogIn().toString());
+        Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context)=> LoginPage()),
+        );
+      }catch(e){
+        print(Helper.getLogIn().toString());
+        print(e.toString());
+      }
+    }
+
   }
 
   @override

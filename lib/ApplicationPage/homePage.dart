@@ -66,6 +66,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       ),
 
       body: PageView(
+        physics: NeverScrollableScrollPhysics(),
         controller: _pageController,
         onPageChanged: (index){
           setState(() {

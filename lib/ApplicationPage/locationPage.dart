@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -64,10 +65,22 @@ class _FireMapState extends State<FireMap> {
     ],);
   }
 
+  mapDesign(){
+    getMapJson("assets/Json Files/nightMap.json").then(setMapDesign);
+  }
+
+  Future<String> getMapJson(String path)async{
+    return await rootBundle.loadString(path);
+  }
+
+  void setMapDesign(String mapStyle){
+    newMapController.setMapStyle(mapStyle);
+  }
+
   _onMapCreated(GoogleMapController control){
+    mapDesign();
     _googleMapController.complete(control);
     newMapController = control;
-
     locateUser();
   }
 
