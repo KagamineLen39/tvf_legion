@@ -1,51 +1,49 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:geoflutterfire/geoflutterfire.dart';
 
-class LocationPage extends StatefulWidget {
+class HomePage extends StatefulWidget {
 
   @override
-  _LocationPageState createState() => _LocationPageState();
+  _HomePageState createState() => _HomePageState();
 }
 
-class _LocationPageState extends State<LocationPage> with TickerProviderStateMixin {
+class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
 
   @override
   Widget build(BuildContext context) {
 
-    return Container(
-         child: FireMap(),
-    );
-  }
+    return Scaffold(
 
-}
-
-class FireMap extends StatefulWidget {
-  _FireMapState createState() => _FireMapState();
-}
-
-class _FireMapState extends State<FireMap> {
-  Completer<GoogleMapController> _googleMapController = Completer();
-  GoogleMapController newMapController;
-  build(context){
-    return Stack(children: [
-
-      GoogleMap(
-        onMapCreated: _onMapCreated,
-        myLocationButtonEnabled: true,
-        mapType: MapType.hybrid,
-        compassEnabled: true,
+      appBar: AppBar(
+        backgroundColor: Color(0xff01A0C7),
+        centerTitle: true,
+        title: Text(
+          "???",
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
       ),
 
-    ],);
-  }
-
-  _onMapCreated(GoogleMapController control){
-    _googleMapController.complete(control);
-    newMapController = control;
+      body: Center(
+        child: Container(
+          color: Colors.white,
+          child: Padding(
+            padding: const EdgeInsets.all(36.0),
+            child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                  ],
+                )),
+          ),
+        ),
+      ),
+    );
   }
 
 }
