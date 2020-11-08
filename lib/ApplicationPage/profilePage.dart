@@ -185,7 +185,11 @@ class _ProfilePageState extends State<ProfilePage>{
 
               padding: EdgeInsets.fromLTRB(0, 15, 0, 0),
                 children:<Widget>[
-                  profilePic,
+                  Container(
+                    padding: EdgeInsets.fromLTRB(0, 30, 0, 5),
+
+                    child: profilePic,
+                  ),
                   userNameBar,
                   genderBar,
                   emailBar,

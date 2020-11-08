@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:tvf_legion/ApplicationPage/locationPage.dart';
+import 'package:tvf_legion/ApplicationPage/profilePage.dart';
 import 'package:tvf_legion/ApplicationPage/SearchPage.dart';
 
 class HomePage extends StatefulWidget {
@@ -10,6 +13,69 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
 
+  int _page = 0;
+
+  PageController _pageController = PageController(
+    initialPage: 0,
+  );
+
+  List<Widget> _tabBar = [
+    _homePage(),
+
+    Container(
+      color: Colors.white,
+    ),
+
+    LocationPage(),
+
+    ProfilePage(),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+
+    final homeNavigationBar = CurvedNavigationBar(
+        index: _page,
+        items: [
+          new Icon(Icons.home, size: 30,color:Colors.white),
+          new Icon(Icons.chat, size: 30,color: Colors.white),
+          new Icon(Icons.location_on, size: 30,color: Colors.white),
+          new Icon(Icons.person, size: 30,color: Colors.white)
+        ],
+        color: Colors.lightBlue[200],
+        buttonBackgroundColor: Colors.lightBlue[500],
+        backgroundColor: Colors.blue[700],
+        onTap: (index){
+          _page = index;
+          _pageController.animateToPage(index, duration:Duration(milliseconds: 500), curve: Curves.easeIn, );
+          setState(() {});
+        }
+    );
+
+    return Scaffold(
+      bottomNavigationBar : homeNavigationBar,
+
+      body: PageView(
+        physics: NeverScrollableScrollPhysics(),
+        controller: _pageController,
+        onPageChanged:(index){
+          setState(() {
+            _page = index;
+          });
+        },
+        children: _tabBar,
+      ),
+    );
+  }
+
+}
+
+class _homePage extends StatefulWidget {
+  @override
+  __homePageState createState() => __homePageState();
+}
+
+class __homePageState extends State<_homePage> {
   @override
   Widget build(BuildContext context) {
 
@@ -35,12 +101,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {},
         child: Text(
-            "Create Group",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-                fontFamily: 'Montserrat',
-                fontSize: 15.0,
-                fontWeight: FontWeight.bold),
+          "Create Group",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+              fontFamily: 'Montserrat',
+              fontSize: 15.0,
+              fontWeight: FontWeight.bold),
         ),
       ),
     );
@@ -69,57 +135,59 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           fontWeight: FontWeight.bold,
         ));
 
-    return Scaffold(
-      body: Container(
-        color: Colors.white,
-        child: SingleChildScrollView(
-            child: Column(
+    return Container(
+      color: Colors.white,
+      child: SingleChildScrollView(
+          child: Column(
 
-                children: <Widget>[
-                  Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [Colors.red, Colors.blue],
-                        begin: const FractionalOffset(0.0, 0.0),
-                        end: const FractionalOffset(0.5, 0.0),
-                        stops: [0.0, 1.0],
+              children: <Widget>[
+                Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Colors.red, Colors.blue],
+                      begin: const FractionalOffset(0.0, 0.0),
+                      end: const FractionalOffset(0.5, 0.0),
+                      stops: [0.0, 1.0],
 
 
-                      ),
                     ),
-                    child: Column(
-
-                        children: <Widget>[
-                          welcomeLabel,
-                        ]),
                   ),
-                  Container(
-                    height: 300.0,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage('assets/images/discussion.jpg'),
-                        fit: BoxFit.cover,
-                        colorFilter: new ColorFilter.mode(
-                            Colors.black.withOpacity(0.4), BlendMode.dstATop),
-                      ),
-                    ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisAlignment: MainAxisAlignment.end,
+                  child: Column(
+
                       children: <Widget>[
-                        createRoomLabel,
-                        SizedBox(width: 10, height: 200),
-                        createButton,
-                      ],
+                        Container(
+                          padding: EdgeInsets.fromLTRB(0, 30, 0, 5),
+                          child:welcomeLabel,
+                        ),
+                        
+                      ]),
+                ),
+                Container(
+                  height: 300.0,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/images/discussion.jpg'),
+                      fit: BoxFit.cover,
+                      colorFilter: new ColorFilter.mode(
+                          Colors.black.withOpacity(0.4), BlendMode.dstATop),
                     ),
                   ),
-                  SizedBox(height: 20),
-                  searchField,
-                  SizedBox(height: 20),
-                  roomNameLabel
-                ])),
-      ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      createRoomLabel,
+                      SizedBox(width: 10, height: 200),
+                      createButton,
+                    ],
+                  ),
+                ),
+                SizedBox(height: 20),
+                searchField,
+                SizedBox(height: 20),
+                roomNameLabel
+              ])),
     );
   }
 }

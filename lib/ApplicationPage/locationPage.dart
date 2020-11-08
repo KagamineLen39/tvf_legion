@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -17,6 +16,7 @@ class _LocationPageState extends State<LocationPage> with TickerProviderStateMix
   Widget build(BuildContext context) {
 
     return Container(
+
          child: FireMap(),
     );
   }
