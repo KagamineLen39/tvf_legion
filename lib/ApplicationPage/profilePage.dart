@@ -7,6 +7,7 @@ import 'package:tvf_legion/services/database.dart';
 import 'package:tvf_legion/services/helper.dart';
 
 
+
 class ProfilePage extends StatefulWidget {
 
   @override
@@ -77,7 +78,11 @@ class _ProfilePageState extends State<ProfilePage>{
             leading:Icon(
               Icons.perm_identity,
             ),
+<<<<<<< HEAD
             title: Text('$username')
+=======
+            title: Text('Username',)
+>>>>>>> parent of 88b2cac... HomePage
         ),
       );
 
@@ -164,15 +169,26 @@ class _ProfilePageState extends State<ProfilePage>{
             color: Colors.red,
           ),
           child:new ListTile(
+<<<<<<< HEAD
               title : new Text ('Logout ',style: style.copyWith(fontWeight: FontWeight.bold,color: Colors.white),),
               onTap: (){
                 logOut();
               }
+=======
+              title : new Text ('Logout ',style: style.copyWith(fontWeight: FontWeight.bold),),
+              onTap: (){
+
+                /*Navigator.push(
+                context,
+                new MaterialPageRoute(
+                  builder:(BuildContext context) => new Friends())*/}
+>>>>>>> parent of 88b2cac... HomePage
           ),
           );
 
 
     return Scaffold(
+<<<<<<< HEAD
       body: isLoading
           ? Container(
         child: Center(
@@ -199,6 +215,32 @@ class _ProfilePageState extends State<ProfilePage>{
                 )
             ),
           ),
+=======
+
+      body: Center(
+        child: Container(
+          color: Colors.white,
+            child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    profilePic,
+                    userNameBar,
+                    genderBar,
+                    emailBar,
+                    birthDateBar,
+                    friendBar,
+                    termServicesBar,
+                    privacyBar,
+                    aboutUsBar,
+                    logOutBar,
+                 ]
+                )
+            ),
+          ),
+        ),
+>>>>>>> parent of 88b2cac... HomePage
     );
   }
 

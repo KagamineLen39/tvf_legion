@@ -1,12 +1,18 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+<<<<<<< HEAD
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class LocationPage extends StatefulWidget {
 
+=======
+
+class HomePage extends StatefulWidget {
+
+>>>>>>> parent of 88b2cac... HomePage
   @override
   _LocationPageState createState() => _LocationPageState();
 }
@@ -16,6 +22,7 @@ class _LocationPageState extends State<LocationPage> with TickerProviderStateMix
   @override
   Widget build(BuildContext context) {
 
+<<<<<<< HEAD
     return Container(
          child: FireMap(),
     );
@@ -85,3 +92,39 @@ class _FireMapState extends State<FireMap> {
   }
 
 }
+=======
+    return Scaffold(
+
+      appBar: AppBar(
+        backgroundColor: Color(0xff01A0C7),
+        centerTitle: true,
+        title: Text(
+          "???",
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+      ),
+
+      body: Center(
+        child: Container(
+          color: Colors.white,
+          child: Padding(
+            padding: const EdgeInsets.all(36.0),
+            child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                  ],
+                )),
+          ),
+        ),
+      ),
+    );
+  }
+
+}
+>>>>>>> parent of 88b2cac... HomePage

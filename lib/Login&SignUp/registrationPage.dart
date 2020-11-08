@@ -27,6 +27,14 @@ class _RegistrationState extends State<Registration> {
   TextEditingController passwordController = new TextEditingController();
   TextEditingController cPasswordController = new TextEditingController();
 
+<<<<<<< HEAD
+=======
+  signUp(){
+    if (fKey.currentState.validate()) {
+      userData.fName = firstNameController.text.trim();
+      userData.lName=lastNameController.text.trim();
+      userData.email =emailController.text.trim();
+>>>>>>> parent of 88b2cac... HomePage
 
   signUp()async{
 
@@ -36,9 +44,22 @@ class _RegistrationState extends State<Registration> {
       setState(() {
         usedEmail=true;
       });
+<<<<<<< HEAD
     }else{
       setState(() {
         usedEmail=false;
+=======
+
+      authMethods
+          .signUp(emailController.text.trim(), passwordController.text)
+          .then((result) {
+
+        Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Registration2(userData: userData),
+              ));
+>>>>>>> parent of 88b2cac... HomePage
       });
     }
 

@@ -54,9 +54,14 @@ class _Registration2State extends State<Registration2> {
 
       database.uploadUserInfo(userInfoMap);
 
+<<<<<<< HEAD
       Navigator.pushAndRemoveUntil(
           context, MaterialPageRoute(builder: (context) =>HomePage()),
           (Route<dynamic> route)=>false,
+=======
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context)=> HomePage())
+>>>>>>> parent of 88b2cac... HomePage
       );
     }
   }
@@ -93,7 +98,11 @@ class _Registration2State extends State<Registration2> {
         ),
         Text(title,
         style: TextStyle(
+<<<<<<< HEAD
           fontSize:15,
+=======
+          fontSize:18,
+>>>>>>> parent of 88b2cac... HomePage
           fontFamily: 'Montserrat',
         ),
         ),
@@ -127,6 +136,8 @@ class _Registration2State extends State<Registration2> {
       }
       return error;
     }
+
+
 
     final userNameTextField = TextFormField(
         validator: (val) {
@@ -184,6 +195,7 @@ class _Registration2State extends State<Registration2> {
       ),
     );
 
+<<<<<<< HEAD
     return RelativeBuilder(
       builder:(context, screenHeight, screenWidth, sy, sx) {
           return Scaffold(
@@ -247,11 +259,73 @@ class _Registration2State extends State<Registration2> {
             ),
           );
         }
+=======
+    return Scaffold(
+      appBar:  isLoading
+          ? AppBar(
+        centerTitle: true,
+        backgroundColor: Color(0xff01A0C7),
+        title: Text(
+          "Loading...",
+          style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+        ),
+      )
+          : AppBar(
+        backgroundColor: Color(0xff01A0C7),
+        centerTitle: true,
+        title: Text(
+          "Profile",
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+      ),
+
+      body: isLoading
+          ? Container(
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      )
+          : ListView(
+        padding: EdgeInsets.all(10),
+
+        children: <Widget>[
+         SizedBox(
+        height: 150.0,
+             child: Image.asset(
+          "assets/images/logo.png",
+          fit: BoxFit.contain,
+        ),
+      ),
+
+        Form(
+          key: fKey,
+          child: userNameTextField,
+        ),
+
+          SizedBox(height: 15.0),
+
+          genderRadioButton,
+
+          SizedBox(height: 15.0),
+
+          birthdayRow(),
+
+          SizedBox(height: 15.0),
+
+          nextButton,
+        ],
+      ),
+>>>>>>> parent of 88b2cac... HomePage
     );
   }
 
 
   birthdayRow(){
+<<<<<<< HEAD
     return  Container(
       padding: EdgeInsets.fromLTRB(10,5,10,5),
       child: Column(
@@ -283,6 +357,29 @@ class _Registration2State extends State<Registration2> {
           ),
         ],
       ),
+=======
+    return  Row(
+
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
+      children: <Widget>[
+
+        Text('Birth date:',
+            textAlign: TextAlign.left,
+            style: style.copyWith(
+                color: Colors.black,
+                fontWeight: FontWeight.bold)),
+
+        Text("${selectedDate.toLocal()}".split(' ')[0],
+            style: style.copyWith(
+                color: Colors.blueAccent,
+                fontWeight: FontWeight.bold
+            ),
+        ),
+
+        dateButton()
+      ],
+>>>>>>> parent of 88b2cac... HomePage
     );
   }
 
