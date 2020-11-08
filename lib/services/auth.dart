@@ -15,8 +15,7 @@ class AuthMethods {
       FirebaseUser user = result.user;
 
       return _userFromFirebaseUser(user);
-
-    }catch (e) {
+    } catch (e) {
       print("Unable to find user");
       print(e.toString());
       return null;
@@ -26,16 +25,16 @@ class AuthMethods {
   Future signUp(String email, String password) async {
     try {
       AuthResult result = await _auth.createUserWithEmailAndPassword(
-          email: email, password: password,
-
+        email: email,
+        password: password,
       );
 
       FirebaseUser firebaseUser = result.user;
 
-      try{
+      try {
         firebaseUser.sendEmailVerification();
         return firebaseUser.uid;
-      }catch(e){
+      } catch (e) {
         print("Error occur sending verification email");
         print(e.toString());
       }

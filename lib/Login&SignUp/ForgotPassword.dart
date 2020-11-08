@@ -9,7 +9,6 @@ class ForgotPassword extends StatefulWidget {
 }
 
 class _ForgotPasswordState extends State<ForgotPassword> {
-
   final fKey = GlobalKey<FormState>();
   AuthMethods authMethods = new AuthMethods();
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
@@ -31,22 +30,17 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           ),
         ),
       ),
-      body:Center(
+      body: Center(
         child: new ListView(
           padding: EdgeInsets.all(30),
-
           children: <Widget>[
             Logo(),
-
             spacing(),
-
             Form(
               key: fKey,
               child: emailEntry(),
             ),
-
             spacing(),
-
             passwordResetButton(),
           ],
         ),
@@ -54,13 +48,13 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     );
   }
 
-  spacing(){
+  spacing() {
     return SizedBox(
       height: 20,
     );
   }
 
-  Logo(){
+  Logo() {
     return SizedBox(
       height: 150,
       child: Image.asset(
@@ -70,8 +64,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     );
   }
 
-  passReset()async{
-    if(fKey.currentState.validate()){
+  passReset() async {
+    if (fKey.currentState.validate()) {
       authMethods.resetPassword(emailController.text);
 
       setState(() {
@@ -80,7 +74,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
       Navigator.pushReplacement(
         context,
-          MaterialPageRoute(builder: (context) => LoginPage()),
+        MaterialPageRoute(builder: (context) => LoginPage()),
       );
     }
   }
@@ -90,7 +84,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+";
     String error;
     if (e.isEmpty) {
-      error = "Email is required" ;
+      error = "Email is required";
     } else if (e.isNotEmpty) {
       if (!RegExp(eValidate).hasMatch(e))
         error = "Please enter a valid email address";
@@ -100,8 +94,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     return error;
   }
 
-  emailEntry(){
-    return  TextFormField(
+  emailEntry() {
+    return TextFormField(
         validator: (val) {
           return eValidate(val);
         },
@@ -112,12 +106,10 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             hintText: "Email",
             border:
-            OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))
-        )
-    );
+                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))));
   }
 
-  passwordResetButton(){
+  passwordResetButton() {
     return Material(
       elevation: 5.0,
       borderRadius: BorderRadius.circular(30.0),
@@ -135,5 +127,4 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       ),
     );
   }
-
 }
