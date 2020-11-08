@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-<<<<<<< HEAD
 import 'package:tvf_legion/ApplicationPage/homePage.dart';
 import 'package:tvf_legion/Login&SignUp/loginPage.dart';
 import 'package:tvf_legion/services/helper.dart';
@@ -39,10 +38,3 @@ class _tvfLegionState extends State<tvfLegion> {
   }
 
 }
-=======
-import 'package:tvf_legion/Login&SignUp/loginPage.dart';
-
-void main() => runApp(MaterialApp(
-      home: LoginPage(),
-    ));
->>>>>>> parent of 88b2cac... HomePage

@@ -31,11 +31,7 @@ class _LoginPageState extends State<LoginPage> {
 
   loginCheck()async{
 
-<<<<<<< HEAD
     email = loginEmailController.text.trimRight();
-=======
-    email = loginEmailController.text;
->>>>>>> parent of 88b2cac... HomePage
     password = loginPasswordController.text;
 
     print(email + password);
@@ -58,15 +54,11 @@ class _LoginPageState extends State<LoginPage> {
           isLoading = false;
         });
       }else{
-<<<<<<< HEAD
 
-=======
->>>>>>> parent of 88b2cac... HomePage
         setState(() {
           isLoading = true;
         });
 
-<<<<<<< HEAD
         userInfoSnapshot = await _database.getUserByUserEmail(email);
 
        Helper.savedLoggedIn(true);
@@ -74,18 +66,6 @@ class _LoginPageState extends State<LoginPage> {
        Helper.savedUserEmail(userInfoSnapshot.documents[0].data["email"]);
 
         Navigator.pushReplacement(
-=======
-        QuerySnapshot userInfoSnapshot =
-        await Database().getUserByUserEmail(loginEmailController.text);
-
-        Helper.savedLoggedIn(true);
-        Helper.savedUserName(
-            userInfoSnapshot.documents[0].data["userName"]);
-        Helper.savedUserEmail(
-            userInfoSnapshot.documents[0].data["userEmail"]);
-
-        Navigator.push(
->>>>>>> parent of 88b2cac... HomePage
             context, MaterialPageRoute(builder: (context) =>HomePage())
         );
       }

@@ -60,7 +60,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           ),
         ),
       ),
-<<<<<<< HEAD
       body:isLoading? Container(
     child: Center(
       child: CircularProgressIndicator(),
@@ -68,11 +67,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     ):Center(
         child: new ListView(
         padding: EdgeInsets.all(30),
-=======
-      body:Center(
-        child: new ListView(
-          padding: EdgeInsets.all(30),
->>>>>>> parent of 88b2cac... HomePage
 
           children: <Widget>[
             Logo(),
@@ -109,23 +103,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     );
   }
 
-<<<<<<< HEAD
-=======
-  passReset()async{
-    if(fKey.currentState.validate()){
-      authMethods.resetPassword(emailController.text);
-
-      setState(() {
-        isLoading = true;
-      });
-
-      Navigator.pushReplacement(
-        context,
-          MaterialPageRoute(builder: (context) => LoginPage()),
-      );
-    }
-  }
->>>>>>> parent of 88b2cac... HomePage
 
   String eValidate(String e) {
     String eValidate =
@@ -182,7 +159,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     );
   }
 
-<<<<<<< HEAD
 /*Widget showAlert(){
     _error = authMethods.errors;
 
@@ -215,6 +191,4 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     }
   }*/
 
-=======
->>>>>>> parent of 88b2cac... HomePage
 }

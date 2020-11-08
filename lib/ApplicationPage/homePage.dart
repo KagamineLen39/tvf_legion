@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-<<<<<<< HEAD
 import 'package:tvf_legion/ApplicationPage/locationPage.dart';
-=======
->>>>>>> parent of 88b2cac... HomePage
 import 'package:tvf_legion/ApplicationPage/profilePage.dart';
 
 class HomePage extends StatefulWidget {
@@ -27,14 +24,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     Container(
       color: Colors.blue,
     ),
-<<<<<<< HEAD
     LocationPage(),
 
-=======
-    Container(
-      color: Colors.green,
-    ),
->>>>>>> parent of 88b2cac... HomePage
     ProfilePage(),
   ];
 
@@ -65,11 +56,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         backgroundColor: Color(0xff01A0C7),
         centerTitle: true,
         title: Text(
-<<<<<<< HEAD
           "Home Page",
-=======
-          "???",
->>>>>>> parent of 88b2cac... HomePage
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
@@ -79,10 +66,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       ),
 
       body: PageView(
-<<<<<<< HEAD
         physics: NeverScrollableScrollPhysics(),
-=======
->>>>>>> parent of 88b2cac... HomePage
         controller: _pageController,
         onPageChanged: (index){
           setState(() {
