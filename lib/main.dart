@@ -5,15 +5,15 @@ import 'package:tvf_legion/services/helper.dart';
 
 
 void main(){
-  runApp(tvfLegion());
+  runApp(TvfLegion());
 }
 
-class tvfLegion extends StatefulWidget {
+class TvfLegion extends StatefulWidget {
   @override
-  _tvfLegionState createState() => _tvfLegionState();
+  _TvfLegionState createState() => _TvfLegionState();
 }
 
-class _tvfLegionState extends State<tvfLegion> {
+class _TvfLegionState extends State<TvfLegion> {
   bool isLoggedIn = false;
 
   @override
