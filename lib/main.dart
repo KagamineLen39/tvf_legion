@@ -25,7 +25,11 @@ class _tvfLegionState extends State<tvfLegion> {
   getLoggedInState() async{
     await Helper.getLogIn().then((value){
       setState(() {
-        isLoggedIn = value;
+        if(value == null){
+          isLoggedIn = false;
+        }else{
+          isLoggedIn = value;
+        }
       });
     });
   }
