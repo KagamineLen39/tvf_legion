@@ -1,9 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tvf_legion/Login&SignUp/loginPage.dart';
+import 'package:tvf_legion/services/Provider.dart';
 import 'package:tvf_legion/services/auth.dart';
-import 'package:tvf_legion/modal/Constants.dart';
-import 'package:tvf_legion/services/database.dart';
 import 'package:tvf_legion/services/helper.dart';
 
 
@@ -16,31 +15,13 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage>{
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
 
-  AuthMethods _authMethods = new AuthMethods();
+  AuthMethods authMethods = new AuthMethods();
   bool isLoading = false;
 
-  Database _database = new Database();
-
-  String username;
-
-  @override
-  void initState(){
-    getUserInfo();
-    super.initState();
-  }
-
-  getUserInfo() async {
-    Constants.userName = await Helper.getUserName();
-    _database.getUserbyUserName(Constants.userName).then((snapshots){
-      setState(() {
-        username = snapshots;
-      });
-    });
-  }
-
+  String username,email,gender,birthDate;
 
   logOut(){
-    dynamic result = _authMethods.signOut();
+    dynamic result = authMethods.signOut();
 
     if(result == null){
       setState(() {
@@ -65,6 +46,7 @@ class _ProfilePageState extends State<ProfilePage>{
 
   @override
   Widget build(BuildContext context) {
+
     final profilePic =CircleAvatar(
         radius: 80,
         backgroundImage: AssetImage(''),
@@ -77,7 +59,7 @@ class _ProfilePageState extends State<ProfilePage>{
             leading:Icon(
               Icons.perm_identity,
             ),
-            title: Text('$username')
+            title: Text('username')
         ),
       );
 
@@ -141,15 +123,15 @@ class _ProfilePageState extends State<ProfilePage>{
                 new MaterialPageRoute(
                   builder:(BuildContext context) => new Friends())*/}
           );
-     final settingBar =ListTile(
+     /*final settingBar =ListTile(
               title : new Text ('Settings ',style: style.copyWith(fontWeight: FontWeight.bold),),
               onTap: (){
 
-                /*Navigator.push(
+                *//*Navigator.push(
                 context,
                 new MaterialPageRoute(
-                  builder:(BuildContext context) => new Friends())*/}
-          );
+                  builder:(BuildContext context) => new Friends())*//*}
+          );*/
      final aboutUsBar =ListTile(
               title : new Text ('About Us ',style: style.copyWith(fontWeight: FontWeight.bold),),
               onTap: (){
@@ -190,6 +172,7 @@ class _ProfilePageState extends State<ProfilePage>{
 
                     child: profilePic,
                   ),
+
                   userNameBar,
                   genderBar,
                   emailBar,

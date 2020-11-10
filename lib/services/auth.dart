@@ -8,6 +8,10 @@ class AuthMethods {
     return user != null ? User(userId: user.uid) : null;
   }
 
+  Future getCurrentUser() async{
+    return _auth.currentUser();
+  }
+
   Future emailSignIn(String email, String password) async {
     try {
       AuthResult result = await _auth.signInWithEmailAndPassword(
