@@ -27,7 +27,9 @@ class _TvfLegionState extends State<TvfLegion> {
       setState(() {
         if(value == null){
           isLoggedIn = false;
+          print("Is user logged in: $value");
         }else{
+          print("Is user logged in: $value");
           isLoggedIn = value;
         }
       });

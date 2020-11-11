@@ -18,7 +18,7 @@ class AuthMethods {
           email: email, password: password);
       FirebaseUser user = result.user;
 
-      return _userFromFirebaseUser(user);
+      return _userFromFirebaseUser(user).userId;
 
     }catch (e) {
       print("Unable to find user");
@@ -31,7 +31,6 @@ class AuthMethods {
     try {
       AuthResult result = await _auth.createUserWithEmailAndPassword(
           email: email, password: password,
-
       );
 
       FirebaseUser firebaseUser = result.user;
@@ -44,7 +43,7 @@ class AuthMethods {
         print(e.toString());
       }
 
-      return _userFromFirebaseUser(firebaseUser);
+      return _userFromFirebaseUser(firebaseUser).userId;
     } catch (e) {
       print(e.toString());
       return null;
