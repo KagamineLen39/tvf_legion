@@ -84,6 +84,11 @@ class _ProfilePageState extends State<ProfilePage>{
   @override
   Widget build(BuildContext context) {
 
+    final profilePic =CircleAvatar(
+      radius: 80,
+      backgroundImage: AssetImage(''),
+    );
+
      final userNameBar =  Card(
         color: Colors.white,
         margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
@@ -198,11 +203,11 @@ class _ProfilePageState extends State<ProfilePage>{
 
               padding: EdgeInsets.fromLTRB(0, 15, 0, 0),
                 children:<Widget>[
-                  /*Container(
+                  Container(
                     padding: EdgeInsets.fromLTRB(0, 30, 0, 5),
 
                     child: profilePic,
-                  ),*/
+                  ),
 
                   userNameBar,
                   genderBar,
