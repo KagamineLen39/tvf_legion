@@ -32,6 +32,9 @@ class _ProfilePageState extends State<ProfilePage>{
         setState(() => isLoading = true);
 
         Helper.savedLoggedIn(false);
+        Helper.savedUserEmail(null);
+        Helper.savedUserId(null);
+        Helper.savedUserName(null);
         Helper.getLogIn().then((value){
           print("User logged in: $value");
         });
