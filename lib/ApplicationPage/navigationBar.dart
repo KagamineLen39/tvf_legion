@@ -1,7 +1,6 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:tvf_legion/ApplicationPage/homePage.dart';
-import 'package:tvf_legion/ApplicationPage/locationPage.dart';
 import 'package:tvf_legion/ApplicationPage/profilePage.dart';
 
 class NavigationPage extends StatefulWidget {
@@ -23,7 +22,9 @@ class _NavigationPageState extends State<NavigationPage>
     Container(
       color: Colors.blue,
     ),
-    LocationPage(),
+    Container(
+      color: Colors.green,
+    ),
     ProfilePage(),
   ];
 
