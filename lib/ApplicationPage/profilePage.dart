@@ -52,59 +52,37 @@ class _ProfilePageState extends State<ProfilePage>{
     super.initState();
   }
 
-  getUserInfoState(){
+  getUserInfoState() async{
+    String _userID;
     Helper.getUserName().then((value) {
-      setState(() {
-        username = value;
-      });
-
+        setState(() {
+          username = value;
+        });
     });
 
     Helper.getUserEmail().then((value){
-      setState(() {
-        email=value;
-      });
+        setState(() {
+          email = value;
+        });
     });
+
+    Helper.getUserId().then((value){
+      _userID = value;
+    });
+
+
+    await Firestore.instance.collection("Users")
+        .where("userID",isEqualTo: _userID).getDocuments().then((value){
+          setState(() {
+            gender = value.documents[0].data["gender"];
+            birthDate = value.documents[0].data["Date of Birth"];
+          });
+    });
+
   }
 
   @override
   Widget build(BuildContext context) {
-
-
-    retrieveUsername() async{
-      String userID;
-      Helper.getUserId().then((value){
-        userID = value;
-        print(userID);
-      });
-
-      /*await Firestore.instance.collection("Users").getDocuments().then((value){
-        print(value);
-      });
-
-      return username;*/
-    }
-
-    /*retrieveEmail()async{
-
-      return email;
-
-    }
-
-    retrieveGender()async{
-
-      return gender;
-    }
-
-    retrieveDoB()async{
-
-      return birthDate;
-    }*/
-
-    /*final profilePic =CircleAvatar(
-        radius: 80,
-        backgroundImage: AssetImage(),
-      );*/
 
      final userNameBar =  Card(
         color: Colors.white,
@@ -124,7 +102,7 @@ class _ProfilePageState extends State<ProfilePage>{
             leading:Icon(
               Icons.person,
             ),
-            title: Text("Gender")
+            title: Text("$gender")
         ),
       );
 
@@ -146,17 +124,13 @@ class _ProfilePageState extends State<ProfilePage>{
             leading:Icon(
               Icons.cake,
             ),
-            title: Text("DoB")
+            title: Text("$birthDate")
         ),
       );
 
     final friendBar = ListTile(
               title : new Text ('Friends ',style: style.copyWith(fontWeight: FontWeight.bold),),
               onTap: (){
-                retrieveUsername();
-
-
-
                 /*Navigator.push(
                 context,
                 new MaterialPageRoute(
