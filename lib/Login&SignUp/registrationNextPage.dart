@@ -34,6 +34,7 @@ class _Registration2State extends State<Registration2> {
   signUpUpdate() async {
 
     Map<String, String> userInfoMap = {
+      "userID": widget.userData.userId,
       "fName": widget.userData.fName,
       "lName": widget.userData.lName,
       "email": widget.userData.email,
@@ -44,6 +45,7 @@ class _Registration2State extends State<Registration2> {
 
     Helper.savedUserEmail(widget.userData.email);
     Helper.savedUserName(widget.userData.userName);
+    Helper.savedUserId(widget.userData.userId);
     Helper.savedLoggedIn(true);
 
     if (fKey.currentState.validate()) {
@@ -52,7 +54,7 @@ class _Registration2State extends State<Registration2> {
         isLoading = true;
       });
 
-      database.uploadUserInfo(userInfoMap);
+      database.uploadUserInfo(widget.userData.userId,userInfoMap);
 
       Navigator.pushAndRemoveUntil(
           context, MaterialPageRoute(builder: (context) =>HomePage()),

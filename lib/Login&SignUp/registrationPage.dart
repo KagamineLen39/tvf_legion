@@ -43,6 +43,7 @@ class _RegistrationState extends State<Registration> {
     }
 
     if (fKey.currentState.validate()) {
+      userData.userId = result.toString();
       userData.fName = firstNameController.text.trim();
       userData.lName=lastNameController.text.trim();
       userData.email =emailController.text.trim();

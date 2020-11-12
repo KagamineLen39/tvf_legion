@@ -64,6 +64,23 @@ class _LoginPageState extends State<LoginPage> {
        Helper.savedLoggedIn(true);
        Helper.savedUserName(userInfoSnapshot.documents[0].data["username"]);
        Helper.savedUserEmail(userInfoSnapshot.documents[0].data["email"]);
+       Helper.savedUserId(userInfoSnapshot.documents[0].data["userID"]);
+
+       Helper.getLogIn().then((value){
+         print("User logged in: $value");
+       });
+       Helper.getUserEmail().then((value) {
+         print("Email: $value");
+       });
+
+       Helper.getUserName().then((value){
+         print("Username: $value");
+       });
+
+       Helper.getUserId().then((value){
+         print("User ID: $value");
+       });
+
 
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) =>HomePage())

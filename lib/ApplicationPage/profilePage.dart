@@ -1,7 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tvf_legion/Login&SignUp/loginPage.dart';
-import 'package:tvf_legion/services/Provider.dart';
 import 'package:tvf_legion/services/auth.dart';
 import 'package:tvf_legion/services/helper.dart';
 
@@ -32,7 +32,12 @@ class _ProfilePageState extends State<ProfilePage>{
         setState(() => isLoading = true);
 
         Helper.savedLoggedIn(false);
-        print(Helper.getLogIn().toString());
+        Helper.savedUserEmail(null);
+        Helper.savedUserId(null);
+        Helper.savedUserName(null);
+        Helper.getLogIn().then((value){
+          print("User logged in: $value");
+        });
         Navigator.pushReplacement(context,
           MaterialPageRoute(builder: (context)=> LoginPage()),
         );
@@ -45,12 +50,47 @@ class _ProfilePageState extends State<ProfilePage>{
   }
 
   @override
+  void initState() {
+    getUserInfoState();
+    super.initState();
+  }
+
+  getUserInfoState() async{
+    String _userID;
+    Helper.getUserName().then((value) {
+        setState(() {
+          username = value;
+        });
+    });
+
+    Helper.getUserEmail().then((value){
+        setState(() {
+          email = value;
+        });
+    });
+
+    Helper.getUserId().then((value){
+      _userID = value;
+    });
+
+
+    await Firestore.instance.collection("Users")
+        .where("userID",isEqualTo: _userID).getDocuments().then((value){
+          setState(() {
+            gender = value.documents[0].data["gender"];
+            birthDate = value.documents[0].data["Date of Birth"];
+          });
+    });
+
+  }
+
+  @override
   Widget build(BuildContext context) {
 
     final profilePic =CircleAvatar(
-        radius: 80,
-        backgroundImage: AssetImage(''),
-      );
+      radius: 80,
+      backgroundImage: AssetImage(''),
+    );
 
      final userNameBar =  Card(
         color: Colors.white,
@@ -59,7 +99,7 @@ class _ProfilePageState extends State<ProfilePage>{
             leading:Icon(
               Icons.perm_identity,
             ),
-            title: Text('username')
+            title: Text("$username")
         ),
       );
 
@@ -70,7 +110,7 @@ class _ProfilePageState extends State<ProfilePage>{
             leading:Icon(
               Icons.person,
             ),
-            title: Text('Gender',)
+            title: Text("$gender")
         ),
       );
 
@@ -81,7 +121,7 @@ class _ProfilePageState extends State<ProfilePage>{
             leading:Icon(
               Icons.mail,
             ),
-            title: Text('Email',)
+            title: Text("$email")
         ),
       );
 
@@ -92,14 +132,13 @@ class _ProfilePageState extends State<ProfilePage>{
             leading:Icon(
               Icons.cake,
             ),
-            title: Text('Birth Date',)
+            title: Text("$birthDate")
         ),
       );
 
     final friendBar = ListTile(
               title : new Text ('Friends ',style: style.copyWith(fontWeight: FontWeight.bold),),
               onTap: (){
-
                 /*Navigator.push(
                 context,
                 new MaterialPageRoute(
