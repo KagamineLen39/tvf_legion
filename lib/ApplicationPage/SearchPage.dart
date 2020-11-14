@@ -15,44 +15,44 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
   TextEditingController searchEditingController = new TextEditingController();
   Database databaseMethods = new Database();
   QuerySnapshot searchResultSnapshot;
-  bool haveUserSearched = false;
+  bool hasRoomSearched = false;
 
   initiateSearch() async {
     if(searchEditingController.text.isNotEmpty){
       setState(() {
         isLoading = true;
       });
-      await databaseMethods.searchByUsername(searchEditingController.text.trimRight()).then((snapshot){
+      /*await databaseMethods.searchByUsername(searchEditingController.text.trimRight()).then((snapshot){
         searchResultSnapshot = snapshot;
           print("$snapshot");
         setState(() {
           isLoading = false;
-          haveUserSearched = true;
+          haveGroupSearched = true;
         });
-      });
+      });*/
     }else{
       setState(() {
         isLoading = false;
-        haveUserSearched = false;
+        hasRoomSearched = false;
       });
     }
   }
 
-  Widget userList(){
-    return haveUserSearched ? ListView.builder(
+  Widget roomList(){
+    return hasRoomSearched ? ListView.builder(
         shrinkWrap: true,
         itemCount: searchResultSnapshot.documents.length,
-        itemBuilder: (context, index){
+        /*itemBuilder: (context, index){
           return peerList(
-            searchResultSnapshot.documents[index].data["username"],
-            searchResultSnapshot.documents[index].data["email"],
+            searchResultSnapshot.documents[index].data["roomName"],
+            searchResultSnapshot.documents[index].data["roomID"],
           );
-        }
+        }*/
     ):
     Container(
       padding: EdgeInsets.all(25),
       child: Text(
-        "No user found",
+        "Please enter a room ID",
         style: style.copyWith(
           fontSize: 24,
           fontWeight: FontWeight.bold,
@@ -62,7 +62,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
     );
   }
 
-  Widget peerList(String userName,String userEmail){
+  Widget roomListBuilder(String roomName,String roomID){
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       child: Row(
@@ -71,14 +71,14 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                userName,
+                roomName,
                 style: TextStyle(
                     color: Colors.black38,
                     fontSize: 16
                 ),
               ),
               Text(
-                userEmail,
+                roomID,
                 style: TextStyle(
                     color: Colors.black38,
                     fontSize: 16
@@ -89,7 +89,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
           Spacer(),
           GestureDetector(
             onTap: (){
-              //addFriend(username);
+              //joinRoom(roomID);
             },
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 12,vertical: 8),
@@ -130,7 +130,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
       ),
       decoration: InputDecoration(
         border:InputBorder.none,
-        hintText: 'Search Username',
+        hintText: 'Search Room',
         hintStyle: TextStyle(
           color: Colors.white,
         ),
@@ -170,6 +170,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
         ] ,
       ),
     );
+
     return Scaffold(
       body: Container(
             color: Colors.white,
@@ -183,7 +184,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                     Column(
                       children: <Widget>[
                         searchBar,
-                        userList(),
+                        roomList(),
                       ],
                     ),
                   ],
