@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tvf_legion/ApplicationPage/searchNewFriendPage.dart';
 import 'package:tvf_legion/services/database.dart';
 
 class ChatPage extends StatefulWidget {
@@ -116,7 +117,40 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
 
-    searchBar(){
+    final searchNewFriend = Container(
+      padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
+      alignment: Alignment.center,
+      height: 40,
+      decoration: BoxDecoration(
+        color: Colors.white38,
+        borderRadius: BorderRadius.circular(45),
+      ),
+      child: GestureDetector(
+          onTap: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => searchNewFriendPage())
+            );
+          },
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  "Search New Friends",
+                   style: TextStyle(
+                     fontSize: 18,
+                     color: Colors.white,
+                    ),
+                  ),
+              ),
+              SizedBox(
+                child: Icon(Icons.search),
+              )
+            ],
+          ),
+          ),
+      );
+
+    /*searchBar(){
       return Container(
         padding: EdgeInsets.all(5),
         child: Column(
@@ -182,7 +216,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
           ],
         ),
       );
-    }
+    }*/
 
     pageChanger(){
       return Container(
@@ -256,7 +290,8 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     return Scaffold(
       backgroundColor: Colors.lightBlue[200],
       appBar: AppBar(
-          backgroundColor: Colors.lightBlue[600],
+        title: searchNewFriend,
+        backgroundColor: Colors.lightBlue[600],
       ),
       body: Container(
         child: Column(
