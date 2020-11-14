@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:tvf_legion/ApplicationPage/chatPage.dart';
 import 'package:tvf_legion/ApplicationPage/locationPage.dart';
 import 'package:tvf_legion/ApplicationPage/profilePage.dart';
 import 'package:tvf_legion/ApplicationPage/SearchPage.dart';
+import 'package:tvf_legion/services/helper.dart';
 
 class HomePage extends StatefulWidget {
 
@@ -22,9 +24,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   List<Widget> _tabBar = [
     _homePage(),
 
-    Container(
-      color: Colors.white,
-    ),
+    ChatPage(),
 
     LocationPage(),
 
@@ -76,14 +76,22 @@ class _homePage extends StatefulWidget {
 }
 
 class __homePageState extends State<_homePage> {
+  String _username;
+
   @override
   Widget build(BuildContext context) {
+    Helper.getUserName().then((value){
+      setState(() {
+        _username = value;
+      });
+    });
 
-    final welcomeLabel = Text("Welcome, \nUsername",
+    final welcomeLabel = Text("Welcome, \n $_username",
         style: TextStyle(
           fontFamily: 'Montserrat',
           fontSize: 40.0,
           fontWeight: FontWeight.bold,
+          color: Colors.white,
         ));
 
     final createRoomLabel = Text("Create a room",

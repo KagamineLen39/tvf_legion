@@ -10,4 +10,13 @@ class Database{
   uploadUserInfo(userId,userMap){
     Firestore.instance.collection("Users").document(userId).setData(userMap);
   }
+
+  searchByUsername(String searchField) {
+    return Firestore.instance
+        .collection("Users")
+        .where('username', isEqualTo: searchField)
+        .getDocuments();
+  }
+
+
 }
