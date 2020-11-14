@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:relative_scale/relative_scale.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tvf_legion/ApplicationPage/searchNewFriendPage.dart';
 import 'package:tvf_legion/services/database.dart';
@@ -19,11 +20,20 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
 
   bool isLoading = false;
   bool haveUserSearched = false;
-  bool friendRequestPage = false;
+  bool friendRequestPage;
   int index =0;
   SharedPreferences prefs;
 
   final List<String> chatPageOptions = ["Chats","Friend Requests"];
+
+  @override
+  void initState(){
+    super.initState();
+    setState(() {
+      friendRequestPage = false;
+    });
+  }
+
 
   initiateSearch() async {
     if(searchEditingController.text.isNotEmpty){
@@ -236,26 +246,32 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
 
                     if(index == 0){
                       setState(() {
-                        friendRequestPage = true;
+                        friendRequestPage = false;
                       });
                     }else{
                       setState(() {
-                        friendRequestPage = false;
+                        friendRequestPage = true;
                       });
                     }
                   },
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                        horizontal:55,
-                        vertical:25
-                    ),
-                    child: Text(chatPageOptions[_index],
-                    style: style.copyWith(
-                      color: _index == index? Colors.white: Colors.white54,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 0.5,
-                    ))
+                  child: RelativeBuilder(
+                    builder:(context,screenHeight,screenWidth,sy,sx){
+                      return Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal:sx(60),
+                          vertical:25
+                        ),
+                        child: Text(chatPageOptions[_index],
+                            style: style.copyWith(
+                            color: _index == index? Colors.white: Colors.white54,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                      );
+                    }
+
                   ),
                 ),
               );
@@ -266,25 +282,69 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     }
 
     contentPages(){
-     return Expanded(
-        child: Container(
-          decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(30),
-                topRight: Radius.circular(30),
-              )
-          ),
-
-          child:Column(
-            children: <Widget>[
-              Container(
-
-              ),
-            ],
-          ),
-        ),
-      );
+     return friendRequestPage? Expanded(
+       child: Container(
+         padding: EdgeInsets.fromLTRB(15, 20, 15, 0),
+         alignment: Alignment.topLeft,
+         decoration: BoxDecoration(
+             color: Colors.white,
+             borderRadius: BorderRadius.only(
+               topLeft: Radius.circular(30),
+               topRight: Radius.circular(30),
+             )
+         ),
+         child: Column(
+           children: <Widget>[
+             Expanded(
+               child: Text(
+                 "Requests",
+                 style: style.copyWith(
+                   fontWeight: FontWeight.bold,
+                   fontSize: 28,
+                 ),
+               ),
+             ),
+             Container(
+               child: SingleChildScrollView(
+                 //friendRequestsList
+               ),
+               ),
+           ],
+         ),
+       ),
+     ):
+     Expanded(
+       child: Container(
+         padding: EdgeInsets.fromLTRB(15, 20, 15, 0),
+         alignment: Alignment.topLeft,
+         decoration: BoxDecoration(
+             color: Colors.white,
+             borderRadius: BorderRadius.only(
+               topLeft: Radius.circular(30),
+               topRight: Radius.circular(30),
+             )
+         ),
+         child: Column(
+           children: <Widget>[
+             Expanded(
+               child: Text(
+                 "Recent",
+                 style: style.copyWith(
+                   fontWeight: FontWeight.bold,
+                   fontSize: 28,
+                 ),
+               ),
+             ),
+             Container(
+               child:SingleChildScrollView(
+                 //recentChatList
+               ),
+             )
+           ],
+         ),
+       ),
+     );
+     
     }
 
     return Scaffold(
