@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:relative_scale/relative_scale.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tvf_legion/ApplicationPage/searchNewFriendPage.dart';
 import 'package:tvf_legion/services/database.dart';
 
@@ -19,41 +18,15 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   QuerySnapshot searchResultSnapshot;
 
   bool isLoading = false;
-  bool haveUserSearched = false;
-  bool friendRequestPage;
+  bool hasFriends = false;
+  bool friendRequestPage = false;
   int index =0;
-  SharedPreferences prefs;
 
   final List<String> chatPageOptions = ["Chats","Friend Requests"];
 
-  @override
-  void initState(){
-    super.initState();
-    setState(() {
-      friendRequestPage = false;
-    });
-  }
-
-
-  initiateSearch() async {
-    if(searchEditingController.text.isNotEmpty){
-      setState(() {
-        isLoading = true;
-      });
-      await databaseMethods.searchByUsername(searchEditingController.text)
-          .then((snapshot){
-        searchResultSnapshot = snapshot;
-        print("$searchResultSnapshot");
-        setState(() {
-          isLoading = false;
-          haveUserSearched = true;
-        });
-      });
-    }
-  }
-
   Widget userList(){
-    return haveUserSearched ? ListView.builder(
+    return hasFriends?
+    ListView.builder(
         shrinkWrap: true,
         itemCount: searchResultSnapshot.documents.length,
         itemBuilder: (context, index){
@@ -62,18 +35,17 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
             searchResultSnapshot.documents[index].data["email"],
           );
         }
-        ):
-    Container(
-      padding: EdgeInsets.all(25),
-      child: Text(
-          "No user found",
-        style: style.copyWith(
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
-          color: Colors.black38,
-        ),
-      ),
-    );
+    ):
+        Container(
+          child: Expanded(
+              child: Text("No message yet",
+                style: style.copyWith(
+                  fontSize: 28,
+                  color: Colors.white38,
+                ),
+          ),
+          ),
+        );
   }
 
   Widget peerList(String userName,String userEmail){
@@ -160,73 +132,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
           ),
       );
 
-    /*searchBar(){
-      return Container(
-        padding: EdgeInsets.all(5),
-        child: Column(
-          children: [
-            Container(
-              height: 100,
-              padding: EdgeInsets.all(20),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                        controller: searchController,
-                        style: style.copyWith(
-                          fontSize: 18,
-                          color: Colors.white,
-                      ),
 
-                      cursorColor: Colors.white,
-                      maxLines: 1,
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.lightBlue[300],
-                        hintText: "Search Username",
-                          hintStyle: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                          ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(45),
-                          borderSide: BorderSide.none
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  SizedBox(width: 5),
-
-                  SizedBox(
-                    height: 50,
-                      width:50,
-                      child:GestureDetector(
-                        onTap: (){
-                          initiateSearch();
-                        },
-                        child: Container(
-                          height:40,
-                          width: 40,
-                          decoration: BoxDecoration(
-                            color: Colors.black38,
-                            borderRadius: BorderRadius.circular(45),
-                          ),
-                          child: Icon(Icons.search,
-                          color: Colors.white
-                          ),
-                        ),
-                      )
-                    ),
-                ],
-              ),
-            ),
-            
-            userList()
-          ],
-        ),
-      );
-    }*/
 
     pageChanger(){
       return Container(
@@ -325,6 +231,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
              )
          ),
          child: Column(
+           crossAxisAlignment: CrossAxisAlignment.start,
            children: <Widget>[
              Expanded(
                child: Text(
@@ -336,10 +243,8 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                ),
              ),
              Container(
-               child:SingleChildScrollView(
-                 //recentChatList
+                 child: userList(),
                ),
-             )
            ],
          ),
        ),

@@ -22,7 +22,8 @@ class _searchNewFriendPageState extends State<searchNewFriendPage> {
       setState(() {
         isLoading = true;
       });
-      await databaseMethods.searchByUsername(searchEditingController.text.trimRight()).then((snapshot){
+      await databaseMethods.
+      searchByUsername(searchEditingController.text.trimRight()).then((snapshot){
         searchResultSnapshot = snapshot;
           print("$snapshot");
         setState(() {
@@ -38,7 +39,7 @@ class _searchNewFriendPageState extends State<searchNewFriendPage> {
     }
   }
 
-  Widget roomList(){
+  Widget userList(){
     return hasUserSearched ? ListView.builder(
       shrinkWrap: true,
       itemCount: searchResultSnapshot.documents.length,
@@ -189,7 +190,7 @@ class _searchNewFriendPageState extends State<searchNewFriendPage> {
                 Column(
                   children: <Widget>[
                     searchBar,
-                    roomList(),
+                    userList(),
                   ],
                 ),
               ],
