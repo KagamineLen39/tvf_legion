@@ -21,7 +21,7 @@ class _Registration2State extends State<Registration2> {
   List gender = ["Male", "Female","Prefer not to say"];
   String select;
   bool isLoading = false;
-
+  bool usernameTaken = true;
 
   TextEditingController userNameController = new TextEditingController();
   DateTime selectedDate = DateTime.now();
@@ -29,9 +29,30 @@ class _Registration2State extends State<Registration2> {
   final fKey = GlobalKey<FormState>();
   final db = Firestore.instance;
   Database database = new Database();
+  QuerySnapshot usernameCheck;
 
 
   signUpUpdate() async {
+
+    String _checker;
+
+    try{
+      await database.searchByUsername(userNameController.text).then((value){
+        usernameCheck = value;
+        _checker = usernameCheck.documents[0].data["username"];
+        print(_checker);
+        setState(() {
+          usernameTaken = true;
+        });
+      }
+      );
+    }catch(e){
+      _checker = e.toString();
+      print(_checker);
+      setState(() {
+        usernameTaken = false;
+      });
+    }
 
     Map<String, String> userInfoMap = {
       "userID": widget.userData.userId,
@@ -103,8 +124,6 @@ class _Registration2State extends State<Registration2> {
     );
   }
 
-
-
   @override
   Widget build(BuildContext context) {
 
@@ -114,18 +133,22 @@ class _Registration2State extends State<Registration2> {
 
 
     String nameValidate(String uName) {
+
       String nameValidate =
           r"^[a-zA-Z0-9']+$";
       String error;
       if (uName.isEmpty) {
         error = "This field is required" ;
       } else if (uName.isNotEmpty) {
-        //if(check in the database if there is the same username)
-        //error = "The username has been used by other user";
-        if (!RegExp(nameValidate).hasMatch(uName))
+        if (!RegExp(nameValidate).hasMatch(uName)) {
           error = "Enter a valid name! Only numbers and alphabets";
-        else
-          error = null;
+        }else{
+          if(usernameTaken == true){
+            error = "Username is taken";
+          }else{
+            error = null;
+          }
+        }
       }
       return error;
     }

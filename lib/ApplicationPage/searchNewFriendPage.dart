@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:tvf_legion/ApplicationPage/displayUserProfile.dart';
 import 'package:tvf_legion/ApplicationPage/homePage.dart';
 import 'package:tvf_legion/services/database.dart';
 
@@ -22,8 +23,7 @@ class _searchNewFriendPageState extends State<searchNewFriendPage> {
       setState(() {
         isLoading = true;
       });
-      await databaseMethods.
-      searchByUsername(searchEditingController.text.trimRight()).then((snapshot){
+      await databaseMethods.searchByUsername(searchEditingController.text.trimRight()).then((snapshot){
         searchResultSnapshot = snapshot;
           print("$snapshot");
         setState(() {
@@ -50,6 +50,7 @@ class _searchNewFriendPageState extends State<searchNewFriendPage> {
             child: peerList(
               searchResultSnapshot.documents[index].data["username"],
               searchResultSnapshot.documents[index].data["email"],
+              searchResultSnapshot.documents[index].data["userID"],
             ),
           );
         }
@@ -67,29 +68,50 @@ class _searchNewFriendPageState extends State<searchNewFriendPage> {
     );
   }
 
-  Widget peerList(String userName,String userEmail){
+  Widget peerList(String userName,String userEmail,userId){
+
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       child: Row(
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                userName,
-                style: TextStyle(
-                    color: Colors.black38,
-                    fontSize: 16
-                ),
+          GestureDetector(
+            child: CircleAvatar(
+              radius: 25,
+              backgroundImage: AssetImage(''),
+            ),
+            onTap:(){
+              Navigator.push(context,
+                MaterialPageRoute(builder: (context)=> displayUserProfile(userProfileId: userId,))
+              );
+            },
+          ),
+
+          SizedBox(width: 5),
+
+          Container(
+            child: SingleChildScrollView(
+              physics: NeverScrollableScrollPhysics(),
+              scrollDirection: Axis.horizontal,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    userName,
+                    style: TextStyle(
+                        color: Colors.black38,
+                        fontSize: 16
+                    ),
+                  ),
+                  Text(
+                    userEmail,
+                    style: TextStyle(
+                        color: Colors.black38,
+                        fontSize: 16
+                    ),
+                  )
+                ],
               ),
-              Text(
-                userEmail,
-                style: TextStyle(
-                    color: Colors.black38,
-                    fontSize: 16
-                ),
-              )
-            ],
+            ),
           ),
           Spacer(),
           GestureDetector(
@@ -121,14 +143,11 @@ class _searchNewFriendPageState extends State<searchNewFriendPage> {
         color: Colors.white70 ,
       ),
       onPressed: (){
-        Navigator.pushAndRemoveUntil(
-          context, MaterialPageRoute(builder: (context) =>HomePage()),
-              (Route<dynamic> route)=>false,
-        );
+        Navigator.pop(context);
       },
     );
 
-    final searchLabel = TextField(
+    final searchLabel = TextFormField(
       controller: searchEditingController,
       cursorColor: Colors.white,
       style: style.copyWith(
@@ -136,6 +155,13 @@ class _searchNewFriendPageState extends State<searchNewFriendPage> {
       ),
       decoration: InputDecoration(
         border:InputBorder.none,
+        prefixIcon: IconButton(
+            icon: Icon(Icons.clear),
+            color: Colors.white38,
+            onPressed: (){
+              searchEditingController.clear();
+            }
+        ),
         hintText: 'Search User',
         hintStyle: TextStyle(
           color: Colors.white,

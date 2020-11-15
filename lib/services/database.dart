@@ -7,6 +7,11 @@ class Database{
     .where("email",isEqualTo: userEmail).getDocuments();
   }
 
+  getUserIdByUserEmail(String userEmail)async{
+    return await Firestore.instance.collection("Users")
+    .where("userID",isEqualTo: userEmail).getDocuments();
+  }
+
   uploadUserInfo(userId,userMap){
     Firestore.instance.collection("Users").document(userId).setData(userMap);
   }
