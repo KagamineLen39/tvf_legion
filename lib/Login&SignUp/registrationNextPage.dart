@@ -35,6 +35,10 @@ class _Registration2State extends State<Registration2> {
   signUpUpdate() async {
 
     String _checker;
+    widget.userData.userName = userNameController.text.trimRight();
+    widget.userData.gender = select;
+    widget.userData.DoB = "$selectedDate.toLocal()}".split(' ')[0];
+
 
     try{
       await database.searchByUsername(userNameController.text).then((value){
@@ -50,26 +54,27 @@ class _Registration2State extends State<Registration2> {
       _checker = e.toString();
       print(_checker);
       setState(() {
+
         usernameTaken = false;
       });
     }
 
-    Map<String, String> userInfoMap = {
-      "userID": widget.userData.userId,
-      "fName": widget.userData.fName,
-      "lName": widget.userData.lName,
-      "email": widget.userData.email,
-      "username": widget.userData.userName,
-      "gender": widget.userData.gender,
-      "Date of Birth": widget.userData.DoB,
-    };
-
-    Helper.savedUserEmail(widget.userData.email);
-    Helper.savedUserName(widget.userData.userName);
-    Helper.savedUserId(widget.userData.userId);
-    Helper.savedLoggedIn(true);
-
     if (fKey.currentState.validate()) {
+
+      Map<String, String> userInfoMap = {
+        "userID": widget.userData.userId,
+        "fName": widget.userData.fName,
+        "lName": widget.userData.lName,
+        "email": widget.userData.email,
+        "username": widget.userData.userName,
+        "gender": widget.userData.gender,
+        "Date of Birth": widget.userData.DoB,
+      };
+
+      Helper.savedUserEmail(widget.userData.email);
+      Helper.savedUserName(widget.userData.userName);
+      Helper.savedUserId(widget.userData.userId);
+      Helper.savedLoggedIn(true);
 
       setState(() {
         isLoading = true;
@@ -126,11 +131,6 @@ class _Registration2State extends State<Registration2> {
 
   @override
   Widget build(BuildContext context) {
-
-    widget.userData.userName = userNameController.text.trimRight();
-    widget.userData.gender = select;
-    widget.userData.DoB = "$selectedDate.toLocal()}".split(' ')[0];
-
 
     String nameValidate(String uName) {
 
