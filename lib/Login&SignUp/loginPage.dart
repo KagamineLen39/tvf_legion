@@ -24,11 +24,15 @@ class _LoginPageState extends State<LoginPage> {
   String email='';
   String password = '';
 
+  bool passVisible;
   TextEditingController loginEmailController = new TextEditingController();
   TextEditingController loginPasswordController = new TextEditingController();
 
   final fKey = GlobalKey<FormState>();
-
+  @override
+  void initState() {
+    passVisible = false;
+  }
   loginCheck()async{
 
     email = loginEmailController.text.trimRight();
@@ -157,7 +161,21 @@ class _LoginPageState extends State<LoginPage> {
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             hintText: "Password",
             border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))));
+                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+          suffixIcon: IconButton(
+        icon: Icon(
+        passVisible
+        ? Icons.visibility
+          : Icons.visibility_off,
+          color: Theme.of(context).primaryColorDark,
+        ),
+      onPressed: () {
+        setState(() {
+          passVisible = !passVisible;
+        });
+      },
+    ),
+    ));
 
     final loginButton = Material(
       elevation: 5.0,
