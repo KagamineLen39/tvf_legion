@@ -4,8 +4,6 @@ import 'package:tvf_legion/ApplicationPage/SearchPage.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'package:tvf_legion/services/database.dart';
 
-
-
 class HomePage extends StatefulWidget {
 
   @override

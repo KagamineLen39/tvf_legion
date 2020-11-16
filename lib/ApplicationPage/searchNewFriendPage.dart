@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:tvf_legion/ApplicationPage/homePage.dart';
 import 'package:tvf_legion/services/database.dart';
 
-class searchNewFriendPage extends StatefulWidget {
+class SearchNewFriendPage extends StatefulWidget {
   @override
-  _searchNewFriendPageState createState() => _searchNewFriendPageState();
+  _SearchNewFriendPageState createState() => _SearchNewFriendPageState();
 }
 
-class _searchNewFriendPageState extends State<searchNewFriendPage> {
+class _SearchNewFriendPageState extends State<SearchNewFriendPage> {
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
   bool isLoading =false;
   TextEditingController searchEditingController = new TextEditingController();

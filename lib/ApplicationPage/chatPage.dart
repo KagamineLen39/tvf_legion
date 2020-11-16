@@ -110,7 +110,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
       child: GestureDetector(
           onTap: () {
             Navigator.push(
-                context, MaterialPageRoute(builder: (context) => searchNewFriendPage())
+                context, MaterialPageRoute(builder: (context) => SearchNewFriendPage())
             );
           },
           child: Row(
