@@ -10,22 +10,12 @@ class Database{
   uploadUserInfo(userId,userMap){
     Firestore.instance.collection("Users").document(userId).setData(userMap);
   }
-}
 
-class DatabaseService{
-  final String roomId;
-  DatabaseService({this.roomId});
-
-  final CollectionReference roomCollection = Firestore.instance.collection('Room');
-
-  Future updateRoomDate(String rPic, String rName, int rMax, String rState, String rPassword, String rDescription )async {
-    return await roomCollection.document(roomId).setData({
-      'RoomPicture' : rPic,
-      'RoomName' : rName,
-      'MaxPerson' : rMax,
-      'State' : rState,
-      'Password' : rPassword,
-      'Description' : rDescription,
-    });
+  searchByUsername(String searchField){
+    return Firestore.instance
+        .collection("Users")
+        .where("username", isEqualTo: searchField)
+        .getDocuments();
   }
-// }
+
+}

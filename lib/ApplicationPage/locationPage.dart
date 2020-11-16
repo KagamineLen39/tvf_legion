@@ -15,9 +15,10 @@ class _LocationPageState extends State<LocationPage> with TickerProviderStateMix
   @override
   Widget build(BuildContext context) {
 
-    return Container(
-
-         child: FireMap(),
+    return Scaffold(
+      body: Container(
+           child: FireMap(),
+      ),
     );
   }
 
