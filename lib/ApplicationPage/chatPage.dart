@@ -5,7 +5,6 @@ import 'package:tvf_legion/ApplicationPage/searchNewFriendPage.dart';
 import 'package:tvf_legion/services/database.dart';
 
 class ChatPage extends StatefulWidget {
-
   @override
   _ChatPageState createState() => _ChatPageState();
 }

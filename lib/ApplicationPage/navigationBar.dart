@@ -1,5 +1,6 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:tvf_legion/ApplicationPage/chatPage.dart';
 import 'package:tvf_legion/ApplicationPage/homePage.dart';
 import 'package:tvf_legion/ApplicationPage/locationPage.dart';
 import 'package:tvf_legion/ApplicationPage/profilePage.dart';
@@ -20,9 +21,7 @@ class _NavigationPageState extends State<NavigationPage>
 
   List<Widget> _tabBar = [
     HomePage(),
-    Container(
-      color: Colors.blue,
-    ),
+    ChatPage(),
     LocationPage(),
     ProfilePage(),
   ];
@@ -32,14 +31,14 @@ class _NavigationPageState extends State<NavigationPage>
     final homeNavigationBar = CurvedNavigationBar(
         index: _page,
         items: [
-          new Icon(Icons.home, size: 30),
-          new Icon(Icons.chat, size: 30),
-          new Icon(Icons.location_on, size: 30),
-          new Icon(Icons.person, size: 30)
+          new Icon(Icons.home, size: 30,color:Colors.white),
+          new Icon(Icons.chat, size: 30,color:Colors.white),
+          new Icon(Icons.location_on, size: 30,color:Colors.white),
+          new Icon(Icons.person, size: 30,color:Colors.white)
         ],
-        color: Colors.white,
-        buttonBackgroundColor: Colors.red,
-        backgroundColor: Color(0xff01A0C7),
+        color: Colors.lightBlue[200],
+        buttonBackgroundColor: Colors.lightBlue[500],
+        backgroundColor: Colors.blue[700],
         onTap: (index) {
           _page = index;
           _pageController.animateToPage(
