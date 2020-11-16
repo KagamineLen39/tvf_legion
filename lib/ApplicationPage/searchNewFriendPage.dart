@@ -2,23 +2,37 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tvf_legion/ApplicationPage/displayUserProfile.dart';
-import 'package:tvf_legion/ApplicationPage/homePage.dart';
+import 'package:tvf_legion/ApplicationPage/profilePage.dart';
 import 'package:tvf_legion/services/database.dart';
+import 'package:tvf_legion/services/helper.dart';
 
+// ignore: camel_case_types
 class searchNewFriendPage extends StatefulWidget {
   @override
   _searchNewFriendPageState createState() => _searchNewFriendPageState();
 }
 
+// ignore: camel_case_types
 class _searchNewFriendPageState extends State<searchNewFriendPage> {
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
   bool isLoading =false;
-  TextEditingController searchEditingController = new TextEditingController();
+  bool hasUserSearched = false;
+  String ownUserName;
+
   Database databaseMethods = new Database();
   QuerySnapshot searchResultSnapshot;
-  bool hasUserSearched = false;
+  TextEditingController searchEditingController = new TextEditingController();
+
+
 
   initiateSearch() async {
+
+    Helper.getUserName().then((value){
+      setState(() {
+        ownUserName = value;
+      });
+    });
+
     if(searchEditingController.text.isNotEmpty){
       setState(() {
         isLoading = true;
@@ -50,7 +64,6 @@ class _searchNewFriendPageState extends State<searchNewFriendPage> {
             child: peerList(
               searchResultSnapshot.documents[index].data["username"],
               searchResultSnapshot.documents[index].data["email"],
-              searchResultSnapshot.documents[index].data["userID"],
             ),
           );
         }
@@ -68,8 +81,7 @@ class _searchNewFriendPageState extends State<searchNewFriendPage> {
     );
   }
 
-  Widget peerList(String userName,String userEmail,userId){
-
+  Widget peerList(String userName,String userEmail){
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       child: Row(
@@ -80,9 +92,14 @@ class _searchNewFriendPageState extends State<searchNewFriendPage> {
               backgroundImage: AssetImage(''),
             ),
             onTap:(){
-              Navigator.push(context,
-                MaterialPageRoute(builder: (context)=> displayUserProfile(userProfileId: userId,))
-              );
+              if(userName == ownUserName){
+                Navigator.push(context,
+                MaterialPageRoute(builder:(context)=> ProfilePage()));
+              }else{
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context)=> displayUserProfile(userProfileId: userName))
+                );
+              }
             },
           ),
 
