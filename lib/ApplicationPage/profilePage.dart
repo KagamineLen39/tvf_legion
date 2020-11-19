@@ -1,8 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tvf_legion/Login&SignUp/loginPage.dart';
 import 'package:tvf_legion/services/auth.dart';
+import 'package:tvf_legion/services/database.dart';
 import 'package:tvf_legion/services/helper.dart';
 
 
@@ -17,8 +17,10 @@ class _ProfilePageState extends State<ProfilePage>{
 
   AuthMethods authMethods = new AuthMethods();
   bool isLoading = false;
+  Database databaseMethod = Database();
 
   String username,email,gender,birthDate;
+  String fname,lname;
 
   logOut(){
     dynamic result = authMethods.signOut();
@@ -51,12 +53,12 @@ class _ProfilePageState extends State<ProfilePage>{
 
   @override
   void initState() {
-    getUserInfoState();
     super.initState();
+    getUserInfoState();
   }
 
   getUserInfoState() async{
-    String _userID;
+
     Helper.getUserName().then((value) {
         setState(() {
           username = value;
@@ -69,14 +71,12 @@ class _ProfilePageState extends State<ProfilePage>{
         });
     });
 
-    Helper.getUserId().then((value){
-      _userID = value;
-    });
 
 
-    await Firestore.instance.collection("Users")
-        .where("userID",isEqualTo: _userID).getDocuments().then((value){
+    await databaseMethod.getUsername(username).then((value){
           setState(() {
+            fname = value.documents[0].data["fName"];
+            lname = value.documents[0].data["lName"];
             gender = value.documents[0].data["gender"];
             birthDate = value.documents[0].data["Date of Birth"];
           });
@@ -139,6 +139,7 @@ class _ProfilePageState extends State<ProfilePage>{
     final friendBar = ListTile(
               title : new Text ('Friends ',style: style.copyWith(fontWeight: FontWeight.bold),),
               onTap: (){
+                print("${gender} \n ${fname} \n ${lname} \n ${birthDate} ");
                 /*Navigator.push(
                 context,
                 new MaterialPageRoute(
