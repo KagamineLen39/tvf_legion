@@ -6,6 +6,7 @@ class User {
   String userName;
   String gender;
   String DoB;
+  List<String> friendList;
   int phoneNumber;
 
   User({
@@ -16,6 +17,7 @@ class User {
     this.userName,
     this.gender,
     this.DoB,
+    this.friendList,
     this.phoneNumber,
   });
 

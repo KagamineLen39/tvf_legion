@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:relative_scale/relative_scale.dart';
-import 'package:tvf_legion/ApplicationPage/homePage.dart';
+import 'package:tvf_legion/ApplicationPage/navigationBar.dart';
 import 'package:tvf_legion/modal/user.dart';
 import 'package:tvf_legion/services/database.dart';
 import 'package:tvf_legion/services/helper.dart';
@@ -41,7 +41,7 @@ class _Registration2State extends State<Registration2> {
 
 
     try{
-      await database.searchByUsername(userNameController.text).then((value){
+      await database.getUsername(userNameController.text).then((value){
         usernameCheck = value;
         _checker = usernameCheck.documents[0].data["username"];
         print(_checker);
@@ -83,7 +83,7 @@ class _Registration2State extends State<Registration2> {
       database.uploadUserInfo(widget.userData.userId,userInfoMap);
 
       Navigator.pushAndRemoveUntil(
-          context, MaterialPageRoute(builder: (context) =>HomePage()),
+          context, MaterialPageRoute(builder: (context) =>NavigationPage()),
           (Route<dynamic> route)=>false,
       );
     }

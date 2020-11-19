@@ -16,11 +16,14 @@ class Database{
     Firestore.instance.collection("Users").document(userId).setData(userMap);
   }
 
-  searchByUsername(String searchField){
+  getUsername(String searchField){
     return Firestore.instance
         .collection("Users")
         .where("username", isEqualTo: searchField)
         .getDocuments();
   }
 
+  searchByUsername(String searchField){
+    var userName = Firestore.instance.collection("Users").where("username",isGreaterThanOrEqualTo: searchField).getDocuments();
+  }
 }

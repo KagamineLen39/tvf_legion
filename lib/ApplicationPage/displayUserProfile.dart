@@ -6,6 +6,7 @@ import 'package:tvf_legion/Function%20Classes/AddorRemoveFriends.dart';
 import 'package:tvf_legion/services/database.dart';
 import 'package:tvf_legion/services/helper.dart';
 
+// ignore: camel_case_types
 class displayUserProfile extends StatefulWidget {
   final String userProfileId;
   displayUserProfile({this.userProfileId});
@@ -14,6 +15,7 @@ class displayUserProfile extends StatefulWidget {
   _displayUserProfileState createState() => _displayUserProfileState();
 }
 
+// ignore: camel_case_types
 class _displayUserProfileState extends State<displayUserProfile> {
   TextStyle style = TextStyle(
     fontSize: 24,
@@ -29,12 +31,12 @@ class _displayUserProfileState extends State<displayUserProfile> {
 
   Database databaseMethods = new Database();
   QuerySnapshot userDetails;
-  String username,gender,email,doB;
+  String peerUsername,gender,email,doB;
   bool isFriend = false;
   bool requestSent = false;
   String ownUsername;
 
-  Map<String, String> peerInfoMap;
+  Map<String,String > peerInfoMap;
   TextEditingController buttonTextController = new TextEditingController();
   friendSystem _fSystem = new friendSystem();
 
@@ -52,15 +54,14 @@ class _displayUserProfileState extends State<displayUserProfile> {
       userDetails = value;
 
       setState(() {
-        username = userDetails.documents[0].data["username"];
+        peerUsername = userDetails.documents[0].data["username"];
         gender = userDetails.documents[0].data["gender"];
         email = userDetails.documents[0].data["email"];
         doB = userDetails.documents[0].data["Date of Birth"];
       });
 
       peerInfoMap = {
-        "peerUsername": username,
-        "peerEmail": email,
+
       };
     }
     );
@@ -84,10 +85,11 @@ class _displayUserProfileState extends State<displayUserProfile> {
   }
 
   cancelRequest(){
-
     setState(() {
-      //_fSystem.cancelRequest(ownUsername,peerUsername);
+     requestSent = false;
     });
+
+    _fSystem.cancelRequest(ownUsername,peerUsername);
   }
 
   @override
@@ -129,7 +131,7 @@ class _displayUserProfileState extends State<displayUserProfile> {
 
     final userNameBar =  Container(
       child: Text(
-          "$username",
+          "$peerUsername",
         textAlign: TextAlign.center,
         style: TextStyle(
           fontSize: 25,

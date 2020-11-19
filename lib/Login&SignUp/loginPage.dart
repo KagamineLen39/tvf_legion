@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:tvf_legion/ApplicationPage/navigationBar.dart';
 import 'package:tvf_legion/Login&SignUp/ForgotPassword.dart';
-import 'package:tvf_legion/ApplicationPage/homePage.dart';
 import 'package:tvf_legion/Login&SignUp/registrationPage.dart';
 import 'package:tvf_legion/services/auth.dart';
 import 'package:tvf_legion/services/database.dart';
@@ -87,7 +87,7 @@ class _LoginPageState extends State<LoginPage> {
 
 
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) =>HomePage())
+            context, MaterialPageRoute(builder: (context) =>NavigationPage())
         );
       }
     }
