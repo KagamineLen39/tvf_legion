@@ -37,7 +37,7 @@ class _searchNewFriendPageState extends State<searchNewFriendPage> {
       setState(() {
         isLoading = true;
       });
-      await databaseMethods.searchByUsername(searchEditingController.text.trimRight()).then((snapshot){
+      await databaseMethods.getUsername(searchEditingController.text.trimRight()).then((snapshot){
         searchResultSnapshot = snapshot;
           print("$snapshot");
         setState(() {

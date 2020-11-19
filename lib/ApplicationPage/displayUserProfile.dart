@@ -31,72 +31,148 @@ class _displayUserProfileState extends State<displayUserProfile> {
 
   Database databaseMethods = new Database();
   QuerySnapshot userDetails;
-  String peerUsername,gender,email,doB;
+  String peerUsername,gender,peerEmail,doB,peerID;
   bool isFriend = false;
-  bool requestSent = false;
-  String ownUsername;
+  bool requestSent;
+  bool isLoading = false;
+  String ownUserID,ownEmail,ownUserName;
+  String buttonText;
 
-  Map<String,String > peerInfoMap;
+  Map<String,String> ownMap;
+  Map<String,String > addPeerMap;
   TextEditingController buttonTextController = new TextEditingController();
   friendSystem _fSystem = new friendSystem();
+  QuerySnapshot requestChecker;
 
   @override
   void initState(){
     super.initState();
     getPeerDetails();
     getOwnDetail();
+    checkRequest();
+    nullChecker();
   }
 
+  nullChecker(){
+  if(buttonText == null && requestSent == null){
+    setState(() {
+      requestSent = false;
+      isLoading = true;
+    });
+  }else{
+    setState(() {
+      isLoading = false;
+    });
+  }
+  }
+
+  checkRequest()async{
+    String hasSent;
+
+    requestChecker = await _fSystem.checkRequestSent(ownUserID, peerID);
+    requestChecker.documents[0].data["peerID"].then((value){
+      hasSent = value;
+
+      if(hasSent != peerID){
+        setState(() {
+          requestSent = false;
+          isLoading = false;
+          buttonText = "Add";
+        });
+      }else{
+        setState(() {
+          requestSent = true;
+          isLoading = true;
+          buttonText = "Cancel Request";
+        });
+      }
+
+    });
+  }
 
   getPeerDetails() async{
 
-    await databaseMethods.searchByUsername(widget.userProfileId).then((value){
+    await databaseMethods.getUsername(widget.userProfileId).then((value){
       userDetails = value;
 
       setState(() {
         peerUsername = userDetails.documents[0].data["username"];
         gender = userDetails.documents[0].data["gender"];
-        email = userDetails.documents[0].data["email"];
+        peerID = userDetails.documents[0].data["userID"];
+        peerEmail = userDetails.documents[0].data["email"];
         doB = userDetails.documents[0].data["Date of Birth"];
       });
 
-      peerInfoMap = {
-
+      addPeerMap = {
+        "peerID": peerID,
+        "peerUsername": peerUsername,
+        "peerEmail": peerEmail,
       };
+
     }
     );
   }
 
   getOwnDetail(){
+    Helper.getUserId().then((value){
+      setState(() {
+        ownUserID = value;
+      });
+    });
+
+    Helper.getUserEmail().then((value){
+      setState(() {
+        ownEmail = value;
+      });
+    });
     Helper.getUserName().then((value){
       setState(() {
-        ownUsername = value;
+        ownUserName = value;
       });
     });
   }
 
-  addFriend(){
+  addFriend() async{
+
+    ownMap = {
+      "UserID" : ownUserID,
+      "username": ownUserName,
+      "email": ownEmail,
+    };
 
     setState(() {
+      buttonText = "Cancel Request";
       requestSent = true;
     });
 
-    _fSystem.sendFriendRequest(ownUsername, peerInfoMap);
+    _fSystem.sendFriendRequest(ownUserID,ownMap,peerID,addPeerMap);
   }
 
   cancelRequest(){
     setState(() {
+      buttonText = "Add";
      requestSent = false;
     });
 
-    _fSystem.cancelRequest(ownUsername,peerUsername);
+    _fSystem.cancelRequest(ownUserID,peerID);
   }
 
+  buttonStateChange(){
+    if(requestSent == true){
+      setState(() {
+        cancelRequest();
+      });
+    }else{
+      setState(() {
+        addFriend();
+      });
+    }
+  }
   @override
   Widget build(BuildContext context) {
 
     final addButton = GestureDetector(
-      onTap: addFriend,
+      onTap: buttonStateChange,
       child: requestSent ?
       Container(
         margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 75.0),
@@ -105,8 +181,18 @@ class _displayUserProfileState extends State<displayUserProfile> {
         decoration: buttonDeco.copyWith(
           color: Colors.lightBlue[300],
         ),
-        child: Text(
-            "Request Sent",
+        child: isLoading?
+        Container(
+          child: SizedBox(
+            height: 15,
+            width: 15,
+            child: CircularProgressIndicator(
+              valueColor: new AlwaysStoppedAnimation<Color>(Colors.white60),
+            ),
+          ),
+        ):
+        Text(
+            buttonText,
           style: style,
           textAlign: TextAlign.center,
         ),
@@ -116,8 +202,18 @@ class _displayUserProfileState extends State<displayUserProfile> {
             height: 40,
             alignment: Alignment.center,
             decoration: buttonDeco,
-            child: Text(
-                "Add",
+            child: isLoading?
+            Container(
+              child: SizedBox(
+                height: 15,
+                width: 15,
+                child: CircularProgressIndicator(
+                  valueColor: new AlwaysStoppedAnimation<Color>(Colors.white60),
+                ),
+              ),
+            ):
+            Text(
+                buttonText,
               style: style,
               textAlign: TextAlign.center,
             ),
@@ -168,7 +264,7 @@ class _displayUserProfileState extends State<displayUserProfile> {
           leading:Icon(
             Icons.mail,
           ),
-          title: Text("$email",
+          title: Text("$peerEmail",
       ),
       ),
     );
