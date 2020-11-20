@@ -71,8 +71,8 @@ class _ProfilePageState extends State<ProfilePage>{
         });
     });
 
-
-
+    //TODO
+    //Unable to retrieve correct info yet
     await databaseMethod.getUsername(username).then((value){
           setState(() {
             fname = value.documents[0].data["fName"];

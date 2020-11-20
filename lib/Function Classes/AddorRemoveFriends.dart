@@ -13,6 +13,11 @@ class friendSystem{
     Firestore.instance.collection("friendSystem").document(userID).collection("sentRequests").document(peerID).delete();
   }
 
+  retrieveRequest(peerID,peerMap,userID,userMap){
+    Firestore.instance.collection("friendSystem").document(peerID).setData(peerMap);
+    Firestore.instance.collection("friendSystem").document(peerID).collection("receivedRequests").document(userID).setData(userMap);
+  }
+
   checkRequestSent(userID,peerID){
    var found =  Firestore.instance.collection("friendSystem").document(userID).collection("sentRequests").where("peerID",isEqualTo: peerID).getDocuments();
 

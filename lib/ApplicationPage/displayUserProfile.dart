@@ -40,6 +40,9 @@ class _displayUserProfileState extends State<displayUserProfile> {
 
   Map<String,String> ownMap;
   Map<String,String > addPeerMap;
+  Map<String,String> retrieveUserMap;
+  Map<String,String> retrievePeerMap;
+
   TextEditingController buttonTextController = new TextEditingController();
   friendSystem _fSystem = new friendSystem();
   QuerySnapshot requestChecker;
@@ -109,6 +112,12 @@ class _displayUserProfileState extends State<displayUserProfile> {
         "peerEmail": peerEmail,
       };
 
+      retrievePeerMap = {
+        "userID": peerID,
+        "username": peerUsername,
+        "email":peerEmail,
+      };
+
     }
     );
   }
@@ -135,9 +144,15 @@ class _displayUserProfileState extends State<displayUserProfile> {
   addFriend() async{
 
     ownMap = {
-      "UserID" : ownUserID,
+      "userID" : ownUserID,
       "username": ownUserName,
       "email": ownEmail,
+    };
+
+    retrieveUserMap={
+      "peerID": ownUserID,
+      "peerUsername":ownUserName,
+      "peerEmail": ownEmail,
     };
 
     setState(() {
@@ -146,6 +161,7 @@ class _displayUserProfileState extends State<displayUserProfile> {
     });
 
     _fSystem.sendFriendRequest(ownUserID,ownMap,peerID,addPeerMap);
+    _fSystem.retrieveRequest(peerID, retrievePeerMap, ownUserID, retrieveUserMap);
   }
 
   cancelRequest(){
