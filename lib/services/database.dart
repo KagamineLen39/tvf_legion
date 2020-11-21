@@ -24,6 +24,6 @@ class Database{
   }
 
   searchByUsername(String searchField){
-    var userName = Firestore.instance.collection("Users").where("username",isGreaterThanOrEqualTo: searchField).getDocuments();
+    return Firestore.instance.collection("Users").where('username',isGreaterThanOrEqualTo: searchField).getDocuments();
   }
 }

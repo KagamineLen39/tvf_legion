@@ -37,13 +37,21 @@ class _searchNewFriendPageState extends State<searchNewFriendPage> {
       setState(() {
         isLoading = true;
       });
-      await databaseMethods.getUsername(searchEditingController.text.trimRight()).then((snapshot){
+      await databaseMethods.searchByUsername(searchEditingController.text.trimRight()).then((QuerySnapshot snapshot){
         searchResultSnapshot = snapshot;
-          print("$snapshot");
-        setState(() {
-          isLoading = false;
-          hasUserSearched = true;
-        });
+
+          if(searchResultSnapshot.documents.isEmpty){
+            setState(() {
+              isLoading = false;
+              hasUserSearched = false;
+            });
+          }else{
+            setState(() {
+              isLoading = false;
+              hasUserSearched = true;
+            });
+          }
+
       });
     }else{
       setState(() {
@@ -71,7 +79,7 @@ class _searchNewFriendPageState extends State<searchNewFriendPage> {
     Container(
       padding: EdgeInsets.all(25),
       child: Text(
-        "Please enter a username",
+        "No user found",
         style: style.copyWith(
           fontSize: 24,
           fontWeight: FontWeight.bold,
@@ -226,21 +234,30 @@ class _searchNewFriendPageState extends State<searchNewFriendPage> {
     return Scaffold(
       body: Container(
         color: Colors.lightBlue[500],
-        child: Padding(
-            padding: const EdgeInsets.fromLTRB(10,25,10,5),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                backButton,
-                SizedBox(height: 5),
-                Column(
-                  children: <Widget>[
-                    searchBar,
-                    userList(),
-                  ],
-                ),
-              ],
-            )),
+        alignment: Alignment.topLeft,
+        child: SingleChildScrollView(
+          child: Padding(
+              padding: const EdgeInsets.fromLTRB(10,25,10,5),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  backButton,
+                  SizedBox(height: 5),
+                  Column(
+                    children: <Widget>[
+                      searchBar,
+
+                      Container(
+                        child: SingleChildScrollView(
+                          child: userList(),
+                        ),
+                      ),
+
+                    ],
+                  ),
+                ],
+              )),
+        ),
       ),
     );
   }

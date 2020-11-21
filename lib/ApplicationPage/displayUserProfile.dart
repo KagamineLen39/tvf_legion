@@ -54,6 +54,7 @@ class _displayUserProfileState extends State<displayUserProfile> {
     getPeerDetails();
     getOwnDetail();
     checkRequest();
+    checkFriend();
   }
 
   //TODO
@@ -77,6 +78,23 @@ class _displayUserProfileState extends State<displayUserProfile> {
           requestSent = true;
         });
 
+      }
+    });
+  }
+  //Same issue
+  checkFriend()async{
+    await _fSystem.friendChecker(ownUserID, peerID).then((QuerySnapshot val){
+      if(val.documents.isEmpty){
+        print("null");
+        setState(() {
+          isLoading = false;
+          isFriend = false;
+        });
+      }else{
+        setState(() {
+          isFriend = true;
+          isLoading = false;
+        });
       }
     });
   }
@@ -185,6 +203,27 @@ class _displayUserProfileState extends State<displayUserProfile> {
 
   @override
   Widget build(BuildContext context) {
+
+    final removeFriendButton = GestureDetector(
+      onTap:(){
+        //removeFriend,
+      },
+      child:Container(
+        margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 75.0),
+        height: 40,
+        alignment: Alignment.center,
+        decoration: buttonDeco.copyWith(
+          color: Colors.red,
+          ),
+          child: isLoading?
+        loadingContainer():
+        Text(
+          "Remove Friend",
+          style: style,
+          textAlign: TextAlign.center,
+        ),
+      )
+    );
 
     final addButton = GestureDetector(
       onTap: buttonStateChange,
@@ -300,7 +339,9 @@ class _displayUserProfileState extends State<displayUserProfile> {
               ),
 
               userNameBar,
-              addButton,
+              Container(
+                child: isFriend ? removeFriendButton: addButton,
+              ),
               genderBar,
               emailBar,
               birthDateBar,
@@ -308,6 +349,7 @@ class _displayUserProfileState extends State<displayUserProfile> {
               FloatingActionButton(
                   onPressed:(){
                     checkRequest();
+                    checkFriend();
                   }
               ),
 

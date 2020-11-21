@@ -22,9 +22,12 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
 
   bool isLoading = false;
   bool hasFriends = false;
+  bool hasRequest = false;
   bool friendRequestPage = false;
   int index =0;
-  String userID;
+  String ownUserID,ownEmail,ownUsername;
+
+  Map<String,String> ownMap;
 
   final List<String> chatPageOptions = ["Chats","Friend Requests"];
 
@@ -33,18 +36,54 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   void initState(){
     super.initState();
     getUserPreferences();
+    getRequestList();
   }
 
+  //initializations
   getUserPreferences() async{
     Helper.getUserId().then((value){
-      setState(()=>userID = value);
+      setState(()=>ownUserID = value);
+    });
+    Helper.getUserName().then((value){
+      setState(()=> ownUsername= value);
+    });
+    Helper.getUserEmail().then((value){
+      setState(() => ownEmail =value);
     });
 
-    await _fSystem.getRequestList(userID).then((value){
-      requestSnapshot = value;
+    ownMap = {
+      "peerID": ownUserID,
+      "peerUsername": ownUsername,
+      "peerEmail": ownEmail,
+    };
+  }
+
+  getRequestList() async{
+    await _fSystem.getRequestList(ownUserID).then((val){
+      requestSnapshot = val;
+
+      if(requestSnapshot.documents.isEmpty){
+        setState(() {
+          hasRequest =false;
+        });
+      }else{
+        setState(() {
+          hasRequest = true;
+        });
+      }
     });
   }
 
+  //Functions
+  acceptRequest(peerID,peerMap){
+    _fSystem.acceptRequest(ownUserID, ownMap,peerID, peerMap);
+  }
+
+  deleteRequest(peerID){
+    _fSystem.deleteRequest(ownUserID, peerID);
+  }
+
+  //Recent
   Widget userList(){
     return hasFriends?
     ListView.builder(
@@ -116,36 +155,127 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     );
   }
 
- /* Widget requestList(){
-    return StreamBuilder<QuerySnapshot>(
-      stream: _fSystem.getRequestList(userID),
-      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
-       if(!snapshot.hasData){
-         return Text("There is no requests");
-       }else{
-         return new ListView(
-           children: [
-             ListView.builder(
-             shrinkWrap: true,
-             itemCount: requestSnapshot.documents.length,
-             itemBuilder: (context, index){
-               return getRequests(snapshot);
-             }
-             ),
-           ]
-         );
-       }
-      }
+  //Requests
+  Widget requestList(){
+
+    return hasRequest?
+    ListView.builder(
+        shrinkWrap: true,
+        itemCount: requestSnapshot.documents.length,
+        itemBuilder: (context, index){
+          return Card(
+            color: Colors.white60,
+            margin: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
+            child: userRequest(
+              requestSnapshot.documents[index].data["peerID"],
+              requestSnapshot.documents[index].data["peerUsername"],
+              requestSnapshot.documents[index].data["peerEmail"],
+            ),
+          );
+        }
+    ):
+    Container(
+      child: Expanded(
+        child: Text("No request",
+          style: style.copyWith(
+            fontSize: 28,
+            color: Colors.white38,
+          ),
+        ),
+      ),
     );
   }
 
-  getRequests(AsyncSnapshot<QuerySnapshot> snapshot){
-    return snapshot.data.documents.map((val) => new ListTile(
-      title: Text(val.data["peerUsername"]),
-      subtitle: Text(val.data["peerEmail"]),
-      )
+  Widget userRequest(String userID,String userName,String userEmail){
+
+    Map <String,String> peerMap = {
+      "peerID": userID,
+      "peerUsername": userName,
+      "peerEmail": userEmail,
+    };
+
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+      child: Row(
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                userName,
+                style: TextStyle(
+                    color: Colors.black26,
+                    fontSize: 16
+                ),
+              ),
+              Text(
+                userEmail,
+                style: TextStyle(
+                    color: Colors.black38,
+                    fontSize: 16
+                ),
+              )
+            ],
+          ),
+          Spacer(),
+          GestureDetector(
+            onTap: (){
+              acceptRequest(userID, peerMap);
+              getRequestList();
+            },
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 12,vertical: 8),
+              decoration: BoxDecoration(
+                  color: Colors.blue,
+                  borderRadius: BorderRadius.circular(24)
+              ),
+              child: Text("Accept",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16
+                ),),
+            ),
+          ),
+
+          SizedBox(
+            width: 3,
+          ),
+
+          GestureDetector(
+            onTap: (){
+              deleteRequest(userID);
+              getRequestList();
+            },
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 12,vertical: 8),
+              decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(24)
+              ),
+              child: Text("Delete",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16
+                ),),
+            ),
+          )
+
+        ],
+      ),
     );
-  }*/
+  }
+
+  loadingContainer(){
+    return Container(
+      child: SizedBox(
+        height: 15,
+        width: 15,
+        child: CircularProgressIndicator(
+          valueColor: new AlwaysStoppedAnimation<Color>(Colors.white60),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -238,6 +368,18 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
       );
     }
 
+
+    refreshButton(){
+      return Container(
+        child: GestureDetector(
+          child: Icon(Icons.refresh),
+          onTap: () {
+            getRequestList();
+          },
+        ),
+      );
+    }
+
     contentPages(){
      return friendRequestPage? Expanded(
        child: Container(
@@ -250,23 +392,30 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                topRight: Radius.circular(30),
              )
          ),
-         child: Column(
-           children: <Widget>[
-             Expanded(
-               child: Text(
-                 "Requests",
-                 style: style.copyWith(
-                   fontWeight: FontWeight.bold,
-                   fontSize: 28,
+         child: SingleChildScrollView(
+           child: Column(
+             children: <Widget>[
+               Row(
+                 children: [
+                   Expanded(
+                     child: Text(
+                       "Requests",
+                       style: style.copyWith(
+                         fontWeight: FontWeight.bold,
+                         fontSize: 28,
+                       ),
+                     ),
+                   ),
+                   refreshButton(),
+                 ],
+               ),
+               Container(
+                 child: SingleChildScrollView(
+                   child: requestList(),
                  ),
-               ),
-             ),
-             Container(
-               child: SingleChildScrollView(
-                // child: requestList(),
-               ),
-               ),
-           ],
+                 ),
+             ],
+           ),
          ),
        ),
      ):
@@ -284,15 +433,20 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
          child: Column(
            crossAxisAlignment: CrossAxisAlignment.start,
            children: <Widget>[
-             Expanded(
-               child: Text(
-                 "Recent",
-                 style: style.copyWith(
-                   fontWeight: FontWeight.bold,
-                   fontSize: 28,
+             Row(
+               children: [
+                 Expanded(
+                     child: Text(
+                         "Recent",
+                         style: style.copyWith(
+                           fontWeight: FontWeight.bold,
+                           fontSize: 28,
+                         ),
+                       ),
                  ),
-               ),
+               ],
              ),
+
              Container(
                  child: userList(),
                ),
@@ -303,25 +457,23 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
      
     }
 
-    return Scaffold(
-      backgroundColor: Colors.lightBlue[200],
-      appBar: AppBar(
-        title: searchNewFriend,
-        backgroundColor: Colors.lightBlue[600],
-      ),
-      body: Container(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            pageChanger(),
-            contentPages(),
-          ],
+      return Scaffold(
+        backgroundColor: Colors.lightBlue[200],
+        appBar: AppBar(
+          title: searchNewFriend,
+          backgroundColor: Colors.lightBlue[600],
         ),
-      ),
-    );
+        body: Container(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              pageChanger(),
+              contentPages(),
+            ],
+          ),
+        ),
+      );
+    }
+
   }
-
-
-
-}

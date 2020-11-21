@@ -19,11 +19,11 @@ class friendSystem{
   }
 
   acceptRequest(userID,userMap,peerID,peerMap){
-    Firestore.instance.collection("friendSystem").document(userID).setData(userMap);
     Firestore.instance.collection("friendSystem").document(userID).collection("Friends").document(peerID).setData(peerMap);
+    Firestore.instance.collection("friendSystem").document(peerID).collection("Friends").document(userID).setData(userMap);
 
     Firestore.instance.collection("friendSystem").document(userID).collection("receivedRequests").document(peerID).delete();
-    Firestore.instance.collection('friendSystem').document("peerID").collection("sentRequests").document(userID).delete();
+    Firestore.instance.collection('friendSystem').document(peerID).collection("sentRequests").document(userID).delete();
   }
 
   deleteRequest(userID,peerID){
@@ -37,8 +37,17 @@ class friendSystem{
          .where("peerID",isEqualTo: peerID).getDocuments();
   }
 
-  getRequestList(userID){
-    return Firestore.instance.collection("friendSystem").document(userID).collection("receivedRequests").snapshots();
+  friendChecker(userID,peerID){
+    return Firestore.instance.collection("friendSystem")
+        .document(userID).collection("Friends")
+        .where("peerID",isEqualTo: peerID).getDocuments();
   }
 
+  getRequestList(userID){
+    return Firestore.instance.collection("friendSystem").document(userID).collection("receivedRequests").getDocuments();
+  }
+
+  getFriendList(userID){
+    return Firestore.instance.collection("friendSystem").document(userID).collection("Friends").getDocuments();
+  }
 }
