@@ -37,6 +37,12 @@ class friendSystem{
          .where("peerID",isEqualTo: peerID).getDocuments();
   }
 
+  receivedRequestChecker(userID,peerID){
+    return Firestore.instance.collection("friendSystem")
+        .document(userID).collection("receivedRequests")
+        .where("peerID",isEqualTo: peerID).getDocuments();
+  }
+
   friendChecker(userID,peerID){
     return Firestore.instance.collection("friendSystem")
         .document(userID).collection("Friends")

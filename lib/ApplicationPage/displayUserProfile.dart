@@ -35,10 +35,12 @@ class _displayUserProfileState extends State<displayUserProfile> {
   bool isFriend = false;
   bool requestSent = false;
   bool isLoading = false;
+  bool requestReceived = false;
 
   String peerUsername,gender,peerEmail,doB,peerID;
   String ownUserID,ownEmail,ownUserName;
 
+  String buttonText = "Loading...";
 
   Map<String,String> ownMap;
   Map<String,String > addPeerMap;
@@ -51,31 +53,31 @@ class _displayUserProfileState extends State<displayUserProfile> {
   @override
   void initState(){
     super.initState();
+
     getPeerDetails();
     getOwnDetail();
-    checkRequest();
+    checkSentRequest();
     checkFriend();
+    checkReceivedRequest();
+
   }
 
   //TODO
   //Only when button isClick, it check
-  checkRequest()async{
+  checkSentRequest()async{
     await _fSystem.requestSentChecker(ownUserID, peerID).then((QuerySnapshot val){
 
       if(val.documents.isEmpty){
-
-        print("null");
-
         setState(() {
-          isLoading = false;
           requestSent = false;
+          buttonText = "Add";
         });
       }else{
         print(val.documents[0].data["peerID"]);
 
         setState(() {
-          isLoading = false;
           requestSent = true;
+          buttonText = "Cancel Request";
         });
 
       }
@@ -83,17 +85,30 @@ class _displayUserProfileState extends State<displayUserProfile> {
   }
   //Same issue
   checkFriend()async{
+
     await _fSystem.friendChecker(ownUserID, peerID).then((QuerySnapshot val){
       if(val.documents.isEmpty){
-        print("null");
         setState(() {
-          isLoading = false;
           isFriend = false;
         });
       }else{
         setState(() {
           isFriend = true;
-          isLoading = false;
+        });
+      }
+    });
+  }
+
+  //Same issue
+  checkReceivedRequest() async{
+    await _fSystem.receivedRequestChecker(ownUserID, peerID).then((QuerySnapshot val){
+      if(val.documents.isEmpty){
+        setState(() {
+          requestReceived = false;
+        });
+      }else{
+        setState(() {
+          requestReceived = true;
         });
       }
     });
@@ -178,14 +193,12 @@ class _displayUserProfileState extends State<displayUserProfile> {
   }
 
   buttonStateChange(){
+    checkSentRequest();
+
     if(requestSent == true){
-      setState(() {
-        cancelRequest();
-      });
+      cancelRequest();
     }else{
-      setState(() {
-        addFriend();
-      });
+      addFriend();
     }
   }
 
@@ -225,33 +238,74 @@ class _displayUserProfileState extends State<displayUserProfile> {
       )
     );
 
+    final acceptDeleteRequest = Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+      Expanded(
+        child: GestureDetector(
+          onTap:(){
+           _fSystem.acceptRequest(ownUserID, ownMap, peerID, addPeerMap);
+
+           checkSentRequest();
+           checkFriend();
+           checkReceivedRequest();
+
+            },
+            child:Container(
+              margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15),
+              height: 40,
+              alignment: Alignment.center,
+              decoration: buttonDeco,
+              child:Text(
+                "Accept",
+                style: style,
+                textAlign: TextAlign.center,
+              ),
+            ),
+        ),
+      ),
+
+        Expanded(
+          child: GestureDetector(
+            onTap: (){
+              _fSystem.deleteRequest(ownUserID, peerID);
+
+              checkSentRequest();
+              checkFriend();
+              checkReceivedRequest();
+            },
+            child:Container(
+              margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15),
+              height: 40,
+              alignment: Alignment.center,
+              decoration: buttonDeco.copyWith(
+                color: Colors.red,
+              ),
+              child:Text(
+                "Delete",
+                style: style,
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+        ),
+
+      ],
+    );
+
     final addButton = GestureDetector(
       onTap: buttonStateChange,
-      child: requestSent ?
-      Container(
-        margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 75.0),
-        height: 40,
-        alignment: Alignment.center,
-        decoration: buttonDeco.copyWith(
-          color: Colors.lightBlue[300],
-        ),
-        child: isLoading?
-        loadingContainer():
-        Text(
-            "Cancel Request",
-          style: style,
-          textAlign: TextAlign.center,
-        ),
-      ):
-          Container(
-            margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 75.0),
-            height: 40,
-            alignment: Alignment.center,
-            decoration: buttonDeco,
-            child: isLoading?
-            loadingContainer():
+      child: Container(
+              margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 75.0),
+              height: 40,
+              alignment: Alignment.center,
+              decoration: requestSent? buttonDeco.copyWith(
+                color: Colors.lightBlue[400],
+              ):buttonDeco,
+              child: isLoading?
+              loadingContainer():
             Text(
-                "Add",
+                buttonText,
               style: style,
               textAlign: TextAlign.center,
             ),
@@ -321,6 +375,19 @@ class _displayUserProfileState extends State<displayUserProfile> {
       ),
     );
 
+    profileCheck(){
+      if(isFriend == true){
+        return removeFriendButton;
+      }else{
+        if(requestReceived == true){
+          return acceptDeleteRequest;
+        }else{
+          return addButton;
+        }
+      }
+
+    }
+
     return Scaffold(
       body:Container(
           color: Colors.white,
@@ -340,7 +407,7 @@ class _displayUserProfileState extends State<displayUserProfile> {
 
               userNameBar,
               Container(
-                child: isFriend ? removeFriendButton: addButton,
+                child: profileCheck(),
               ),
               genderBar,
               emailBar,
@@ -348,8 +415,9 @@ class _displayUserProfileState extends State<displayUserProfile> {
 
               FloatingActionButton(
                   onPressed:(){
-                    checkRequest();
+                    checkSentRequest();
                     checkFriend();
+                    checkReceivedRequest();
                   }
               ),
 

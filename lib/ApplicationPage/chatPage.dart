@@ -6,6 +6,8 @@ import 'package:tvf_legion/Function%20Classes/AddorRemoveFriends.dart';
 import 'package:tvf_legion/services/database.dart';
 import 'package:tvf_legion/services/helper.dart';
 
+import 'displayUserProfile.dart';
+
 class ChatPage extends StatefulWidget {
   @override
   _ChatPageState createState() => _ChatPageState();
@@ -22,7 +24,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
 
   bool isLoading = false;
   bool hasFriends = false;
-  bool hasRequest = false;
+  bool hasRequest;
   bool friendRequestPage = false;
   int index =0;
   String ownUserID,ownEmail,ownUsername;
@@ -164,7 +166,13 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
         itemCount: requestSnapshot.documents.length,
         itemBuilder: (context, index){
           return Card(
-            color: Colors.white60,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(45),
+              side: BorderSide(
+                  color: Colors.black12,
+              ),
+            ),
+            color: Colors.white,
             margin: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
             child: userRequest(
               requestSnapshot.documents[index].data["peerID"],
@@ -198,67 +206,87 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
       padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       child: Row(
         children: [
+          GestureDetector(
+            child: CircleAvatar(
+              radius: 30,
+              //TODO
+              //getUserProfilePic
+              backgroundImage: AssetImage('assets/images/profilePic.png'),
+            ),
+            onTap:(){
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context)=> displayUserProfile(userProfileId: userName))
+                );
+            },
+          ),
+
+          Spacer(),
+
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 userName,
                 style: TextStyle(
-                    color: Colors.black26,
+                    color: Colors.black,
                     fontSize: 16
                 ),
               ),
               Text(
                 userEmail,
                 style: TextStyle(
-                    color: Colors.black38,
+                    color: Colors.black,
                     fontSize: 16
                 ),
               )
             ],
           ),
           Spacer(),
-          GestureDetector(
-            onTap: (){
-              acceptRequest(userID, peerMap);
-              getRequestList();
-            },
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 12,vertical: 8),
-              decoration: BoxDecoration(
-                  color: Colors.blue,
-                  borderRadius: BorderRadius.circular(24)
+          Column(
+            children: [
+              GestureDetector(
+                onTap: (){
+                  acceptRequest(userID, peerMap);
+                  getRequestList();
+                },
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 12,vertical: 8),
+                  decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.circular(24)
+                  ),
+                  child: Text("Accept",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16
+                    ),),
+                ),
               ),
-              child: Text("Accept",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16
-                ),),
-            ),
-          ),
 
-          SizedBox(
-            width: 3,
-          ),
-
-          GestureDetector(
-            onTap: (){
-              deleteRequest(userID);
-              getRequestList();
-            },
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 12,vertical: 8),
-              decoration: BoxDecoration(
-                  color: Colors.red,
-                  borderRadius: BorderRadius.circular(24)
+              SizedBox(
+                height: 3,
               ),
-              child: Text("Delete",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16
-                ),),
-            ),
-          )
+
+              GestureDetector(
+                onTap: (){
+                  deleteRequest(userID);
+                  getRequestList();
+                },
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 12,vertical: 8),
+                  decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(24)
+                  ),
+                  child: Text("Delete",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16
+                    ),),
+                ),
+              )
+            ],
+          ),
 
         ],
       ),
@@ -375,6 +403,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
           child: Icon(Icons.refresh),
           onTap: () {
             getRequestList();
+            print(hasRequest);
           },
         ),
       );
