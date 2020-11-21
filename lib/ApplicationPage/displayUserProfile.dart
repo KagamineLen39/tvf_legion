@@ -31,21 +31,22 @@ class _displayUserProfileState extends State<displayUserProfile> {
 
   Database databaseMethods = new Database();
   QuerySnapshot userDetails;
-  String peerUsername,gender,peerEmail,doB,peerID;
+
   bool isFriend = false;
-  bool requestSent;
+  bool requestSent = false;
   bool isLoading = false;
+
+  String peerUsername,gender,peerEmail,doB,peerID;
   String ownUserID,ownEmail,ownUserName;
-  String buttonText;
+
 
   Map<String,String> ownMap;
   Map<String,String > addPeerMap;
   Map<String,String> retrieveUserMap;
   Map<String,String> retrievePeerMap;
 
-  TextEditingController buttonTextController = new TextEditingController();
   friendSystem _fSystem = new friendSystem();
-  QuerySnapshot requestChecker;
+
 
   @override
   void initState(){
@@ -53,43 +54,30 @@ class _displayUserProfileState extends State<displayUserProfile> {
     getPeerDetails();
     getOwnDetail();
     checkRequest();
-    nullChecker();
   }
 
-  nullChecker(){
-  if(buttonText == null && requestSent == null){
-    setState(() {
-      requestSent = false;
-      isLoading = true;
-    });
-  }else{
-    setState(() {
-      isLoading = false;
-    });
-  }
-  }
-
+  //TODO
+  //Only when button isClick, it check
   checkRequest()async{
-    String hasSent;
+    await _fSystem.requestSentChecker(ownUserID, peerID).then((QuerySnapshot val){
 
-    requestChecker = await _fSystem.checkRequestSent(ownUserID, peerID);
-    requestChecker.documents[0].data["peerID"].then((value){
-      hasSent = value;
+      if(val.documents.isEmpty){
 
-      if(hasSent != peerID){
+        print("null");
+
         setState(() {
-          requestSent = false;
           isLoading = false;
-          buttonText = "Add";
+          requestSent = false;
         });
       }else{
-        setState(() {
-          requestSent = true;
-          isLoading = true;
-          buttonText = "Cancel Request";
-        });
-      }
+        print(val.documents[0].data["peerID"]);
 
+        setState(() {
+          isLoading = false;
+          requestSent = true;
+        });
+
+      }
     });
   }
 
@@ -141,7 +129,7 @@ class _displayUserProfileState extends State<displayUserProfile> {
     });
   }
 
-  addFriend() async{
+  addFriend(){
 
     ownMap = {
       "userID" : ownUserID,
@@ -156,7 +144,6 @@ class _displayUserProfileState extends State<displayUserProfile> {
     };
 
     setState(() {
-      buttonText = "Cancel Request";
       requestSent = true;
     });
 
@@ -166,7 +153,6 @@ class _displayUserProfileState extends State<displayUserProfile> {
 
   cancelRequest(){
     setState(() {
-      buttonText = "Add";
      requestSent = false;
     });
 
@@ -184,6 +170,19 @@ class _displayUserProfileState extends State<displayUserProfile> {
       });
     }
   }
+
+  loadingContainer(){
+    return Container(
+      child: SizedBox(
+        height: 15,
+        width: 15,
+        child: CircularProgressIndicator(
+          valueColor: new AlwaysStoppedAnimation<Color>(Colors.white60),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -198,17 +197,9 @@ class _displayUserProfileState extends State<displayUserProfile> {
           color: Colors.lightBlue[300],
         ),
         child: isLoading?
-        Container(
-          child: SizedBox(
-            height: 15,
-            width: 15,
-            child: CircularProgressIndicator(
-              valueColor: new AlwaysStoppedAnimation<Color>(Colors.white60),
-            ),
-          ),
-        ):
+        loadingContainer():
         Text(
-            buttonText,
+            "Cancel Request",
           style: style,
           textAlign: TextAlign.center,
         ),
@@ -219,17 +210,9 @@ class _displayUserProfileState extends State<displayUserProfile> {
             alignment: Alignment.center,
             decoration: buttonDeco,
             child: isLoading?
-            Container(
-              child: SizedBox(
-                height: 15,
-                width: 15,
-                child: CircularProgressIndicator(
-                  valueColor: new AlwaysStoppedAnimation<Color>(Colors.white60),
-                ),
-              ),
-            ):
+            loadingContainer():
             Text(
-                buttonText,
+                "Add",
               style: style,
               textAlign: TextAlign.center,
             ),
@@ -238,7 +221,9 @@ class _displayUserProfileState extends State<displayUserProfile> {
 
     final profilePic =CircleAvatar(
       radius: 80,
-      backgroundImage: AssetImage(''),
+      //TODO
+      //getFromUserProfile
+      backgroundImage: AssetImage('assets/images/profilePic.png'),
     );
 
     final userNameBar =  Container(
@@ -305,7 +290,7 @@ class _displayUserProfileState extends State<displayUserProfile> {
             children:<Widget>[
               Container(
                 alignment: Alignment.topLeft,
-                height: 15,
+                height: 20,
                 child: backButton,
               ),
               Container(
@@ -314,15 +299,17 @@ class _displayUserProfileState extends State<displayUserProfile> {
                 child: profilePic,
               ),
 
-
               userNameBar,
-
-
               addButton,
-
               genderBar,
               emailBar,
               birthDateBar,
+
+              FloatingActionButton(
+                  onPressed:(){
+                    checkRequest();
+                  }
+              ),
 
             ],
           )

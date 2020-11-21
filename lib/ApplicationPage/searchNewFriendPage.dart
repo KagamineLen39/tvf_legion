@@ -89,7 +89,9 @@ class _searchNewFriendPageState extends State<searchNewFriendPage> {
           GestureDetector(
             child: CircleAvatar(
               radius: 25,
-              backgroundImage: AssetImage(''),
+              //TODO
+              //getUserProfilePic
+              backgroundImage: AssetImage('assets/images/profilePic.png'),
             ),
             onTap:(){
               if(userName == ownUserName){
@@ -166,6 +168,7 @@ class _searchNewFriendPageState extends State<searchNewFriendPage> {
 
     final searchLabel = TextFormField(
       controller: searchEditingController,
+      autofocus: true,
       cursorColor: Colors.white,
       style: style.copyWith(
         color: Colors.white,

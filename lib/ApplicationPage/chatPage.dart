@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:relative_scale/relative_scale.dart';
 import 'package:tvf_legion/ApplicationPage/searchNewFriendPage.dart';
+import 'package:tvf_legion/Function%20Classes/AddorRemoveFriends.dart';
 import 'package:tvf_legion/services/database.dart';
+import 'package:tvf_legion/services/helper.dart';
 
 class ChatPage extends StatefulWidget {
   @override
@@ -14,14 +16,34 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   TextEditingController searchController = new TextEditingController();
   Database databaseMethods = new Database();
   TextEditingController searchEditingController = new TextEditingController();
+  friendSystem _fSystem = new friendSystem();
   QuerySnapshot searchResultSnapshot;
+  QuerySnapshot requestSnapshot;
 
   bool isLoading = false;
   bool hasFriends = false;
   bool friendRequestPage = false;
   int index =0;
+  String userID;
 
   final List<String> chatPageOptions = ["Chats","Friend Requests"];
+
+
+  @override
+  void initState(){
+    super.initState();
+    getUserPreferences();
+  }
+
+  getUserPreferences() async{
+    Helper.getUserId().then((value){
+      setState(()=>userID = value);
+    });
+
+    await _fSystem.getRequestList(userID).then((value){
+      requestSnapshot = value;
+    });
+  }
 
   Widget userList(){
     return hasFriends?
@@ -94,6 +116,36 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     );
   }
 
+ /* Widget requestList(){
+    return StreamBuilder<QuerySnapshot>(
+      stream: _fSystem.getRequestList(userID),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
+       if(!snapshot.hasData){
+         return Text("There is no requests");
+       }else{
+         return new ListView(
+           children: [
+             ListView.builder(
+             shrinkWrap: true,
+             itemCount: requestSnapshot.documents.length,
+             itemBuilder: (context, index){
+               return getRequests(snapshot);
+             }
+             ),
+           ]
+         );
+       }
+      }
+    );
+  }
+
+  getRequests(AsyncSnapshot<QuerySnapshot> snapshot){
+    return snapshot.data.documents.map((val) => new ListTile(
+      title: Text(val.data["peerUsername"]),
+      subtitle: Text(val.data["peerEmail"]),
+      )
+    );
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -211,7 +263,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
              ),
              Container(
                child: SingleChildScrollView(
-                 //friendRequestsList
+                // child: requestList(),
                ),
                ),
            ],

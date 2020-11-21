@@ -52,6 +52,7 @@ class _NavigationPageState extends State<NavigationPage>
     return Scaffold(
       bottomNavigationBar: homeNavigationBar,
       body: PageView(
+        physics: NeverScrollableScrollPhysics(),
         controller: _pageController,
         onPageChanged: (index) {
           setState(() {

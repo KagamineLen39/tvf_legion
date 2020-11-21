@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 // ignore: camel_case_types
 class friendSystem{
-  
   sendFriendRequest(userID,userMap,peerID,peerMap){
     Firestore.instance.collection("friendSystem").document(userID).setData(userMap);
     Firestore.instance.collection("friendSystem").document(userID).collection("sentRequests").document(peerID).setData(peerMap);
@@ -11,6 +10,7 @@ class friendSystem{
 
   cancelRequest(userID,peerID){
     Firestore.instance.collection("friendSystem").document(userID).collection("sentRequests").document(peerID).delete();
+    Firestore.instance.collection("friendSystem").document(peerID).collection("receivedRequests").document(userID).delete();
   }
 
   retrieveRequest(peerID,peerMap,userID,userMap){
@@ -18,13 +18,27 @@ class friendSystem{
     Firestore.instance.collection("friendSystem").document(peerID).collection("receivedRequests").document(userID).setData(userMap);
   }
 
-  checkRequestSent(userID,peerID){
-   var found =  Firestore.instance.collection("friendSystem").document(userID).collection("sentRequests").where("peerID",isEqualTo: peerID).getDocuments();
+  acceptRequest(userID,userMap,peerID,peerMap){
+    Firestore.instance.collection("friendSystem").document(userID).setData(userMap);
+    Firestore.instance.collection("friendSystem").document(userID).collection("Friends").document(peerID).setData(peerMap);
 
-   if(found != null){
-     return found;
-   }else{
-     return 0;
-   }
+    Firestore.instance.collection("friendSystem").document(userID).collection("receivedRequests").document(peerID).delete();
+    Firestore.instance.collection('friendSystem').document("peerID").collection("sentRequests").document(userID).delete();
   }
+
+  deleteRequest(userID,peerID){
+    Firestore.instance.collection("friendSystem").document(userID).collection("receivedRequests").document(peerID).delete();
+    Firestore.instance.collection('friendSystem').document("peerID").collection("sentRequests").document(userID).delete();
+  }
+
+  requestSentChecker(userID,peerID){
+    return Firestore.instance.collection("friendSystem")
+         .document(userID).collection("sentRequests")
+         .where("peerID",isEqualTo: peerID).getDocuments();
+  }
+
+  getRequestList(userID){
+    return Firestore.instance.collection("friendSystem").document(userID).collection("receivedRequests").snapshots();
+  }
+
 }

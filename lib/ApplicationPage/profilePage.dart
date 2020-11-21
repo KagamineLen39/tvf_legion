@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tvf_legion/Login&SignUp/loginPage.dart';
+import 'package:tvf_legion/MenuPage/AboutUs.dart';
 import 'package:tvf_legion/services/auth.dart';
 import 'package:tvf_legion/services/database.dart';
 import 'package:tvf_legion/services/helper.dart';
@@ -18,6 +20,7 @@ class _ProfilePageState extends State<ProfilePage>{
   AuthMethods authMethods = new AuthMethods();
   bool isLoading = false;
   Database databaseMethod = Database();
+  QuerySnapshot getInfo;
 
   String username,email,gender,birthDate;
   String fname,lname;
@@ -52,14 +55,14 @@ class _ProfilePageState extends State<ProfilePage>{
   }
 
   @override
-  void initState() {
+  void initState(){
     super.initState();
     getUserInfoState();
   }
 
-  getUserInfoState() async{
+  getUserInfoState(){
 
-    Helper.getUserName().then((value) {
+    Helper.getUserName().then((value){
         setState(() {
           username = value;
         });
@@ -71,17 +74,19 @@ class _ProfilePageState extends State<ProfilePage>{
         });
     });
 
-    //TODO
-    //Unable to retrieve correct info yet
-    await databaseMethod.getUsername(username).then((value){
-          setState(() {
-            fname = value.documents[0].data["fName"];
-            lname = value.documents[0].data["lName"];
-            gender = value.documents[0].data["gender"];
-            birthDate = value.documents[0].data["Date of Birth"];
-          });
-    });
 
+    //TODO
+    databaseMethod.getUsername(username).then((value){
+
+      getInfo = value;
+
+      setState(() {
+        fname = getInfo.documents[0].data["fName"];
+        lname = getInfo.documents[0].data["lName"];
+        gender = getInfo.documents[0].data["gender"];
+        birthDate = getInfo.documents[0].data["Date of Birth"];
+      });
+    });
   }
 
   @override
@@ -89,7 +94,9 @@ class _ProfilePageState extends State<ProfilePage>{
 
     final profilePic =CircleAvatar(
       radius: 80,
-      backgroundImage: AssetImage(''),
+      //TODO
+      //getUserProfilePic
+      backgroundImage: AssetImage('assets/images/profilePic.png'),
     );
 
      final userNameBar =  Card(
@@ -175,11 +182,10 @@ class _ProfilePageState extends State<ProfilePage>{
      final aboutUsBar =ListTile(
               title : new Text ('About Us ',style: style.copyWith(fontWeight: FontWeight.bold),),
               onTap: (){
-
-                /*Navigator.push(
-                context,
-                new MaterialPageRoute(
-                  builder:(BuildContext context) => new Friends())*/}
+               Navigator.push(context,
+               MaterialPageRoute(builder: (context) => AboutUs())
+               );
+              }
           );
      final logOutBar = Container(
           decoration: new BoxDecoration(
@@ -208,8 +214,8 @@ class _ProfilePageState extends State<ProfilePage>{
               padding: EdgeInsets.fromLTRB(0, 15, 0, 0),
                 children:<Widget>[
                   Container(
+                    alignment: Alignment.center,
                     padding: EdgeInsets.fromLTRB(0, 30, 0, 5),
-
                     child: profilePic,
                   ),
 
