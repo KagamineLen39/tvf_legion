@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:relative_scale/relative_scale.dart';
+import 'package:tvf_legion/ApplicationPage/chatRoom.dart';
 import 'package:tvf_legion/ApplicationPage/searchNewFriendPage.dart';
 import 'package:tvf_legion/Function%20Classes/AddorRemoveFriends.dart';
 import 'package:tvf_legion/services/database.dart';
@@ -21,10 +22,11 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   friendSystem _fSystem = new friendSystem();
   QuerySnapshot searchResultSnapshot;
   QuerySnapshot requestSnapshot;
+  QuerySnapshot friendListSnapshot;
 
   bool isLoading = false;
   bool hasFriends = false;
-  bool hasRequest;
+  bool hasRequest=false;
   bool friendRequestPage = false;
   int index =0;
   String ownUserID,ownEmail,ownUsername;
@@ -60,6 +62,22 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     };
   }
 
+  getFriendList()async{
+    await _fSystem.getFriendList(ownUserID).then((val){
+      friendListSnapshot = val;
+    });
+
+    if(friendListSnapshot.documents.isEmpty){
+      setState(() {
+        hasFriends = false;
+      });
+    }else{
+      setState(() {
+        hasFriends = true;
+      });
+    }
+  }
+
   getRequestList() async{
     await _fSystem.getRequestList(ownUserID).then((val){
       requestSnapshot = val;
@@ -85,77 +103,127 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     _fSystem.deleteRequest(ownUserID, peerID);
   }
 
-  //Recent
-  Widget userList(){
-    return hasFriends?
+  Widget friendList(){
+
+    return hasRequest?
     ListView.builder(
         shrinkWrap: true,
-        itemCount: searchResultSnapshot.documents.length,
+        itemCount: requestSnapshot.documents.length,
         itemBuilder: (context, index){
-          return peerList(
-            searchResultSnapshot.documents[index].data["username"],
-            searchResultSnapshot.documents[index].data["email"],
+          return Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(45),
+              side: BorderSide(
+                color: Colors.black12,
+              ),
+            ),
+            color: Colors.white,
+            margin: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
+            child: peerList(
+              friendListSnapshot.documents[index].data["peerUsername"],
+              friendListSnapshot.documents[index].data["peerEmail"],
+              friendListSnapshot.documents[index].data["peerID"],
+            ),
           );
         }
     ):
-        Container(
-          child: Expanded(
-              child: Text("No message yet",
-                style: style.copyWith(
-                  fontSize: 28,
-                  color: Colors.white38,
-                ),
+    Container(
+      child: Expanded(
+        child: Text("No request",
+          style: style.copyWith(
+            fontSize: 28,
+            color: Colors.white38,
           ),
-          ),
-        );
-  }
-
-  Widget peerList(String userName,String userEmail){
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-      child: Row(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                userName,
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16
-                ),
-              ),
-              Text(
-                userEmail,
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16
-                ),
-              )
-            ],
-          ),
-          Spacer(),
-          GestureDetector(
-            onTap: (){
-              //sendMessage(userName);
-            },
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 12,vertical: 8),
-              decoration: BoxDecoration(
-                  color: Colors.blue,
-                  borderRadius: BorderRadius.circular(24)
-              ),
-              child: Text("Message",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16
-                ),),
-            ),
-          )
-        ],
+        ),
       ),
     );
   }
+  /*Widget friendList(){
+    return StreamBuilder(
+        stream: Firestore.instance.collection("friendSystem").document(ownUserID).collection("Friends").snapshots(),
+        builder: (BuildContext context,
+            AsyncSnapshot<QuerySnapshot> snapshot){
+          if(!snapshot.hasData){
+            return Center(
+              child: Container(
+                child: Center(child: CircularProgressIndicator()),
+              ),
+            );
+          }else
+          return ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: friendListSnapshot.documents.length,
+                  itemBuilder:(context, index){
+                    return peerList(
+                      friendListSnapshot.documents[index].data["peerUsername"],
+                      friendListSnapshot.documents[index].data["peerEmail"],
+                    );
+                  },
+              );
+        },
+    );
+  }*/
+
+  Widget peerList(String userName,String userEmail,String _peerID){
+      return Container(
+        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        child: Row(
+          children: [
+            viewUserProfile(userName),
+
+            SizedBox(width: 5),
+
+            Container(
+              child: SingleChildScrollView(
+                physics: NeverScrollableScrollPhysics(),
+                scrollDirection: Axis.horizontal,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      userName,
+                      style: TextStyle(
+                          color: Colors.black38,
+                          fontSize: 16
+                      ),
+                    ),
+                    Text(
+                      userEmail,
+                      style: TextStyle(
+                          color: Colors.black38,
+                          fontSize: 16
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            Spacer(),
+            GestureDetector(
+              onTap: (){
+                Navigator.push(
+                  context, MaterialPageRoute(
+                  builder: (context)=> ChatRoom(peerID: _peerID,peerUsername: userName),
+                )
+                );
+              },
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 12,vertical: 8),
+                decoration: BoxDecoration(
+                    color: Colors.lightBlue[500],
+                    borderRadius: BorderRadius.circular(24)
+                ),
+                child: Text("Message",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16
+                  ),),
+              ),
+            )
+          ],
+        ),
+      );
+    }
 
   //Requests
   Widget requestList(){
@@ -206,19 +274,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
       padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       child: Row(
         children: [
-          GestureDetector(
-            child: CircleAvatar(
-              radius: 30,
-              //TODO
-              //getUserProfilePic
-              backgroundImage: AssetImage('assets/images/profilePic.png'),
-            ),
-            onTap:(){
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context)=> displayUserProfile(userProfileId: userName))
-                );
-            },
-          ),
+          viewUserProfile(userName),
 
           Spacer(),
 
@@ -302,6 +358,22 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
           valueColor: new AlwaysStoppedAnimation<Color>(Colors.white60),
         ),
       ),
+    );
+  }
+
+  viewUserProfile(userName){
+    return  GestureDetector(
+      child: CircleAvatar(
+        radius: 30,
+        //TODO
+        //getUserProfilePic
+        backgroundImage: AssetImage('assets/images/profilePic.png'),
+      ),
+      onTap:(){
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context)=> displayUserProfile(userProfileId: userName))
+        );
+      },
     );
   }
 
@@ -404,6 +476,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
           onTap: () {
             getRequestList();
             print(hasRequest);
+            getFriendList();
           },
         ),
       );
@@ -459,27 +532,30 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                topRight: Radius.circular(30),
              )
          ),
-         child: Column(
-           crossAxisAlignment: CrossAxisAlignment.start,
-           children: <Widget>[
-             Row(
-               children: [
-                 Expanded(
-                     child: Text(
-                         "Recent",
-                         style: style.copyWith(
-                           fontWeight: FontWeight.bold,
-                           fontSize: 28,
+         child: SingleChildScrollView(
+           child: Column(
+             crossAxisAlignment: CrossAxisAlignment.start,
+             children: <Widget>[
+               Row(
+                 children: [
+                   Expanded(
+                       child: Text(
+                           "Recent",
+                           style: style.copyWith(
+                             fontWeight: FontWeight.bold,
+                             fontSize: 28,
+                           ),
                          ),
-                       ),
-                 ),
-               ],
-             ),
-
-             Container(
-                 child: userList(),
+                   ),
+                   refreshButton(),
+                 ],
                ),
-           ],
+
+               Container(
+                 child: SingleChildScrollView(child: friendList()),
+                 ),
+             ],
+           ),
          ),
        ),
      );
