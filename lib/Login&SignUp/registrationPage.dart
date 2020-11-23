@@ -19,7 +19,7 @@ class _RegistrationState extends State<Registration> {
   AuthMethods authMethods = new AuthMethods();
   //String _error;
   bool usedEmail;
-
+  bool passVisible;
 
   TextEditingController firstNameController = new TextEditingController();
   TextEditingController lastNameController = new TextEditingController();
@@ -27,6 +27,10 @@ class _RegistrationState extends State<Registration> {
   TextEditingController passwordController = new TextEditingController();
   TextEditingController cPasswordController = new TextEditingController();
 
+  @override
+  void initState() {
+    passVisible = false;
+  }
 
   signUp()async{
 
@@ -179,14 +183,27 @@ class _RegistrationState extends State<Registration> {
         validator: (val) {
           return pwdValidate(val);
         },
-        obscureText: true,
+        obscureText: !passVisible,
         controller: passwordController,
         style: style,
         decoration: InputDecoration(
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             hintText: "Password",
             border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))));
+                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+          suffixIcon: IconButton(
+            icon: Icon(
+              passVisible
+                  ? Icons.visibility
+                  : Icons.visibility_off,
+              color: Theme.of(context).primaryColorDark,
+            ),
+            onPressed: () {
+              setState(() {
+                passVisible = !passVisible;
+              });
+            },
+          ),));
 
     final passwordHint = Container(
       padding: EdgeInsets.all(10),
@@ -204,14 +221,27 @@ class _RegistrationState extends State<Registration> {
         validator: (val) {
           return checkMatchPassword(val);
         },
-        obscureText: true,
+        obscureText: !passVisible,
         controller: cPasswordController,
         style: style,
         decoration: InputDecoration(
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             hintText: "Confirm Password",
             border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))));
+                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+          suffixIcon: IconButton(
+        icon: Icon(
+        passVisible
+        ? Icons.visibility
+          : Icons.visibility_off,
+          color: Theme.of(context).primaryColorDark,
+        ),
+      onPressed: () {
+        setState(() {
+          passVisible = !passVisible;
+        });
+      },
+    ),));
 
 
     final nextButton = Material(

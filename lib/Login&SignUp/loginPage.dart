@@ -155,7 +155,7 @@ class _LoginPageState extends State<LoginPage> {
         validator: (v) {
           return pwdValidate(v);
         },
-        obscureText: true,
+        obscureText: !passVisible,
         style: style,
         decoration: InputDecoration(
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
