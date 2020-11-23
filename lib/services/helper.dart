@@ -46,3 +46,4 @@ class Helper{
     return prefs.getString(sharedPreferenceIdKey);
   }
 }
+

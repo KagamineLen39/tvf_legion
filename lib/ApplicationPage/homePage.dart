@@ -1,29 +1,68 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tvf_legion/ApplicationPage/SearchPage.dart';
 import 'package:toggle_switch/toggle_switch.dart';
+import 'package:tvf_legion/modal/room.dart';
 import 'package:tvf_legion/services/database.dart';
 
 class HomePage extends StatefulWidget {
-
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
-
-  TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
+  DatabaseService roomService = new DatabaseService();
+  Room roomData = new Room();
+  final db = Firestore.instance;
   List<String>room=[];
+  TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
+  String password = "" ;
   int maxP = 0;
   int val = 0;
-
+  String state = "Public";
   TextEditingController nameController;
   TextEditingController passController;
   TextEditingController descriptionController;
 
   bool isEnabled = false;
 
+  roomUpdate() async {
+    roomData.rName = nameController.text.trim();
+    //roomData.rDescription = descriptionController.text.trim();
+    roomData.maxPerson = maxP;
+    if(!isEnabled){
+      roomData.rPassword= password;
+    }
+    else {
+      roomData.rPassword = password;
+    }
+    //roomData.rPic = "";
+    roomData.state = state;
+
+    print(roomData.rName);
+    print(roomData.rPassword);
+    print(roomData.rPic);
+    print(roomData.state);
+    print(roomData.rDescription);
+    print(roomData.maxPerson);
+
+    Map<String, dynamic> roomInfoMap = {
+      "RoomID": roomData.roomId,
+      "Name": roomData.rName,
+      "Password": roomData.rPassword,
+      "Picture": roomData.rPic,
+      "State": roomData.state,
+      "Description": roomData.rDescription,
+      "MaxPerson": roomData.maxPerson,
+
+    };
+
+      roomService.createRoomInfo(roomData.roomId,roomInfoMap);
+
+      Navigator.of(context).pop();
+  }
   @override
   void initState(){
     nameController = new TextEditingController();
@@ -43,7 +82,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
 
-    
     final profilePic =CircleAvatar(
       radius: 50,
       backgroundImage: AssetImage(''),
@@ -134,9 +172,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
                                                   if (index == 1) {
                                                     isEnabled = true;
+                                                    state = "Private";
                                                   }
                                                   else {
                                                     isEnabled = false;
+                                                    state="Public";
                                                   }
                                                 });
                                               }
@@ -241,10 +281,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           padding: EdgeInsets.fromLTRB(
                                               20.0, 15.0, 20.0, 15.0),
                                           onPressed: () {
-                                            setState(() {
-
-                                            });
-                                            Navigator.pop(context);
+                                              roomUpdate();
                                           },
                                           child: Text("Confirm",
                                               textAlign: TextAlign.center,
