@@ -20,4 +20,5 @@ class User {
     this.friendList,
     this.phoneNumber,
   });
+
 }

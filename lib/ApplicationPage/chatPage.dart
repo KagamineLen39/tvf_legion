@@ -34,6 +34,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   String ownUserID,ownEmail,ownUsername;
 
   Map<String,String> ownMap;
+<<<<<<< HEAD
   Map <String,String> peerMap;
 
   final List<String> chatPageOptions = ["Chats","Friend Requests"];
@@ -73,6 +74,10 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
       },
     );
   }
+=======
+
+  final List<String> chatPageOptions = ["Chats","Friend Requests"];
+>>>>>>> parent of d312a60... Update
 
 
   @override
@@ -108,6 +113,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
       setState(() => ownEmail =value);
     });
 
+<<<<<<< HEAD
     setState(() {
       ownMap = {
         "peerID": ownUserID,
@@ -118,6 +124,31 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   }
 
 
+=======
+    ownMap = {
+      "peerID": ownUserID,
+      "peerUsername": ownUsername,
+      "peerEmail": ownEmail,
+    };
+  }
+
+  getFriendList()async{
+    await _fSystem.getFriendList(ownUserID).then((val){
+      friendListSnapshot = val;
+    });
+
+    if(friendListSnapshot.documents.isEmpty){
+      setState(() {
+        hasFriends = false;
+      });
+    }else{
+      setState(() {
+        hasFriends = true;
+      });
+    }
+  }
+
+>>>>>>> parent of d312a60... Update
   getRequestList() async{
     await _fSystem.getRequestList(ownUserID).then((val){
       requestSnapshot = val;
@@ -144,10 +175,18 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   }
 
   Widget friendList(){
+<<<<<<< HEAD
     return hasFriends?
     ListView.builder(
         shrinkWrap: true,
         itemCount: friendListSnapshot.documents.length,
+=======
+
+    return hasRequest?
+    ListView.builder(
+        shrinkWrap: true,
+        itemCount: requestSnapshot.documents.length,
+>>>>>>> parent of d312a60... Update
         itemBuilder: (context, index){
           return Card(
             shape: RoundedRectangleBorder(
@@ -177,7 +216,35 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
       ),
     );
   }
+<<<<<<< HEAD
 
+=======
+  /*Widget friendList(){
+    return StreamBuilder(
+        stream: Firestore.instance.collection("friendSystem").document(ownUserID).collection("Friends").snapshots(),
+        builder: (BuildContext context,
+            AsyncSnapshot<QuerySnapshot> snapshot){
+          if(!snapshot.hasData){
+            return Center(
+              child: Container(
+                child: Center(child: CircularProgressIndicator()),
+              ),
+            );
+          }else
+          return ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: friendListSnapshot.documents.length,
+                  itemBuilder:(context, index){
+                    return peerList(
+                      friendListSnapshot.documents[index].data["peerUsername"],
+                      friendListSnapshot.documents[index].data["peerEmail"],
+                    );
+                  },
+              );
+        },
+    );
+  }*/
+>>>>>>> parent of d312a60... Update
 
   Widget peerList(String userName,String userEmail,String _peerID){
       return Container(
@@ -279,7 +346,11 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
 
   Widget userRequest(String userID,String userName,String userEmail){
 
+<<<<<<< HEAD
     peerMap = {
+=======
+    Map <String,String> peerMap = {
+>>>>>>> parent of d312a60... Update
       "peerID": userID,
       "peerUsername": userName,
       "peerEmail": userEmail,
@@ -566,14 +637,22 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                ),
 
                Container(
+<<<<<<< HEAD
                  child: SingleChildScrollView(child: fListStreamer()),
+=======
+                 child: SingleChildScrollView(child: friendList()),
+>>>>>>> parent of d312a60... Update
                  ),
              ],
            ),
          ),
        ),
      );
+<<<<<<< HEAD
 
+=======
+     
+>>>>>>> parent of d312a60... Update
     }
 
       return Scaffold(
@@ -581,6 +660,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
         appBar: AppBar(
           title: searchNewFriend,
           backgroundColor: Colors.lightBlue[600],
+<<<<<<< HEAD
         ),
         body: Container(
           child: Column(
@@ -648,3 +728,20 @@ class friendTile extends StatelessWidget {
   }
 }
 
+=======
+        ),
+        body: Container(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              pageChanger(),
+              contentPages(),
+            ],
+          ),
+        ),
+      );
+    }
+
+  }
+>>>>>>> parent of d312a60... Update

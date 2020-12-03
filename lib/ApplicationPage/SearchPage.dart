@@ -1,9 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:tvf_legion/ApplicationPage/interactionRoomPage.dart';
-import 'package:tvf_legion/Function%20Classes/roomManagement.dart';
-import 'package:tvf_legion/services/helper.dart';
+import 'package:tvf_legion/ApplicationPage/homePage.dart';
+import 'package:tvf_legion/services/database.dart';
 
 class SearchPage extends StatefulWidget {
   @override
@@ -12,33 +11,26 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
-  RoomManagement databaseMethods = new RoomManagement();
-  QuerySnapshot searchResultSnapshot;
-
-  final String checkState = "Public";
-  String ownUserID, ownEmail, ownUserName;
-  bool isLoading = false;
-
+  bool isLoading =false;
   TextEditingController searchEditingController = new TextEditingController();
-
+  Database databaseMethods = new Database();
+  QuerySnapshot searchResultSnapshot;
   bool hasRoomSearched = false;
 
   initiateSearch() async {
-    if (searchEditingController.text.isNotEmpty) {
+    if(searchEditingController.text.isNotEmpty){
       setState(() {
         isLoading = true;
       });
-      await databaseMethods
-          .searchRoomName(searchEditingController.text.trimRight())
-          .then((snapshot) {
+      /*await databaseMethods.searchByUsername(searchEditingController.text.trimRight()).then((snapshot){
         searchResultSnapshot = snapshot;
-
+          print("$snapshot");
         setState(() {
           isLoading = false;
-          hasRoomSearched = true;
+          haveGroupSearched = true;
         });
-      });
-    } else {
+      });*/
+    }else{
       setState(() {
         isLoading = false;
         hasRoomSearched = false;
@@ -46,109 +38,70 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
     }
   }
 
-  getOwnDetail() {
-    Helper.getUserId().then((value) {
-      setState(() {
-        ownUserID = value;
-      });
-    });
-
-    Helper.getUserEmail().then((value) {
-      setState(() {
-        ownEmail = value;
-      });
-    });
-    Helper.getUserName().then((value) {
-      setState(() {
-        ownUserName = value;
-      });
-    });
-  }
-
-  addMember(){
-
-  }
-
-  Widget roomList() {
-    return hasRoomSearched
-        ? ListView.builder(
-            shrinkWrap: true,
-            itemCount: searchResultSnapshot.documents.length,
-            itemBuilder: (context, index) {
-              return Card(
-                color: Colors.white,
-                margin: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
-                child: roomListBuilder(
-                  searchResultSnapshot.documents[index].data["Name"],
-                  searchResultSnapshot.documents[index].data["State"],
-                  searchResultSnapshot.documents[index].data["MaxPerson"],
-                ),
-              );
-            })
-        : Container(
-            padding: EdgeInsets.all(25),
-            child: Text(
-              "Please enter a room ID",
-              style: style.copyWith(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.black38,
-              ),
-            ),
+  Widget roomList(){
+    return hasRoomSearched ? ListView.builder(
+        shrinkWrap: true,
+        itemCount: searchResultSnapshot.documents.length,
+        /*itemBuilder: (context, index){
+          return peerList(
+            searchResultSnapshot.documents[index].data["roomName"],
+            searchResultSnapshot.documents[index].data["roomID"],
           );
+        }*/
+    ):
+    Container(
+      padding: EdgeInsets.all(25),
+      child: Text(
+        "Please enter a room ID",
+        style: style.copyWith(
+          fontSize: 24,
+          fontWeight: FontWeight.bold,
+          color: Colors.black38,
+        ),
+      ),
+    );
   }
 
-  Widget roomListBuilder(String roomName, String state, int maxPerson) {
+  Widget roomListBuilder(String roomName,String roomID){
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       child: Row(
         children: [
-          CircleAvatar(
-            radius: 25,
-            child: new Text(roomName[0]),
-          ),
-          SizedBox(width: 5),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 roomName,
-                style: TextStyle(color: Colors.black38, fontSize: 20),
+                style: TextStyle(
+                    color: Colors.black38,
+                    fontSize: 16
+                ),
               ),
               Text(
-                (' 1 / $maxPerson'),
-                style: TextStyle(color: Colors.black38, fontSize: 20),
+                roomID,
+                style: TextStyle(
+                    color: Colors.black38,
+                    fontSize: 16
+                ),
               )
             ],
           ),
           Spacer(),
-          if (checkState != state) Icon(Icons.lock),
-          SizedBox(
-            width: 20,
-          ),
           GestureDetector(
-            onTap: () {
+            onTap: (){
               //joinRoom(roomID);
-              if(checkState == state){
-                // Go to chatting page Firebase -from Room to Member
-                Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => InteractingRoomPage()));
-
-              }
-              else{
-                // pop up dialog ( show give invitation button) Firebase - from Room to joinRequest, acceptRequest then Member.
-              }
-
             },
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              padding: EdgeInsets.symmetric(horizontal: 12,vertical: 8),
               decoration: BoxDecoration(
                   color: Colors.lightBlue[500],
-                  borderRadius: BorderRadius.circular(24)),
-              child: Text(
-                "Join",
-                style: TextStyle(color: Colors.white, fontSize: 20),
+                  borderRadius: BorderRadius.circular(24)
               ),
+              child: Text("Add",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16
+                ),),
             ),
           )
         ],
@@ -158,10 +111,14 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+
     final backButton = IconButton(
       icon: Icon(Icons.arrow_back_ios),
-      onPressed: () {
-        Navigator.pop(context);
+      onPressed: (){
+        Navigator.pushAndRemoveUntil(
+          context, MaterialPageRoute(builder: (context) =>HomePage()),
+              (Route<dynamic> route)=>false,
+        );
       },
     );
 
@@ -172,12 +129,13 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
         color: Colors.white,
       ),
       decoration: InputDecoration(
-        border: InputBorder.none,
+        border:InputBorder.none,
         hintText: 'Search Room',
         hintStyle: TextStyle(
           color: Colors.white,
         ),
       ),
+
     );
 
     final searchBar = Container(
@@ -187,7 +145,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
         borderRadius: BorderRadius.circular(45),
       ),
       child: Row(
-        children: <Widget>[
+        children:<Widget>[
           Expanded(
             child: searchLabel,
           ),
@@ -196,7 +154,10 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
               height: 45,
               width: 45,
               child: IconButton(
-                icon: Icon(Icons.search, color: Colors.white),
+                icon: Icon(
+                    Icons.search,
+                    color: Colors.white
+                ),
                 onPressed: initiateSearch,
               ),
               decoration: BoxDecoration(
@@ -204,36 +165,31 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                 color: Colors.lightBlue[500],
               ),
             ),
+
           ),
-        ],
+        ] ,
       ),
     );
 
     return Scaffold(
       body: Container(
-        color: Colors.white,
-        child: Padding(
-            padding: const EdgeInsets.fromLTRB(10, 25, 10, 5),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                backButton,
-                SizedBox(height: 5),
-                Expanded(
-                  child: Container(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: <Widget>[
-                          searchBar,
-                          roomList(),
-                        ],
-                      ),
+            color: Colors.white,
+            child: Padding(
+                padding: const EdgeInsets.fromLTRB(10,25,10,5),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    backButton,
+                    SizedBox(height: 5),
+                    Column(
+                      children: <Widget>[
+                        searchBar,
+                        roomList(),
+                      ],
                     ),
-                  ),
-                ),
-              ],
-            )),
-      ),
+                  ],
+                )),
+          ),
     );
   }
 }

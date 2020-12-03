@@ -31,10 +31,10 @@ class _NavigationPageState extends State<NavigationPage>
     final homeNavigationBar = CurvedNavigationBar(
         index: _page,
         items: [
-          new Icon(Icons.home, size: 30, color: Colors.white),
-          new Icon(Icons.chat, size: 30, color: Colors.white),
-          new Icon(Icons.location_on, size: 30, color: Colors.white),
-          new Icon(Icons.person, size: 30, color: Colors.white)
+          new Icon(Icons.home, size: 30,color:Colors.white),
+          new Icon(Icons.chat, size: 30,color:Colors.white),
+          new Icon(Icons.location_on, size: 30,color:Colors.white),
+          new Icon(Icons.person, size: 30,color:Colors.white)
         ],
         color: Colors.lightBlue[200],
         buttonBackgroundColor: Colors.lightBlue[500],

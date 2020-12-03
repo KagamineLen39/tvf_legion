@@ -1,3 +1,4 @@
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +9,6 @@ import 'package:tvf_legion/services/helper.dart';
 // ignore: camel_case_types
 class displayUserProfile extends StatefulWidget {
   final String userProfileId;
-
   displayUserProfile({this.userProfileId});
 
   @override
@@ -26,6 +26,7 @@ class _displayUserProfileState extends State<displayUserProfile> {
   BoxDecoration buttonDeco = BoxDecoration(
     borderRadius: BorderRadius.circular(45),
     color: Colors.lightBlue[500],
+
   );
 
   Database databaseMethods = new Database();
@@ -36,20 +37,21 @@ class _displayUserProfileState extends State<displayUserProfile> {
   bool isLoading = false;
   bool requestReceived = false;
 
-  String peerUsername, gender, peerEmail, doB, peerID;
-  String ownUserID, ownEmail, ownUserName;
+  String peerUsername,gender,peerEmail,doB,peerID;
+  String ownUserID,ownEmail,ownUserName;
 
   String buttonText = "Loading...";
 
-  Map<String, String> ownMap;
-  Map<String, String> addPeerMap;
-  Map<String, String> retrieveUserMap;
-  Map<String, String> retrievePeerMap;
+  Map<String,String> ownMap;
+  Map<String,String > addPeerMap;
+  Map<String,String> retrieveUserMap;
+  Map<String,String> retrievePeerMap;
 
   friendSystem _fSystem = new friendSystem();
 
+
   @override
-  void initState() {
+  void initState(){
     super.initState();
 
     getPeerDetails();
@@ -57,38 +59,39 @@ class _displayUserProfileState extends State<displayUserProfile> {
     checkSentRequest();
     checkFriend();
     checkReceivedRequest();
+
   }
 
   //TODO
   //Only when button isClick, it check
-  checkSentRequest() async {
-    await _fSystem
-        .requestSentChecker(ownUserID, peerID)
-        .then((QuerySnapshot val) {
-      if (val.documents.isEmpty) {
+  checkSentRequest()async{
+    await _fSystem.requestSentChecker(ownUserID, peerID).then((QuerySnapshot val){
+
+      if(val.documents.isEmpty){
         setState(() {
           requestSent = false;
           buttonText = "Add";
         });
-      } else {
+      }else{
         print(val.documents[0].data["peerID"]);
 
         setState(() {
           requestSent = true;
           buttonText = "Cancel Request";
         });
+
       }
     });
   }
-
   //Same issue
-  checkFriend() async {
-    await _fSystem.friendChecker(ownUserID, peerID).then((QuerySnapshot val) {
-      if (val.documents.isEmpty) {
+  checkFriend()async{
+
+    await _fSystem.friendChecker(ownUserID, peerID).then((QuerySnapshot val){
+      if(val.documents.isEmpty){
         setState(() {
           isFriend = false;
         });
-      } else {
+      }else{
         setState(() {
           isFriend = true;
         });
@@ -97,15 +100,13 @@ class _displayUserProfileState extends State<displayUserProfile> {
   }
 
   //Same issue
-  checkReceivedRequest() async {
-    await _fSystem
-        .receivedRequestChecker(ownUserID, peerID)
-        .then((QuerySnapshot val) {
-      if (val.documents.isEmpty) {
+  checkReceivedRequest() async{
+    await _fSystem.receivedRequestChecker(ownUserID, peerID).then((QuerySnapshot val){
+      if(val.documents.isEmpty){
         setState(() {
           requestReceived = false;
         });
-      } else {
+      }else{
         setState(() {
           requestReceived = true;
         });
@@ -113,8 +114,9 @@ class _displayUserProfileState extends State<displayUserProfile> {
     });
   }
 
-  getPeerDetails() async {
-    await databaseMethods.getUsername(widget.userProfileId).then((value) {
+  getPeerDetails() async{
+
+    await databaseMethods.getUsername(widget.userProfileId).then((value){
       userDetails = value;
 
       setState(() {
@@ -134,40 +136,43 @@ class _displayUserProfileState extends State<displayUserProfile> {
       retrievePeerMap = {
         "userID": peerID,
         "username": peerUsername,
-        "email": peerEmail,
+        "email":peerEmail,
       };
-    });
+
+    }
+    );
   }
 
-  getOwnDetail() {
-    Helper.getUserId().then((value) {
+  getOwnDetail(){
+    Helper.getUserId().then((value){
       setState(() {
         ownUserID = value;
       });
     });
 
-    Helper.getUserEmail().then((value) {
+    Helper.getUserEmail().then((value){
       setState(() {
         ownEmail = value;
       });
     });
-    Helper.getUserName().then((value) {
+    Helper.getUserName().then((value){
       setState(() {
         ownUserName = value;
       });
     });
   }
 
-  addFriend() {
+  addFriend(){
+
     ownMap = {
-      "userID": ownUserID,
+      "userID" : ownUserID,
       "username": ownUserName,
       "email": ownEmail,
     };
 
-    retrieveUserMap = {
+    retrieveUserMap={
       "peerID": ownUserID,
-      "peerUsername": ownUserName,
+      "peerUsername":ownUserName,
       "peerEmail": ownEmail,
     };
 
@@ -175,30 +180,29 @@ class _displayUserProfileState extends State<displayUserProfile> {
       requestSent = true;
     });
 
-    _fSystem.sendFriendRequest(ownUserID, ownMap, peerID, addPeerMap);
-    _fSystem.retrieveRequest(
-        peerID, retrievePeerMap, ownUserID, retrieveUserMap);
+    _fSystem.sendFriendRequest(ownUserID,ownMap,peerID,addPeerMap);
+    _fSystem.retrieveRequest(peerID, retrievePeerMap, ownUserID, retrieveUserMap);
   }
 
-  cancelRequest() {
+  cancelRequest(){
     setState(() {
-      requestSent = false;
+     requestSent = false;
     });
 
-    _fSystem.cancelRequest(ownUserID, peerID);
+    _fSystem.cancelRequest(ownUserID,peerID);
   }
 
-  buttonStateChange() {
+  buttonStateChange(){
     checkSentRequest();
 
-    if (requestSent == true) {
+    if(requestSent == true){
       cancelRequest();
-    } else {
+    }else{
       addFriend();
     }
   }
 
-  loadingContainer() {
+  loadingContainer(){
     return Container(
       child: SizedBox(
         height: 15,
@@ -212,68 +216,72 @@ class _displayUserProfileState extends State<displayUserProfile> {
 
   @override
   Widget build(BuildContext context) {
+
     final removeFriendButton = GestureDetector(
-        onTap: () {
-          //removeFriend,
-        },
-        child: Container(
-          margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 75.0),
-          height: 40,
-          alignment: Alignment.center,
-          decoration: buttonDeco.copyWith(
-            color: Colors.red,
+      onTap:(){
+        //removeFriend,
+      },
+      child:Container(
+        margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 75.0),
+        height: 40,
+        alignment: Alignment.center,
+        decoration: buttonDeco.copyWith(
+          color: Colors.red,
           ),
-          child: isLoading
-              ? loadingContainer()
-              : Text(
-                  "Remove Friend",
-                  style: style,
-                  textAlign: TextAlign.center,
-                ),
-        ));
+          child: isLoading?
+        loadingContainer():
+        Text(
+          "Remove Friend",
+          style: style,
+          textAlign: TextAlign.center,
+        ),
+      )
+    );
 
     final acceptDeleteRequest = Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Expanded(
-          child: GestureDetector(
-            onTap: () {
-              _fSystem.acceptRequest(ownUserID, ownMap, peerID, addPeerMap);
+      Expanded(
+        child: GestureDetector(
+          onTap:(){
+           _fSystem.acceptRequest(ownUserID, ownMap, peerID, addPeerMap);
 
-              checkSentRequest();
-              checkFriend();
-              checkReceivedRequest();
+           checkSentRequest();
+           checkFriend();
+           checkReceivedRequest();
+
             },
-            child: Container(
+            child:Container(
               margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15),
               height: 40,
               alignment: Alignment.center,
               decoration: buttonDeco,
-              child: Text(
+              child:Text(
                 "Accept",
                 style: style,
                 textAlign: TextAlign.center,
               ),
             ),
-          ),
         ),
+      ),
+
         Expanded(
           child: GestureDetector(
-            onTap: () {
+            onTap: (){
               _fSystem.deleteRequest(ownUserID, peerID);
 
               checkSentRequest();
               checkFriend();
               checkReceivedRequest();
             },
-            child: Container(
+            child:Container(
               margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15),
               height: 40,
               alignment: Alignment.center,
               decoration: buttonDeco.copyWith(
                 color: Colors.red,
               ),
-              child: Text(
+              child:Text(
                 "Delete",
                 style: style,
                 textAlign: TextAlign.center,
@@ -281,110 +289,111 @@ class _displayUserProfileState extends State<displayUserProfile> {
             ),
           ),
         ),
+
       ],
     );
 
     final addButton = GestureDetector(
       onTap: buttonStateChange,
       child: Container(
-        margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 75.0),
-        height: 40,
-        alignment: Alignment.center,
-        decoration: requestSent
-            ? buttonDeco.copyWith(
+              margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 75.0),
+              height: 40,
+              alignment: Alignment.center,
+              decoration: requestSent? buttonDeco.copyWith(
                 color: Colors.lightBlue[400],
-              )
-            : buttonDeco,
-        child: isLoading
-            ? loadingContainer()
-            : Text(
+              ):buttonDeco,
+              child: isLoading?
+              loadingContainer():
+            Text(
                 buttonText,
-                style: style,
-                textAlign: TextAlign.center,
-              ),
-      ),
+              style: style,
+              textAlign: TextAlign.center,
+            ),
+          ),
     );
 
-    final profilePic = CircleAvatar(
+    final profilePic =CircleAvatar(
       radius: 80,
       //TODO
       //getFromUserProfile
       backgroundImage: AssetImage('assets/images/profilePic.png'),
     );
 
-    final userNameBar = Container(
-        child: Text(
-      "$peerUsername",
-      textAlign: TextAlign.center,
-      style: TextStyle(
-        fontSize: 25,
-        fontWeight: FontWeight.bold,
-      ),
-    ));
+    final userNameBar =  Container(
+      child: Text(
+          "$peerUsername",
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: 25,
+          fontWeight: FontWeight.bold,
+        ),
+      )
+    );
 
     final backButton = GestureDetector(
-      child: Icon(Icons.arrow_back_ios, color: Colors.black38),
-      onTap: () {
+      child: Icon(Icons.arrow_back_ios,
+            color: Colors.black38 ),
+      onTap: (){
         Navigator.pop(context);
       },
     );
 
-    final genderBar = Card(
+
+    final genderBar= Card(
       color: Colors.white,
       margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
       child: ListTile(
-        leading: Icon(
-          Icons.person,
-        ),
-        title: Text(
-          "$gender",
-        ),
+          leading:Icon(
+            Icons.person,
+          ),
+          title: Text("$gender",
+      ),
       ),
     );
 
-    final emailBar = Card(
+    final emailBar= Card(
       color: Colors.white,
       margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
       child: ListTile(
-        leading: Icon(
-          Icons.mail,
-        ),
-        title: Text(
-          "$peerEmail",
-        ),
+          leading:Icon(
+            Icons.mail,
+          ),
+          title: Text("$peerEmail",
+      ),
       ),
     );
 
-    final birthDateBar = Card(
+    final  birthDateBar = Card(
       color: Colors.white,
       margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
       child: ListTile(
-          leading: Icon(
+          leading:Icon(
             Icons.cake,
           ),
-          title: Text(
-            "$doB",
-          )),
+          title: Text("$doB",
+          )
+      ),
     );
 
-    profileCheck() {
-      if (isFriend == true) {
+    profileCheck(){
+      if(isFriend == true){
         return removeFriendButton;
-      } else {
-        if (requestReceived == true) {
+      }else{
+        if(requestReceived == true){
           return acceptDeleteRequest;
-        } else {
+        }else{
           return addButton;
         }
       }
+
     }
 
     return Scaffold(
-      body: Container(
+      body:Container(
           color: Colors.white,
           child: ListView(
             padding: EdgeInsets.fromLTRB(5, 35, 5, 0),
-            children: <Widget>[
+            children:<Widget>[
               Container(
                 alignment: Alignment.topLeft,
                 height: 20,
@@ -395,6 +404,7 @@ class _displayUserProfileState extends State<displayUserProfile> {
                 padding: EdgeInsets.fromLTRB(0, 10, 0, 5),
                 child: profilePic,
               ),
+
               userNameBar,
               Container(
                 child: profileCheck(),
@@ -402,13 +412,18 @@ class _displayUserProfileState extends State<displayUserProfile> {
               genderBar,
               emailBar,
               birthDateBar,
-              FloatingActionButton(onPressed: () {
-                checkSentRequest();
-                checkFriend();
-                checkReceivedRequest();
-              }),
+
+              FloatingActionButton(
+                  onPressed:(){
+                    checkSentRequest();
+                    checkFriend();
+                    checkReceivedRequest();
+                  }
+              ),
+
             ],
-          )),
+          )
+      ),
     );
   }
 }

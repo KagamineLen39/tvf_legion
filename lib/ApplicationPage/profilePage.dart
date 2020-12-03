@@ -7,12 +7,14 @@ import 'package:tvf_legion/services/auth.dart';
 import 'package:tvf_legion/services/database.dart';
 import 'package:tvf_legion/services/helper.dart';
 
+
 class ProfilePage extends StatefulWidget {
+
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _ProfilePageState extends State<ProfilePage>{
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
 
   AuthMethods authMethods = new AuthMethods();
@@ -20,59 +22,62 @@ class _ProfilePageState extends State<ProfilePage> {
   Database databaseMethod = Database();
   QuerySnapshot getInfo;
 
-  String username, email, gender, birthDate;
-  String fname, lname;
+  String username,email,gender,birthDate;
+  String fname,lname;
 
-  logOut() {
+  logOut(){
     dynamic result = authMethods.signOut();
 
-    if (result == null) {
+    if(result == null){
       setState(() {
         isLoading = false;
       });
-    } else {
-      try {
+    }else{
+      try{
         setState(() => isLoading = true);
 
         Helper.savedLoggedIn(false);
         Helper.savedUserEmail(null);
         Helper.savedUserId(null);
         Helper.savedUserName(null);
-        Helper.getLogIn().then((value) {
+        Helper.getLogIn().then((value){
           print("User logged in: $value");
         });
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => LoginPage()),
+        Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context)=> LoginPage()),
         );
-      } catch (e) {
+      }catch(e){
         print(Helper.getLogIn().toString());
         print(e.toString());
       }
     }
+
   }
 
   @override
-  void initState() {
+  void initState(){
     super.initState();
     getUserInfoState();
   }
 
-  getUserInfoState() {
-    Helper.getUserName().then((value) {
-      setState(() {
-        username = value;
-      });
+  getUserInfoState(){
+
+    Helper.getUserName().then((value){
+        setState(() {
+          username = value;
+        });
     });
 
-    Helper.getUserEmail().then((value) {
-      setState(() {
-        email = value;
-      });
+    Helper.getUserEmail().then((value){
+        setState(() {
+          email = value;
+        });
     });
+
 
     //TODO
-    databaseMethod.getUsername(username).then((value) {
+    databaseMethod.getUsername(username).then((value){
+
       getInfo = value;
 
       setState(() {
@@ -86,150 +91,148 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    final profilePic = CircleAvatar(
+
+    final profilePic =CircleAvatar(
       radius: 80,
       //TODO
       //getUserProfilePic
       backgroundImage: AssetImage('assets/images/profilePic.png'),
     );
 
-    final userNameBar = Card(
-      color: Colors.white,
-      margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
-      child: ListTile(
-          leading: Icon(
-            Icons.perm_identity,
-          ),
-          title: Text("$username")),
-    );
+     final userNameBar =  Card(
+        color: Colors.white,
+        margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
+        child: ListTile(
+            leading:Icon(
+              Icons.perm_identity,
+            ),
+            title: Text("$username")
+        ),
+      );
 
-    final genderBar = Card(
-      color: Colors.white,
-      margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
-      child: ListTile(
-          leading: Icon(
-            Icons.person,
-          ),
-          title: Text("$gender")),
-    );
+      final genderBar= Card(
+        color: Colors.white,
+        margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
+        child: ListTile(
+            leading:Icon(
+              Icons.person,
+            ),
+            title: Text("$gender")
+        ),
+      );
 
-    final emailBar = Card(
-      color: Colors.white,
-      margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
-      child: ListTile(
-          leading: Icon(
-            Icons.mail,
-          ),
-          title: Text("$email")),
-    );
+      final emailBar= Card(
+        color: Colors.white,
+        margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
+        child: ListTile(
+            leading:Icon(
+              Icons.mail,
+            ),
+            title: Text("$email")
+        ),
+      );
 
-    final birthDateBar = Card(
-      color: Colors.white,
-      margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
-      child: ListTile(
-          leading: Icon(
-            Icons.cake,
-          ),
-          title: Text("$birthDate")),
-    );
+      final  birthDateBar = Card(
+        color: Colors.white,
+        margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
+        child: ListTile(
+            leading:Icon(
+              Icons.cake,
+            ),
+            title: Text("$birthDate")
+        ),
+      );
 
     final friendBar = ListTile(
-        title: new Text(
-          'Friends ',
-          style: style.copyWith(fontWeight: FontWeight.bold),
-        ),
-        onTap: () {
-          print("${gender} \n ${fname} \n ${lname} \n ${birthDate} ");
-          /*Navigator.push(
+              title : new Text ('Friends ',style: style.copyWith(fontWeight: FontWeight.bold),),
+              onTap: (){
+                print("${gender} \n ${fname} \n ${lname} \n ${birthDate} ");
+                /*Navigator.push(
                 context,
                 new MaterialPageRoute(
-                  builder:(BuildContext context) => new Friends())*/
-        });
-    final termServicesBar = ListTile(
-        title: new Text(
-          'Terms & Services ',
-          style: style.copyWith(fontWeight: FontWeight.bold),
-        ),
-        onTap: () {
-          /*Navigator.push(
+                  builder:(BuildContext context) => new Friends())*/}
+          );
+    final termServicesBar= ListTile(
+              title : new Text ('Terms & Services ',style: style.copyWith(fontWeight: FontWeight.bold),),
+              onTap: (){
+
+                /*Navigator.push(
                 context,
                 new MaterialPageRoute(
-                  builder:(BuildContext context) => new Friends())*/
-        });
-    final privacyBar = ListTile(
-        title: new Text(
-          'Privacy ',
-          style: style.copyWith(fontWeight: FontWeight.bold),
-        ),
-        onTap: () {
-          /*Navigator.push(
+                  builder:(BuildContext context) => new Friends())*/}
+          );
+    final privacyBar= ListTile(
+              title : new Text ('Privacy ',style: style.copyWith(fontWeight: FontWeight.bold),),
+              onTap: (){
+
+                /*Navigator.push(
                 context,
                 new MaterialPageRoute(
-                  builder:(BuildContext context) => new Friends())*/
-        });
-    /*final settingBar =ListTile(
+                  builder:(BuildContext context) => new Friends())*/}
+          );
+     /*final settingBar =ListTile(
               title : new Text ('Settings ',style: style.copyWith(fontWeight: FontWeight.bold),),
               onTap: (){
 
-                */ /*Navigator.push(
+                *//*Navigator.push(
                 context,
                 new MaterialPageRoute(
-                  builder:(BuildContext context) => new Friends())*/ /*}
+                  builder:(BuildContext context) => new Friends())*//*}
           );*/
-    final aboutUsBar = ListTile(
-        title: new Text(
-          'About Us ',
-          style: style.copyWith(fontWeight: FontWeight.bold),
-        ),
-        onTap: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => AboutUs()));
-        });
-    final logOutBar = Container(
-      decoration: new BoxDecoration(
-        color: Colors.red,
-      ),
-      child: new ListTile(
-          title: new Text(
-            'Logout ',
-            style: style.copyWith(
-                fontWeight: FontWeight.bold, color: Colors.white),
+     final aboutUsBar =ListTile(
+              title : new Text ('About Us ',style: style.copyWith(fontWeight: FontWeight.bold),),
+              onTap: (){
+               Navigator.push(context,
+               MaterialPageRoute(builder: (context) => AboutUs())
+               );
+              }
+          );
+     final logOutBar = Container(
+          decoration: new BoxDecoration(
+            color: Colors.red,
           ),
-          onTap: () {
-            logOut();
-          }),
-    );
+          child:new ListTile(
+              title : new Text ('Logout ',style: style.copyWith(fontWeight: FontWeight.bold,color: Colors.white),),
+              onTap: (){
+                logOut();
+              }
+          ),
+          );
+
 
     return Scaffold(
       body: isLoading
           ? Container(
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
-            )
-          : Center(
-              child: Container(
-                  color: Colors.white,
-                  child: ListView(
-                    padding: EdgeInsets.fromLTRB(0, 15, 0, 0),
-                    children: <Widget>[
-                      Container(
-                        alignment: Alignment.center,
-                        padding: EdgeInsets.fromLTRB(0, 30, 0, 5),
-                        child: profilePic,
-                      ),
-                      userNameBar,
-                      genderBar,
-                      emailBar,
-                      birthDateBar,
-                      friendBar,
-                      termServicesBar,
-                      privacyBar,
-                      aboutUsBar,
-                      logOutBar,
-                    ],
-                  )),
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      ) : Center(
+        child: Container(
+          color: Colors.white,
+            child: ListView(
+
+              padding: EdgeInsets.fromLTRB(0, 15, 0, 0),
+                children:<Widget>[
+                  Container(
+                    alignment: Alignment.center,
+                    padding: EdgeInsets.fromLTRB(0, 30, 0, 5),
+                    child: profilePic,
+                  ),
+
+                  userNameBar,
+                  genderBar,
+                  emailBar,
+                  birthDateBar,
+                  friendBar,
+                  termServicesBar,
+                  privacyBar,
+                  aboutUsBar,
+                  logOutBar,
+                ],
+                )
             ),
+          ),
     );
   }
+
 }
