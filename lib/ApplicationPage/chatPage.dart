@@ -26,33 +26,32 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
 
   bool isLoading = false;
   bool hasFriends = false;
-  bool hasRequest=false;
+  bool hasRequest = false;
   bool friendRequestPage = false;
-  int index =0;
-  String ownUserID,ownEmail,ownUsername;
+  int index = 0;
+  String ownUserID, ownEmail, ownUsername;
 
-  Map<String,String> ownMap;
+  Map<String, String> ownMap;
 
-  final List<String> chatPageOptions = ["Chats","Friend Requests"];
-
+  final List<String> chatPageOptions = ["Chats", "Friend Requests"];
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     getUserPreferences();
     getRequestList();
   }
 
   //initializations
-  getUserPreferences() async{
-    Helper.getUserId().then((value){
-      setState(()=>ownUserID = value);
+  getUserPreferences() async {
+    Helper.getUserId().then((value) {
+      setState(() => ownUserID = value);
     });
-    Helper.getUserName().then((value){
-      setState(()=> ownUsername= value);
+    Helper.getUserName().then((value) {
+      setState(() => ownUsername = value);
     });
-    Helper.getUserEmail().then((value){
-      setState(() => ownEmail =value);
+    Helper.getUserEmail().then((value) {
+      setState(() => ownEmail = value);
     });
 
     ownMap = {
@@ -62,31 +61,31 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     };
   }
 
-  getFriendList()async{
-    await _fSystem.getFriendList(ownUserID).then((val){
+  getFriendList() async {
+    await _fSystem.getFriendList(ownUserID).then((val) {
       friendListSnapshot = val;
     });
 
-    if(friendListSnapshot.documents.isEmpty){
+    if (friendListSnapshot.documents.isEmpty) {
       setState(() {
         hasFriends = false;
       });
-    }else{
+    } else {
       setState(() {
         hasFriends = true;
       });
     }
   }
 
-  getRequestList() async{
-    await _fSystem.getRequestList(ownUserID).then((val){
+  getRequestList() async {
+    await _fSystem.getRequestList(ownUserID).then((val) {
       requestSnapshot = val;
 
-      if(requestSnapshot.documents.isEmpty){
+      if (requestSnapshot.documents.isEmpty) {
         setState(() {
-          hasRequest =false;
+          hasRequest = false;
         });
-      }else{
+      } else {
         setState(() {
           hasRequest = true;
         });
@@ -95,49 +94,49 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   }
 
   //Functions
-  acceptRequest(peerID,peerMap){
-    _fSystem.acceptRequest(ownUserID, ownMap,peerID, peerMap);
+  acceptRequest(peerID, peerMap) {
+    _fSystem.acceptRequest(ownUserID, ownMap, peerID, peerMap);
   }
 
-  deleteRequest(peerID){
+  deleteRequest(peerID) {
     _fSystem.deleteRequest(ownUserID, peerID);
   }
 
-  Widget friendList(){
-
-    return hasRequest?
-    ListView.builder(
-        shrinkWrap: true,
-        itemCount: requestSnapshot.documents.length,
-        itemBuilder: (context, index){
-          return Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(45),
-              side: BorderSide(
-                color: Colors.black12,
+  Widget friendList() {
+    return hasRequest
+        ? ListView.builder(
+            shrinkWrap: true,
+            itemCount: requestSnapshot.documents.length,
+            itemBuilder: (context, index) {
+              return Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(45),
+                  side: BorderSide(
+                    color: Colors.black12,
+                  ),
+                ),
+                color: Colors.white,
+                margin: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
+                child: peerList(
+                  friendListSnapshot.documents[index].data["peerUsername"],
+                  friendListSnapshot.documents[index].data["peerEmail"],
+                  friendListSnapshot.documents[index].data["peerID"],
+                ),
+              );
+            })
+        : Container(
+            child: Expanded(
+              child: Text(
+                "No request",
+                style: style.copyWith(
+                  fontSize: 28,
+                  color: Colors.white38,
+                ),
               ),
             ),
-            color: Colors.white,
-            margin: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
-            child: peerList(
-              friendListSnapshot.documents[index].data["peerUsername"],
-              friendListSnapshot.documents[index].data["peerEmail"],
-              friendListSnapshot.documents[index].data["peerID"],
-            ),
           );
-        }
-    ):
-    Container(
-      child: Expanded(
-        child: Text("No request",
-          style: style.copyWith(
-            fontSize: 28,
-            color: Colors.white38,
-          ),
-        ),
-      ),
-    );
   }
+
   /*Widget friendList(){
     return StreamBuilder(
         stream: Firestore.instance.collection("friendSystem").document(ownUserID).collection("Friends").snapshots(),
@@ -164,107 +163,96 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     );
   }*/
 
-  Widget peerList(String userName,String userEmail,String _peerID){
-      return Container(
-        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-        child: Row(
-          children: [
-            viewUserProfile(userName),
-
-            SizedBox(width: 5),
-
-            Container(
-              child: SingleChildScrollView(
-                physics: NeverScrollableScrollPhysics(),
-                scrollDirection: Axis.horizontal,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      userName,
-                      style: TextStyle(
-                          color: Colors.black38,
-                          fontSize: 16
-                      ),
-                    ),
-                    Text(
-                      userEmail,
-                      style: TextStyle(
-                          color: Colors.black38,
-                          fontSize: 16
-                      ),
-                    )
-                  ],
-                ),
+  Widget peerList(String userName, String userEmail, String _peerID) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+      child: Row(
+        children: [
+          viewUserProfile(userName),
+          SizedBox(width: 5),
+          Container(
+            child: SingleChildScrollView(
+              physics: NeverScrollableScrollPhysics(),
+              scrollDirection: Axis.horizontal,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    userName,
+                    style: TextStyle(color: Colors.black38, fontSize: 16),
+                  ),
+                  Text(
+                    userEmail,
+                    style: TextStyle(color: Colors.black38, fontSize: 16),
+                  )
+                ],
               ),
             ),
-            Spacer(),
-            GestureDetector(
-              onTap: (){
-                Navigator.push(
-                  context, MaterialPageRoute(
-                  builder: (context)=> ChatRoom(peerID: _peerID,peerUsername: userName),
-                )
-                );
-              },
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 12,vertical: 8),
-                decoration: BoxDecoration(
-                    color: Colors.lightBlue[500],
-                    borderRadius: BorderRadius.circular(24)
-                ),
-                child: Text("Message",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16
-                  ),),
-              ),
-            )
-          ],
-        ),
-      );
-    }
-
-  //Requests
-  Widget requestList(){
-
-    return hasRequest?
-    ListView.builder(
-        shrinkWrap: true,
-        itemCount: requestSnapshot.documents.length,
-        itemBuilder: (context, index){
-          return Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(45),
-              side: BorderSide(
-                  color: Colors.black12,
-              ),
-            ),
-            color: Colors.white,
-            margin: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
-            child: userRequest(
-              requestSnapshot.documents[index].data["peerID"],
-              requestSnapshot.documents[index].data["peerUsername"],
-              requestSnapshot.documents[index].data["peerEmail"],
-            ),
-          );
-        }
-    ):
-    Container(
-      child: Expanded(
-        child: Text("No request",
-          style: style.copyWith(
-            fontSize: 28,
-            color: Colors.white38,
           ),
-        ),
+          Spacer(),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        ChatRoom(peerID: _peerID, peerUsername: userName),
+                  ));
+            },
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                  color: Colors.lightBlue[500],
+                  borderRadius: BorderRadius.circular(24)),
+              child: Text(
+                "Message",
+                style: TextStyle(color: Colors.white, fontSize: 16),
+              ),
+            ),
+          )
+        ],
       ),
     );
   }
 
-  Widget userRequest(String userID,String userName,String userEmail){
+  //Requests
+  Widget requestList() {
+    return hasRequest
+        ? ListView.builder(
+            shrinkWrap: true,
+            itemCount: requestSnapshot.documents.length,
+            itemBuilder: (context, index) {
+              return Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(45),
+                  side: BorderSide(
+                    color: Colors.black12,
+                  ),
+                ),
+                color: Colors.white,
+                margin: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
+                child: userRequest(
+                  requestSnapshot.documents[index].data["peerID"],
+                  requestSnapshot.documents[index].data["peerUsername"],
+                  requestSnapshot.documents[index].data["peerEmail"],
+                ),
+              );
+            })
+        : Container(
+            child: Expanded(
+              child: Text(
+                "No request",
+                style: style.copyWith(
+                  fontSize: 28,
+                  color: Colors.white38,
+                ),
+              ),
+            ),
+          );
+  }
 
-    Map <String,String> peerMap = {
+  Widget userRequest(String userID, String userName, String userEmail) {
+    Map<String, String> peerMap = {
       "peerID": userID,
       "peerUsername": userName,
       "peerEmail": userEmail,
@@ -275,25 +263,17 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
       child: Row(
         children: [
           viewUserProfile(userName),
-
           Spacer(),
-
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 userName,
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 16
-                ),
+                style: TextStyle(color: Colors.black, fontSize: 16),
               ),
               Text(
                 userEmail,
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 16
-                ),
+                style: TextStyle(color: Colors.black, fontSize: 16),
               )
             ],
           ),
@@ -301,55 +281,48 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
           Column(
             children: [
               GestureDetector(
-                onTap: (){
+                onTap: () {
                   acceptRequest(userID, peerMap);
                   getRequestList();
                 },
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 12,vertical: 8),
+                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
                       color: Colors.blue,
-                      borderRadius: BorderRadius.circular(24)
+                      borderRadius: BorderRadius.circular(24)),
+                  child: Text(
+                    "Accept",
+                    style: TextStyle(color: Colors.white, fontSize: 16),
                   ),
-                  child: Text("Accept",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16
-                    ),),
                 ),
               ),
-
               SizedBox(
                 height: 3,
               ),
-
               GestureDetector(
-                onTap: (){
+                onTap: () {
                   deleteRequest(userID);
                   getRequestList();
                 },
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 12,vertical: 8),
+                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
                       color: Colors.red,
-                      borderRadius: BorderRadius.circular(24)
+                      borderRadius: BorderRadius.circular(24)),
+                  child: Text(
+                    "Delete",
+                    style: TextStyle(color: Colors.white, fontSize: 16),
                   ),
-                  child: Text("Delete",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16
-                    ),),
                 ),
               )
             ],
           ),
-
         ],
       ),
     );
   }
 
-  loadingContainer(){
+  loadingContainer() {
     return Container(
       child: SizedBox(
         height: 15,
@@ -361,25 +334,26 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     );
   }
 
-  viewUserProfile(userName){
-    return  GestureDetector(
+  viewUserProfile(userName) {
+    return GestureDetector(
       child: CircleAvatar(
         radius: 30,
         //TODO
         //getUserProfilePic
         backgroundImage: AssetImage('assets/images/profilePic.png'),
       ),
-      onTap:(){
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context)=> displayUserProfile(userProfileId: userName))
-        );
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    displayUserProfile(userProfileId: userName)));
       },
     );
   }
 
   @override
   Widget build(BuildContext context) {
-
     final searchNewFriend = Container(
       padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
       alignment: Alignment.center,
@@ -389,33 +363,30 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
         borderRadius: BorderRadius.circular(45),
       ),
       child: GestureDetector(
-          onTap: () {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => searchNewFriendPage())
-            );
-          },
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  "Search New Friends",
-                   style: TextStyle(
-                     fontSize: 18,
-                     color: Colors.white,
-                    ),
-                  ),
+        onTap: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => searchNewFriendPage()));
+        },
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                "Search New Friends",
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.white,
+                ),
               ),
-              SizedBox(
-                child: Icon(Icons.search),
-              )
-            ],
-          ),
-          ),
-      );
+            ),
+            SizedBox(
+              child: Icon(Icons.search),
+            )
+          ],
+        ),
+      ),
+    );
 
-
-
-    pageChanger(){
+    pageChanger() {
       return Container(
         height: 75,
         color: Colors.lightBlue[200],
@@ -423,53 +394,48 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
           physics: NeverScrollableScrollPhysics(),
           scrollDirection: Axis.horizontal,
           itemCount: chatPageOptions.length,
-          itemBuilder: (BuildContext context,int _index){
-              return Container(
-                child: GestureDetector(
-                  onTap: (){
+          itemBuilder: (BuildContext context, int _index) {
+            return Container(
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    index = _index;
+                  });
+
+                  if (index == 0) {
                     setState(() {
-                      index = _index;
+                      friendRequestPage = false;
                     });
-
-                    if(index == 0){
-                      setState(() {
-                        friendRequestPage = false;
-                      });
-                    }else{
-                      setState(() {
-                        friendRequestPage = true;
-                      });
-                    }
-                  },
-                  child: RelativeBuilder(
-                    builder:(context,screenHeight,screenWidth,sy,sx){
-                      return Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal:sx(60),
-                          vertical:25
-                        ),
-                        child: Text(chatPageOptions[_index],
-                            style: style.copyWith(
-                            color: _index == index? Colors.white: Colors.white54,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 0.5,
-                          ),
-                        ),
-                      );
-                    }
-
-                  ),
-                ),
-              );
+                  } else {
+                    setState(() {
+                      friendRequestPage = true;
+                    });
+                  }
+                },
+                child: RelativeBuilder(
+                    builder: (context, screenHeight, screenWidth, sy, sx) {
+                  return Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: sx(60), vertical: 25),
+                    child: Text(
+                      chatPageOptions[_index],
+                      style: style.copyWith(
+                        color: _index == index ? Colors.white : Colors.white54,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  );
+                }),
+              ),
+            );
           },
-
         ),
       );
     }
 
-
-    refreshButton(){
+    refreshButton() {
       return Container(
         child: GestureDetector(
           child: Icon(Icons.refresh),
@@ -482,103 +448,99 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
       );
     }
 
-    contentPages(){
-     return friendRequestPage? Expanded(
-       child: Container(
-         padding: EdgeInsets.fromLTRB(15, 20, 15, 0),
-         alignment: Alignment.topLeft,
-         decoration: BoxDecoration(
-             color: Colors.white,
-             borderRadius: BorderRadius.only(
-               topLeft: Radius.circular(30),
-               topRight: Radius.circular(30),
-             )
-         ),
-         child: SingleChildScrollView(
-           child: Column(
-             children: <Widget>[
-               Row(
-                 children: [
-                   Expanded(
-                     child: Text(
-                       "Requests",
-                       style: style.copyWith(
-                         fontWeight: FontWeight.bold,
-                         fontSize: 28,
-                       ),
-                     ),
-                   ),
-                   refreshButton(),
-                 ],
-               ),
-               Container(
-                 child: SingleChildScrollView(
-                   child: requestList(),
-                 ),
-                 ),
-             ],
-           ),
-         ),
-       ),
-     ):
-     Expanded(
-       child: Container(
-         padding: EdgeInsets.fromLTRB(15, 20, 15, 0),
-         alignment: Alignment.topLeft,
-         decoration: BoxDecoration(
-             color: Colors.white,
-             borderRadius: BorderRadius.only(
-               topLeft: Radius.circular(30),
-               topRight: Radius.circular(30),
-             )
-         ),
-         child: SingleChildScrollView(
-           child: Column(
-             crossAxisAlignment: CrossAxisAlignment.start,
-             children: <Widget>[
-               Row(
-                 children: [
-                   Expanded(
-                       child: Text(
-                           "Recent",
-                           style: style.copyWith(
-                             fontWeight: FontWeight.bold,
-                             fontSize: 28,
-                           ),
-                         ),
-                   ),
-                   refreshButton(),
-                 ],
-               ),
-
-               Container(
-                 child: SingleChildScrollView(child: friendList()),
-                 ),
-             ],
-           ),
-         ),
-       ),
-     );
-     
+    contentPages() {
+      return friendRequestPage
+          ? Expanded(
+              child: Container(
+                padding: EdgeInsets.fromLTRB(15, 20, 15, 0),
+                alignment: Alignment.topLeft,
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(30),
+                      topRight: Radius.circular(30),
+                    )),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: <Widget>[
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              "Requests",
+                              style: style.copyWith(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 28,
+                              ),
+                            ),
+                          ),
+                          refreshButton(),
+                        ],
+                      ),
+                      Container(
+                        child: SingleChildScrollView(
+                          child: requestList(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            )
+          : Expanded(
+              child: Container(
+                padding: EdgeInsets.fromLTRB(15, 20, 15, 0),
+                alignment: Alignment.topLeft,
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(30),
+                      topRight: Radius.circular(30),
+                    )),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              "Recent",
+                              style: style.copyWith(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 28,
+                              ),
+                            ),
+                          ),
+                          refreshButton(),
+                        ],
+                      ),
+                      Container(
+                        child: SingleChildScrollView(child: friendList()),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
     }
 
-      return Scaffold(
-        backgroundColor: Colors.lightBlue[200],
-        appBar: AppBar(
-          title: searchNewFriend,
-          backgroundColor: Colors.lightBlue[600],
+    return Scaffold(
+      backgroundColor: Colors.lightBlue[200],
+      appBar: AppBar(
+        title: searchNewFriend,
+        backgroundColor: Colors.lightBlue[600],
+      ),
+      body: Container(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            pageChanger(),
+            contentPages(),
+          ],
         ),
-        body: Container(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              pageChanger(),
-              contentPages(),
-            ],
-          ),
-        ),
-      );
-    }
-
+      ),
+    );
   }
+}
