@@ -612,7 +612,8 @@ member = displayMemberResult.documents.length;
                                                             MaterialPageRoute(
                                                                 builder: (context) =>
                                                                     DisplayRoomPage(
-                                                                        roomPosition: index)));
+                                                                        roomPosition:
+                                                                            index)));
                                                       },
                                                       child: roomListBuilder(
                                                         displayRoomResult
