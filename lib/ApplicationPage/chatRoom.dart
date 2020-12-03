@@ -1,22 +1,14 @@
 
 
-<<<<<<< HEAD
 import 'package:cloud_firestore/cloud_firestore.dart';
-=======
->>>>>>> parent of d312a60... Update
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tvf_legion/Function%20Classes/Messaging.dart';
 import 'package:tvf_legion/services/helper.dart';
 
 class ChatRoom extends StatefulWidget {
-<<<<<<< HEAD
   final String peerID,peerUsername,chatRoomId;
   ChatRoom({this.peerID,this.peerUsername, this.chatRoomId});
-=======
-  final String peerID,peerUsername;
-  ChatRoom({this.peerID,this.peerUsername});
->>>>>>> parent of d312a60... Update
 
   @override
   _ChatRoomState createState() => _ChatRoomState();
@@ -121,11 +113,7 @@ class _ChatRoomState extends State<ChatRoom> {
                           controller: messageController,
                           style: defaultStyle,
                           decoration: InputDecoration(
-<<<<<<< HEAD
                             hintText: "Message",
-=======
-                            hintText: "Message...",
->>>>>>> parent of d312a60... Update
                             hintStyle: defaultStyle,
                             border: InputBorder.none,
                           ),
@@ -134,13 +122,9 @@ class _ChatRoomState extends State<ChatRoom> {
                     SizedBox(width: 5),
 
                     GestureDetector(
-<<<<<<< HEAD
                       onTap: (){
                         addMessage();
                       },
-=======
-                      onTap: (){},
->>>>>>> parent of d312a60... Update
                       child: Container(
                         height: 40,
                         width: 80,
