@@ -37,13 +37,14 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
 
   final List<String> chatPageOptions = ["Chats","Friend Requests"];
 
-  //Stream friendListStream;
-  //Stream requestListStream;
-
-  /*Widget fListStreamer(){
+  Widget fListStreamer(){
     return StreamBuilder(
-      stream: friendListStream,
-      builder: (context,snapshot){
+      stream: Firestore.instance
+          .collection("friendSystem")
+          .document(ownUserID)
+          .collection("Friends")
+          .snapshots(),
+      builder: (BuildContext context,AsyncSnapshot <QuerySnapshot> snapshot){
         return snapshot.hasData?
             ListView.builder(
                 itemCount: snapshot.data.documents.length,
@@ -77,8 +78,12 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
 
   Widget rListStreamer(){
     return StreamBuilder(
-      stream: requestListStream,
-      builder: (context,snapshot){
+      stream: Firestore.instance
+          .collection("friendSystem")
+          .document(ownUserID)
+          .collection("receivedRequests")
+          .snapshots(),
+      builder: (BuildContext context,AsyncSnapshot <QuerySnapshot> snapshot){
         return snapshot.hasData?
         ListView.builder(
             itemCount: snapshot.data.documents.length,
@@ -108,7 +113,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
         );
       },
     );
-  }*/
+  }
 
 
   @override
@@ -116,20 +121,6 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     super.initState();
     getUserPreferences();
 
-    /*_fSystem.getFriendList(ownUserID).then((snapshot){
-      setState(() {
-        friendListStream = snapshot;
-      });
-    }
-    );
-
-    _fSystem.getRequestList(ownUserID).then((snapshot){
-
-      setState(() {
-        requestListStream = snapshot;
-      });
-
-    });*/
   }
 
 
@@ -180,62 +171,50 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   }
 
   Widget peerList(String userName,String userEmail,String _peerID){
-      return Container(
-        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-        child: Row(
-          children: [
-            viewUserProfile(userName),
+      return GestureDetector(
+        onTap: (){
+          Navigator.push(
+              context, MaterialPageRoute(
+            builder: (context)=> ChatRoom(peerID: _peerID,peerUsername: userName),
+          )
+          );
+        },
 
-            SizedBox(width: 5),
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          child: Row(
+            children: [
+              viewUserProfile(userName),
 
-            Container(
-              child: SingleChildScrollView(
-                physics: NeverScrollableScrollPhysics(),
-                scrollDirection: Axis.horizontal,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      userName,
-                      style: TextStyle(
-                          color: Colors.black38,
-                          fontSize: 16
+              SizedBox(width: 5),
+
+              Container(
+                child: SingleChildScrollView(
+                  physics: NeverScrollableScrollPhysics(),
+                  scrollDirection: Axis.horizontal,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        userName,
+                        style: TextStyle(
+                            color: Colors.black38,
+                            fontSize: 16
+                        ),
                       ),
-                    ),
-                    Text(
-                      userEmail,
-                      style: TextStyle(
-                          color: Colors.black38,
-                          fontSize: 16
-                      ),
-                    )
-                  ],
+                      Text(
+                        userEmail,
+                        style: TextStyle(
+                            color: Colors.black38,
+                            fontSize: 16
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
-            ),
-            Spacer(),
-            GestureDetector(
-              onTap: (){
-                Navigator.push(
-                  context, MaterialPageRoute(
-                  builder: (context)=> ChatRoom(peerID: _peerID,peerUsername: userName),
-                )
-                );
-              },
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 12,vertical: 8),
-                decoration: BoxDecoration(
-                    color: Colors.lightBlue[500],
-                    borderRadius: BorderRadius.circular(24)
-                ),
-                child: Text("Message",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16
-                  ),),
-              ),
-            )
-          ],
+            ],
+          ),
         ),
       );
     }
@@ -485,7 +464,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                  ],
                ),
                Container(
-                 //child: SingleChildScrollView(child: rListStreamer(),),
+                 child: SingleChildScrollView(child: rListStreamer(),),
                  ),
              ],
            ),
@@ -522,7 +501,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                ),
 
                Container(
-                 //child: SingleChildScrollView(child: fListStreamer()),
+                 child: SingleChildScrollView(child: fListStreamer()),
                  ),
              ],
            ),
