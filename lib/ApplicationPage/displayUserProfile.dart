@@ -50,13 +50,54 @@ class _displayUserProfileState extends State<displayUserProfile> {
 
   @override
   void initState() {
-    super.initState();
 
     getPeerDetails();
     getOwnDetail();
     checkSentRequest();
     checkFriend();
     checkReceivedRequest();
+
+    super.initState();
+  }
+
+  getPeerDetails() async {
+    await databaseMethods.getUsername(widget.userProfileId).then((value) {
+      userDetails = value;
+
+      setState(() {
+        peerUsername = userDetails.documents[0].data["username"];
+        gender = userDetails.documents[0].data["gender"];
+        peerID = userDetails.documents[0].data["userID"];
+        peerEmail = userDetails.documents[0].data["email"];
+        doB = userDetails.documents[0].data["Date of Birth"];
+      });
+
+      addPeerMap = {
+        "peerID": peerID,
+        "peerUsername": peerUsername,
+        "peerEmail": peerEmail,
+      };
+
+      retrievePeerMap = {
+        "userID": peerID,
+        "username": peerUsername,
+        "email": peerEmail,
+      };
+    });
+  }
+
+  getOwnDetail() {
+
+    Helper.getUserId().then((value) {
+      setState(()=>ownUserID = value);
+    });
+
+    Helper.getUserEmail().then((value) {
+      setState(()=>ownEmail = value);
+    });
+    Helper.getUserName().then((value) {
+      setState(()=>ownUserName = value);
+    });
   }
 
   //TODO
@@ -113,71 +154,30 @@ class _displayUserProfileState extends State<displayUserProfile> {
     });
   }
 
-  getPeerDetails() async {
-    await databaseMethods.getUsername(widget.userProfileId).then((value) {
-      userDetails = value;
-
-      setState(() {
-        peerUsername = userDetails.documents[0].data["username"];
-        gender = userDetails.documents[0].data["gender"];
-        peerID = userDetails.documents[0].data["userID"];
-        peerEmail = userDetails.documents[0].data["email"];
-        doB = userDetails.documents[0].data["Date of Birth"];
-      });
-
-      addPeerMap = {
-        "peerID": peerID,
-        "peerUsername": peerUsername,
-        "peerEmail": peerEmail,
-      };
-
-      retrievePeerMap = {
-        "userID": peerID,
-        "username": peerUsername,
-        "email": peerEmail,
-      };
-    });
-  }
-
-  getOwnDetail() {
-    Helper.getUserId().then((value) {
-      setState(() {
-        ownUserID = value;
-      });
-    });
-
-    Helper.getUserEmail().then((value) {
-      setState(() {
-        ownEmail = value;
-      });
-    });
-    Helper.getUserName().then((value) {
-      setState(() {
-        ownUserName = value;
-      });
-    });
-  }
-
   addFriend() {
-    ownMap = {
-      "userID": ownUserID,
-      "username": ownUserName,
-      "email": ownEmail,
-    };
 
-    retrieveUserMap = {
-      "peerID": ownUserID,
-      "peerUsername": ownUserName,
-      "peerEmail": ownEmail,
-    };
+    setState(() {
+      ownMap = {
+        "userID": ownUserID,
+        "username": ownUserName,
+        "email": ownEmail,
+      };
+    });
+
+    setState(() {
+      retrieveUserMap = {
+        "peerID": ownUserID,
+        "peerUsername": ownUserName,
+        "peerEmail": ownEmail,
+      };
+    });
 
     setState(() {
       requestSent = true;
     });
 
     _fSystem.sendFriendRequest(ownUserID, ownMap, peerID, addPeerMap);
-    _fSystem.retrieveRequest(
-        peerID, retrievePeerMap, ownUserID, retrieveUserMap);
+    _fSystem.retrieveRequest(peerID, retrievePeerMap, ownUserID, retrieveUserMap);
   }
 
   cancelRequest() {
@@ -186,6 +186,32 @@ class _displayUserProfileState extends State<displayUserProfile> {
     });
 
     _fSystem.cancelRequest(ownUserID, peerID);
+  }
+
+
+  acceptRequest(){
+
+    setState(() {
+      ownMap = {
+        "userID": ownUserID,
+        "username": ownUserName,
+        "email": ownEmail,
+      };
+    });
+
+    setState(() {
+      retrieveUserMap = {
+        "peerID": ownUserID,
+        "peerUsername": ownUserName,
+        "peerEmail": ownEmail,
+      };
+    });
+
+    _fSystem.acceptRequest(ownUserID,ownMap,peerID,retrievePeerMap);
+  }
+
+  deleteRequest(){
+    _fSystem.deleteRequest(ownUserID, peerID);
   }
 
   buttonStateChange() {
@@ -238,11 +264,13 @@ class _displayUserProfileState extends State<displayUserProfile> {
         Expanded(
           child: GestureDetector(
             onTap: () {
-              _fSystem.acceptRequest(ownUserID, ownMap, peerID, addPeerMap);
+              acceptRequest();
 
               checkSentRequest();
               checkFriend();
               checkReceivedRequest();
+
+              print("$peerID");
             },
             child: Container(
               margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15),
@@ -260,11 +288,14 @@ class _displayUserProfileState extends State<displayUserProfile> {
         Expanded(
           child: GestureDetector(
             onTap: () {
-              _fSystem.deleteRequest(ownUserID, peerID);
+              deleteRequest();
 
               checkSentRequest();
               checkFriend();
               checkReceivedRequest();
+
+              print(peerID);
+
             },
             child: Container(
               margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15),
@@ -406,6 +437,8 @@ class _displayUserProfileState extends State<displayUserProfile> {
                 checkSentRequest();
                 checkFriend();
                 checkReceivedRequest();
+
+                print("$peerID\n$peerUsername\n$peerEmail\n$ownUserID\n$ownEmail\n$ownUserName");
               }),
             ],
           )),

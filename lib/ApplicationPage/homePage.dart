@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:relative_scale/relative_scale.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'package:tvf_legion/ApplicationPage/SearchPage.dart';
-import 'package:tvf_legion/ApplicationPage/displayRoom.dart';
-import 'package:tvf_legion/Function%20Classes/roomManagement.dart';
+/*import 'package:tvf_legion/ApplicationPage/displayRoom.dart';
+import 'package:tvf_legion/Function%20Classes/roomManagement.dart';*/
 import 'package:tvf_legion/modal/room.dart';
 import 'package:tvf_legion/services/database.dart';
 import 'package:tvf_legion/services/helper.dart';
@@ -20,7 +20,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Database databaseMethods = new Database();
   QuerySnapshot userDetails;
-  RoomManagement roomService = new RoomManagement();
+  //RoomManagement roomService = new RoomManagement();
   Room roomData = new Room();
 
   Timer timer;
@@ -79,7 +79,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       "username": ownUserName,
       "email": ownEmail,
     };
-    roomData.roomId = roomService.getRoomId(ownUserID);
+    //roomData.roomId = roomService.getRoomId(ownUserID);
     roomData.rName = nameController.text.trim();
     roomData.rDescription = descriptionController.text;
     roomData.maxPerson = maxP;
@@ -102,13 +102,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     };
 
 
-    roomService.createOwnerRoomInfo(
-        ownUserID, ownMap, roomData.roomId, roomInfoMap);
+   /* roomService.createOwnerRoomInfo(
+        ownUserID, ownMap, roomData.roomId, roomInfoMap);*/
 
     Navigator.of(context).pop();
   }
 
-  roomDisplay() async {
+  /*roomDisplay() async {
     await roomService.displayOwnerRoom(ownUserID).then((snapshot) {
       displayRoomResult = snapshot;
 
@@ -117,9 +117,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       });
     });
 
-  }
+  }*/
 
-  memberDisplay() async{
+  /*memberDisplay() async{
 
     await roomService.displayMember(ownUserID).then((snapshot) {
       displayMemberResult = snapshot;
@@ -127,7 +127,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
 member = displayMemberResult.documents.length;
 
-  }
+  }*/
 
   Widget roomListBuilder(String roomName, String state, int maxPerson) {
     return Container(
@@ -165,8 +165,8 @@ member = displayMemberResult.documents.length;
     passController = new TextEditingController();
     descriptionController = new TextEditingController();
     getOwnDetail();
-    roomDisplay();
-    memberDisplay();
+    //roomDisplay();
+    //memberDisplay();
     super.initState();
   }
 
@@ -512,7 +512,7 @@ member = displayMemberResult.documents.length;
                     setState(() {
                       roomPage = true;
                     });
-                    roomDisplay();
+                    //roomDisplay();
                   }
                 },
                 child: RelativeBuilder(
@@ -543,7 +543,7 @@ member = displayMemberResult.documents.length;
         child: GestureDetector(
           child: Icon(Icons.refresh),
           onTap: () {
-            roomDisplay();
+            //roomDisplay();
             print(hasRequest);
           },
         ),
@@ -607,12 +607,12 @@ member = displayMemberResult.documents.length;
                                                     child: InkWell(
                                                       onTap: () {
 
-                                                        Navigator.push(
+                                                        /*Navigator.push(
                                                             context,
                                                             MaterialPageRoute(
                                                                 builder: (context) =>
                                                                     DisplayRoomPage(
-                                                                        roomPosition: index)));
+                                                                        roomPosition: index)));*/
                                                       },
                                                       child: roomListBuilder(
                                                         displayRoomResult

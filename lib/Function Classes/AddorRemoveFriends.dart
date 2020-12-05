@@ -43,13 +43,14 @@ class friendSystem {
         .setData(userMap);
   }
 
-  acceptRequest(userID, userMap, peerID, peerMap) {
+  acceptRequest(userID, userMap,peerID, peerMap) {
     Firestore.instance
         .collection("friendSystem")
         .document(userID)
         .collection("Friends")
         .document(peerID)
         .setData(peerMap);
+
     Firestore.instance
         .collection("friendSystem")
         .document(peerID)
@@ -63,6 +64,7 @@ class friendSystem {
         .collection("receivedRequests")
         .document(peerID)
         .delete();
+
     Firestore.instance
         .collection('friendSystem')
         .document(peerID)
@@ -78,9 +80,10 @@ class friendSystem {
         .collection("receivedRequests")
         .document(peerID)
         .delete();
+
     Firestore.instance
         .collection('friendSystem')
-        .document("peerID")
+        .document(peerID)
         .collection("sentRequests")
         .document(userID)
         .delete();
@@ -118,7 +121,7 @@ class friendSystem {
         .collection("friendSystem")
         .document(userID)
         .collection("receivedRequests")
-        .getDocuments();
+        .snapshots;
   }
 
   getFriendList(userID) {
@@ -126,6 +129,6 @@ class friendSystem {
         .collection("friendSystem")
         .document(userID)
         .collection("Friends")
-        .getDocuments();
+        .snapshots();
   }
 }

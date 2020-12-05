@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:tvf_legion/ApplicationPage/interactionRoomPage.dart';
-import 'package:tvf_legion/Function%20Classes/roomManagement.dart';
+/*import 'package:tvf_legion/ApplicationPage/interactionRoomPage.dart';
+import 'package:tvf_legion/Function%20Classes/roomManagement.dart';*/
 import 'package:tvf_legion/services/helper.dart';
 
 class SearchPage extends StatefulWidget {
@@ -12,7 +12,7 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
-  RoomManagement databaseMethods = new RoomManagement();
+  //RoomManagement databaseMethods = new RoomManagement();
   QuerySnapshot searchResultSnapshot;
 
   final String checkState = "Public";
@@ -23,7 +23,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
 
   bool hasRoomSearched = false;
 
-  initiateSearch() async {
+  /*initiateSearch() async {
     if (searchEditingController.text.isNotEmpty) {
       setState(() {
         isLoading = true;
@@ -44,7 +44,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
         hasRoomSearched = false;
       });
     }
-  }
+  }*/
 
   getOwnDetail() {
     Helper.getUserId().then((value) {
@@ -129,7 +129,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
           GestureDetector(
             onTap: () {
               //joinRoom(roomID);
-              if(checkState == state){
+              /*if(checkState == state){
                 // Go to chatting page Firebase -from Room to Member
                 Navigator.push(
                     context, MaterialPageRoute(builder: (context) => InteractingRoomPage()));
@@ -137,7 +137,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
               }
               else{
                 // pop up dialog ( show give invitation button) Firebase - from Room to joinRequest, acceptRequest then Member.
-              }
+              }*/
 
             },
             child: Container(
@@ -197,7 +197,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
               width: 45,
               child: IconButton(
                 icon: Icon(Icons.search, color: Colors.white),
-                onPressed: initiateSearch,
+                onPressed: (){} //initiateSearch,
               ),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(45),
