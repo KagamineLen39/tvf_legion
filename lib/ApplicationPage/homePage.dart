@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:relative_scale/relative_scale.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'package:tvf_legion/ApplicationPage/SearchPage.dart';
-/*import 'package:tvf_legion/ApplicationPage/displayRoom.dart';
-import 'package:tvf_legion/Function%20Classes/roomManagement.dart';*/
+import 'package:tvf_legion/ApplicationPage/displayRoom.dart';
+import 'package:tvf_legion/Function%20Classes/roomManagement.dart';
 import 'package:tvf_legion/modal/room.dart';
 import 'package:tvf_legion/services/database.dart';
 import 'package:tvf_legion/services/helper.dart';
@@ -20,7 +20,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Database databaseMethods = new Database();
   QuerySnapshot userDetails;
-  //RoomManagement roomService = new RoomManagement();
+  RoomManagement roomService = new RoomManagement();
   Room roomData = new Room();
 
   Timer timer;
@@ -46,7 +46,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   bool isEnabled = false;
   bool roomPage = false;
-  bool hasRequest = false;
+
   final String checkState = "Public";
 
   final List<String> homePageOptions = ["Create/Popular", "Interaction "];
@@ -79,7 +79,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       "username": ownUserName,
       "email": ownEmail,
     };
-    //roomData.roomId = roomService.getRoomId(ownUserID);
+    roomData.roomId = roomService.getRoomId(ownUserID);
     roomData.rName = nameController.text.trim();
     roomData.rDescription = descriptionController.text;
     roomData.maxPerson = maxP;
@@ -102,34 +102,40 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     };
 
 
-   /* roomService.createOwnerRoomInfo(
-        ownUserID, ownMap, roomData.roomId, roomInfoMap);*/
+   roomService.createOwnerRoomInfo(
+        ownUserID, ownMap, roomData.roomId, roomInfoMap);
 
     Navigator.of(context).pop();
   }
 
-  /*roomDisplay() async {
+  roomDisplay() async {
     await roomService.displayOwnerRoom(ownUserID).then((snapshot) {
       displayRoomResult = snapshot;
-
-      setState(() {
-        hasRequest = true;
-      });
+      setState(() {});
     });
 
-  }*/
+  }
 
-  /*memberDisplay() async{
+  memberDisplay() async{
 
-    await roomService.displayMember(ownUserID).then((snapshot) {
+    await roomService.displayMember().then((snapshot) {
       displayMemberResult = snapshot;
-    });
+      // print('$snapshot');
+      // print('$displayMemberResult');
+      // int test = displayMemberResult.documents.length;
+      // print('$test');
+      print('$displayMemberResult');
 
-member = displayMemberResult.documents.length;
+        member = displayMemberResult.documents.length;
 
-  }*/
+
+
+  });
+  }
+
 
   Widget roomListBuilder(String roomName, String state, int maxPerson) {
+
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       child: Row(
@@ -146,6 +152,7 @@ member = displayMemberResult.documents.length;
                 roomName,
                 style: TextStyle(color: Colors.black38, fontSize: 20),
               ),
+
               Text(
                 ('$member / $maxPerson'),
                 style: TextStyle(color: Colors.black38, fontSize: 20),
@@ -165,8 +172,8 @@ member = displayMemberResult.documents.length;
     passController = new TextEditingController();
     descriptionController = new TextEditingController();
     getOwnDetail();
-    //roomDisplay();
-    //memberDisplay();
+    roomDisplay();
+    memberDisplay();
     super.initState();
   }
 
@@ -199,7 +206,6 @@ member = displayMemberResult.documents.length;
       child: MaterialButton(
         padding: EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 10.0),
         onPressed: () {
-          
           showDialog(
               context: context,
               builder: (BuildContext context) {
@@ -418,14 +424,12 @@ member = displayMemberResult.documents.length;
                                       padding: EdgeInsets.fromLTRB(
                                           20.0, 15.0, 20.0, 15.0),
                                       onPressed: () {
-                                        roomCreate();
-                                        nameController.clear();
-                                        passController.clear();
-                                        descriptionController.clear();
-                                        val = 0;
-                                        maxP = 1;
-
-                                        print('$member');
+                                        // roomCreate();
+                                        // nameController.clear();
+                                        // passController.clear();
+                                        // descriptionController.clear();
+                                        // val = 0;
+                                        // maxP = 1;
                                       },
                                       child: Text("Confirm",
                                           textAlign: TextAlign.center,
@@ -512,7 +516,7 @@ member = displayMemberResult.documents.length;
                     setState(() {
                       roomPage = true;
                     });
-                    //roomDisplay();
+                    roomDisplay();
                   }
                 },
                 child: RelativeBuilder(
@@ -543,8 +547,9 @@ member = displayMemberResult.documents.length;
         child: GestureDetector(
           child: Icon(Icons.refresh),
           onTap: () {
-            //roomDisplay();
-            print(hasRequest);
+
+            roomDisplay();
+
           },
         ),
       );
@@ -607,12 +612,12 @@ member = displayMemberResult.documents.length;
                                                     child: InkWell(
                                                       onTap: () {
 
-                                                        /*Navigator.push(
+                                                        Navigator.push(
                                                             context,
                                                             MaterialPageRoute(
                                                                 builder: (context) =>
                                                                     DisplayRoomPage(
-                                                                        roomPosition: index)));*/
+                                                                        roomPosition: index)));
                                                       },
                                                       child: roomListBuilder(
                                                         displayRoomResult
