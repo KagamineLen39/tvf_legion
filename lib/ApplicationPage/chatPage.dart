@@ -30,6 +30,10 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   int index =0;
   String ownUserID,ownEmail,ownUsername;
 
+  bool isFriend;
+  bool requestReceived;
+  bool requestSent;
+
   Map<String,String> ownMap;
   Map <String,String> peerMap;
   Map<String, String> retrieveUserMap;
@@ -61,7 +65,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
               itemCount: snapshot.data.documents.length,
               shrinkWrap: true,
               itemBuilder:(context,index){
-                return snapshot.data.documents[index].data["username"] == null?
+                return snapshot.data.documents[index].data["userID"] == null?
                 Container():
                 Card(
                   shape: RoundedRectangleBorder(
@@ -108,7 +112,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
               itemCount: snapshot.data.documents.length,
               shrinkWrap: true,
               itemBuilder:(context,index){
-                return snapshot.data.documents.isEmpty?
+                return snapshot.data.documents[index].data["peerID"] == null?
                 Container():
                 Card(
                   shape: RoundedRectangleBorder(
@@ -144,7 +148,70 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   void initState(){
     super.initState();
     getUserPreferences();
+  }
 
+  Future checkSentRequest(peerID) async {
+    bool _requestSent = false;
+
+    if(_requestSent == false){
+      _fSystem.requestSentChecker(ownUserID, peerID)
+          .then((val) {
+        if (val.documents.isEmpty) {
+          setState(() {
+            _requestSent = false;
+          });
+        } else {
+          print(val.documents[0].data["peerID"]);
+          setState(() {
+            _requestSent = true;
+          });
+        }
+      });
+    }
+
+    return _requestSent;
+  }
+
+  Future checkReceivedRequest(peerID) async {
+    bool _requestReceived;
+
+    if(_requestReceived == false){
+      _fSystem.receivedRequestChecker(ownUserID, peerID)
+          .then((val) {
+        if (val.documents.isEmpty) {
+          setState(() {
+            _requestReceived = false;
+          });
+        } else {
+          setState(() {
+            _requestReceived = true;
+          });
+        }
+      });
+    }
+
+    return _requestReceived;
+
+  }
+
+  Future checkFriend(peerID) async {
+    bool _isFriend;
+
+    if(_isFriend == false){
+      _fSystem.friendChecker(ownUserID, peerID).then((val) {
+        if (val.documents.isEmpty) {
+          setState(() {
+            _isFriend = false;
+          });
+        } else {
+          setState(() {
+            _isFriend = true;
+          });
+        }
+      });
+    }
+
+    return _isFriend;
   }
 
 
@@ -195,11 +262,14 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   }
 
   Widget peerList(String userName,String userEmail,String _peerID){
+
+    String chatRoomID = ("${ownUsername}_$userName");
+
       return GestureDetector(
         onTap: (){
           Navigator.push(
               context, MaterialPageRoute(
-            builder: (context)=> ChatRoom(peerID: _peerID,peerUsername: userName),
+            builder: (context)=> ChatRoom(peerID: _peerID,peerUsername: userName,chatRoomId: chatRoomID),
           )
           );
         },
@@ -262,7 +332,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
       padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       child: Row(
         children: [
-          viewUserProfile(userName),
+          viewUserProfile(userID),
 
           Container(
             padding: EdgeInsets.all(10),
@@ -352,7 +422,25 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     );
   }
 
-  viewUserProfile(userName){
+
+  viewUserProfile(userID){
+
+    checkReceivedRequest(userID).then((value){
+      setState(() {
+        requestReceived = value;
+      });
+    });
+    checkFriend(userID).then((value){
+      setState(() {
+        isFriend = value;
+      });
+    });
+    checkSentRequest(userID).then((value){
+      setState(() {
+        requestSent = value;
+      });
+    });
+
     return  GestureDetector(
       child: CircleAvatar(
         radius: 30,
@@ -361,8 +449,13 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
         backgroundImage: AssetImage('assets/images/profilePic.png'),
       ),
       onTap:(){
+
+        print("Received: $requestReceived");
+        print("Friend: $isFriend");
+        print("Sent: $requestSent");
+
         Navigator.push(context,
-            MaterialPageRoute(builder: (context)=> displayUserProfile(userProfileId: userName))
+            MaterialPageRoute(builder: (context)=> displayUserProfile(userProfileId: userID,isFriend: isFriend,requestReceived: requestReceived,requestSent: requestSent,))
         );
       },
     );

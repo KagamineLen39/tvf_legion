@@ -8,8 +8,9 @@ import 'package:tvf_legion/services/helper.dart';
 // ignore: camel_case_types
 class displayUserProfile extends StatefulWidget {
   final String userProfileId;
+  final bool isFriend,requestSent,requestReceived;
 
-  displayUserProfile({this.userProfileId});
+  displayUserProfile({this.userProfileId,this.isFriend,this.requestSent,this.requestReceived});
 
   @override
   _displayUserProfileState createState() => _displayUserProfileState();
@@ -31,10 +32,10 @@ class _displayUserProfileState extends State<displayUserProfile> {
   Database databaseMethods = new Database();
   QuerySnapshot userDetails;
 
-  bool isFriend = false;
-  bool requestSent = false;
+  bool isFriend;
+  bool requestSent;
+  bool requestReceived ;
   bool isLoading = false;
-  bool requestReceived = false;
 
   String peerUsername, gender, peerEmail, doB, peerID;
   String ownUserID, ownEmail, ownUserName;
@@ -50,17 +51,20 @@ class _displayUserProfileState extends State<displayUserProfile> {
 
 
   @override
-  void initState() {
-
+  void initState(){
     super.initState();
 
     getPeerDetails();
     getOwnDetail();
 
-    checkSentRequest();
-    checkFriend();
-    checkReceivedRequest();
+    isFriend = widget.isFriend;
+    requestSent = widget.requestSent;
+    requestReceived = widget.requestSent;
+
   }
+
+
+
 
   getPeerDetails() async {
     await databaseMethods.getUsername(widget.userProfileId).then((value) {
@@ -100,61 +104,6 @@ class _displayUserProfileState extends State<displayUserProfile> {
     Helper.getUserName().then((value) {
       setState(()=>ownUserName = value);
     });
-  }
-
-  //TODO
-  checkSentRequest() async {
-    if(requestSent == false){
-        _fSystem.requestSentChecker(ownUserID, peerID)
-            .then((val) {
-          if (val.documents.isEmpty) {
-            setState(() {
-              requestSent = false;
-              buttonText = "Add";
-            });
-          } else {
-            print(val.documents[0].data["peerID"]);
-            setState(() {
-              requestSent = true;
-              buttonText = "Cancel Request";
-            });
-          }
-        });
-    }
-  }
-
-  checkReceivedRequest() async {
-    if(requestReceived == false){
-        _fSystem.receivedRequestChecker(ownUserID, peerID)
-            .then((val) {
-          if (val.documents.isEmpty) {
-            setState(() {
-              requestReceived = false;
-            });
-          } else {
-            setState(() {
-              requestReceived = true;
-            });
-          }
-        });
-    }
-
-  }
-
-  checkFriend() async {
-    if(isFriend == false){
-        _fSystem.friendChecker(ownUserID, peerID).then((val) {
-          if (val.documents.isEmpty) {
-            setState(() {
-              isFriend = false;
-            });
-          } else {
-            setState(() {
-              isFriend = true;
-            });
-          }
-        });
-    }
   }
 
 
@@ -212,23 +161,14 @@ class _displayUserProfileState extends State<displayUserProfile> {
     });
 
     _fSystem.acceptRequest(ownUserID,ownMap,peerID,retrievePeerMap);
-
-    checkSentRequest();
-    checkFriend();
-    checkReceivedRequest();
   }
 
   deleteRequest(){
     _fSystem.deleteRequest(ownUserID, peerID);
 
-    checkSentRequest();
-    checkFriend();
-    checkReceivedRequest();
   }
 
   buttonStateChange() {
-    checkSentRequest();
-
     if (requestSent == true) {
       cancelRequest();
     } else {
@@ -325,10 +265,13 @@ class _displayUserProfileState extends State<displayUserProfile> {
                 color: Colors.lightBlue[400],
               )
             : buttonDeco,
-        child: isLoading
-            ? loadingContainer()
-            : Text(
-                buttonText,
+        child: requestSent
+            ? Text(
+                "Cancel Request",
+                style: style,
+                textAlign: TextAlign.center,
+            ): Text(
+                "Add",
                 style: style,
                 textAlign: TextAlign.center,
               ),
@@ -432,14 +375,6 @@ class _displayUserProfileState extends State<displayUserProfile> {
               genderBar,
               emailBar,
               birthDateBar,
-              FloatingActionButton(onPressed: () {
-                //print("$peerID\n$peerUsername\n$peerEmail\n$ownUserID\n$ownEmail\n$ownUserName");
-                print("Friend: $isFriend \nSent: $requestSent \nReceived: $requestReceived");
-
-                checkSentRequest();
-                checkFriend();
-                checkReceivedRequest();
-              }),
             ],
           )),
     );
