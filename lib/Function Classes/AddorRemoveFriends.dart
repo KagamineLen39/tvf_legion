@@ -112,23 +112,7 @@ class friendSystem {
         .collection("friendSystem")
         .document(userID)
         .collection("Friends")
-        .where("peerID", isEqualTo: peerID)
+        .where("userID", isEqualTo: peerID)
         .getDocuments();
-  }
-
-  getRequestList(userID) {
-    return Firestore.instance
-        .collection("friendSystem")
-        .document(userID)
-        .collection("receivedRequests")
-        .snapshots;
-  }
-
-  getFriendList(userID) {
-    return Firestore.instance
-        .collection("friendSystem")
-        .document(userID)
-        .collection("Friends")
-        .snapshots();
   }
 }

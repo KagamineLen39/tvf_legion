@@ -45,34 +45,42 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
           .collection("Friends")
           .snapshots(),
       builder: (BuildContext context,AsyncSnapshot <QuerySnapshot> snapshot){
-        return snapshot.hasData?
+          return snapshot.data.documents.length == 0?
+          Container(
+            alignment: Alignment.center,
+            child:Text("No friend",
+              style: style.copyWith(
+              fontSize: 25,
+              fontWeight: FontWeight.bold,
+              color: Colors.black54,
+            ),
+          ),
+
+          ):
             ListView.builder(
-                itemCount: snapshot.data.documents.length,
-                shrinkWrap: true,
-                itemBuilder:(context,index){
-                  return Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(45),
-                      side: BorderSide(
-                        color: Colors.black12,
-                      ),
+              itemCount: snapshot.data.documents.length,
+              shrinkWrap: true,
+              itemBuilder:(context,index){
+                return snapshot.data.documents[index].data["username"] == null?
+                Container():
+                Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(45),
+                    side: BorderSide(
+                      color: Colors.black12,
                     ),
-                    color: Colors.white,
-                    margin: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
-                    child: peerList(
+                  ),
+                  color: Colors.white,
+                  margin: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
+
+                  child: peerList(
                       snapshot.data.documents[index].data["username"],
                       snapshot.data.documents[index].data["email"],
-                      snapshot.data.documents[index].data["userID"],
-                    ),
-                  );
-                }):
-            Container(
-              alignment: Alignment.center,
-              child: Text(
-                "No friends",
-              ),
-            );
-      },
+                      snapshot.data.documents[index].data["userID"]
+                  ),
+                );
+              });
+        }
     );
   }
 
@@ -84,33 +92,49 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
           .collection("receivedRequests")
           .snapshots(),
       builder: (BuildContext context,AsyncSnapshot <QuerySnapshot> snapshot){
-        return snapshot.hasData?
-        ListView.builder(
-            itemCount: snapshot.data.documents.length,
-            shrinkWrap: true,
-            itemBuilder:(context,index){
-              return Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(45),
-                  side: BorderSide(
-                    color: Colors.black12,
+        if(snapshot.hasData){
+          return snapshot.data.documents.length == 0?
+              Container(
+                  alignment: Alignment.center,
+                  child:Text(
+                    "No requests",
+                    style: style.copyWith(
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black54,
+                    ),
                   ),
-                ),
-                color: Colors.white,
-                margin: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
-                child: userRequest(
-                  snapshot.data.documents[index].data["peerID"],
-                  snapshot.data.documents[index].data["peerUsername"],
-                  snapshot.data.documents[index].data["peerEmail"],
-                ),
-              );
-            }):
-        Container(
-          alignment: Alignment.center,
-          child: Text(
-            "No Requests",
-          ),
-        );
+              ): ListView.builder(
+              itemCount: snapshot.data.documents.length,
+              shrinkWrap: true,
+              itemBuilder:(context,index){
+                return snapshot.data.documents.isEmpty?
+                Container():
+                Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(45),
+                    side: BorderSide(
+                      color: Colors.black12,
+                    ),
+                  ),
+                  color: Colors.white,
+                  margin: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
+                  child: userRequest(
+                    snapshot.data.documents[index].data["peerID"],
+                    snapshot.data.documents[index].data["peerUsername"],
+                    snapshot.data.documents[index].data["peerEmail"],
+                  ),
+                );
+              });
+          }else{
+          return Container(
+            child:Text(
+              "No requests"
+            )
+          );
+        }
+
+
       },
     );
   }
@@ -228,76 +252,87 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
       "peerEmail": userEmail,
     };
 
+    retrievePeerMap = {
+      "userID": userID,
+      "username": userName,
+      "email": userEmail,
+    };
+
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       child: Row(
         children: [
           viewUserProfile(userName),
 
-          Spacer(),
-
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                userName,
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 16
+          Container(
+            padding: EdgeInsets.all(10),
+            width: 150,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  userName,
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16
+                  ),
                 ),
-              ),
-              Text(
-                userEmail,
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 16
-                ),
-              )
-            ],
+                Text(
+                  userEmail,
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16
+                  ),
+                )
+              ],
+            ),
           ),
           Spacer(),
-          Column(
-            children: [
-              GestureDetector(
-                onTap: (){
-                  acceptRequest(userID, peerMap);
-                },
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 12,vertical: 8),
-                  decoration: BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.circular(24)
+          
+          Container(
+            child: Column(
+              children: [
+                GestureDetector(
+                  onTap: (){
+                    acceptRequest(userID, retrievePeerMap);
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 12,vertical: 8),
+                    decoration: BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.circular(24)
+                    ),
+                    child: Text("Accept",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16
+                      ),),
                   ),
-                  child: Text("Accept",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16
-                    ),),
                 ),
-              ),
 
-              SizedBox(
-                height: 3,
-              ),
+                SizedBox(
+                  height: 3,
+                ),
 
-              GestureDetector(
-                onTap: (){
-                  deleteRequest(userID);
-                },
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 12,vertical: 8),
-                  decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(24)
+                GestureDetector(
+                  onTap: (){
+                    deleteRequest(userID);
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 12,vertical: 8),
+                    decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(24)
+                    ),
+                    child: Text("Delete",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16
+                      ),),
                   ),
-                  child: Text("Delete",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16
-                    ),),
-                ),
-              )
-            ],
+                )
+              ],
+            ),
           ),
 
         ],
@@ -424,16 +459,6 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
       );
     }
 
-
-    refreshButton(){
-      return Container(
-        child: GestureDetector(
-          child: Icon(Icons.refresh),
-          onTap: () {},
-        ),
-      );
-    }
-
     contentPages(){
      return friendRequestPage? Expanded(
        child: Container(
@@ -460,7 +485,6 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                        ),
                      ),
                    ),
-                   refreshButton(),
                  ],
                ),
                Container(

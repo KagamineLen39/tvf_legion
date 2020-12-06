@@ -48,16 +48,18 @@ class _displayUserProfileState extends State<displayUserProfile> {
 
   friendSystem _fSystem = new friendSystem();
 
+
   @override
   void initState() {
 
+    super.initState();
+
     getPeerDetails();
     getOwnDetail();
+
     checkSentRequest();
     checkFriend();
     checkReceivedRequest();
-
-    super.initState();
   }
 
   getPeerDetails() async {
@@ -101,58 +103,60 @@ class _displayUserProfileState extends State<displayUserProfile> {
   }
 
   //TODO
-  //Only when button isClick, it check
   checkSentRequest() async {
-    await _fSystem
-        .requestSentChecker(ownUserID, peerID)
-        .then((QuerySnapshot val) {
-      if (val.documents.isEmpty) {
-        setState(() {
-          requestSent = false;
-          buttonText = "Add";
+    if(requestSent == false){
+        _fSystem.requestSentChecker(ownUserID, peerID)
+            .then((val) {
+          if (val.documents.isEmpty) {
+            setState(() {
+              requestSent = false;
+              buttonText = "Add";
+            });
+          } else {
+            print(val.documents[0].data["peerID"]);
+            setState(() {
+              requestSent = true;
+              buttonText = "Cancel Request";
+            });
+          }
         });
-      } else {
-        print(val.documents[0].data["peerID"]);
-
-        setState(() {
-          requestSent = true;
-          buttonText = "Cancel Request";
-        });
-      }
-    });
+    }
   }
 
-  //Same issue
-  checkFriend() async {
-    await _fSystem.friendChecker(ownUserID, peerID).then((QuerySnapshot val) {
-      if (val.documents.isEmpty) {
-        setState(() {
-          isFriend = false;
-        });
-      } else {
-        setState(() {
-          isFriend = true;
-        });
-      }
-    });
-  }
-
-  //Same issue
   checkReceivedRequest() async {
-    await _fSystem
-        .receivedRequestChecker(ownUserID, peerID)
-        .then((QuerySnapshot val) {
-      if (val.documents.isEmpty) {
-        setState(() {
-          requestReceived = false;
+    if(requestReceived == false){
+        _fSystem.receivedRequestChecker(ownUserID, peerID)
+            .then((val) {
+          if (val.documents.isEmpty) {
+            setState(() {
+              requestReceived = false;
+            });
+          } else {
+            setState(() {
+              requestReceived = true;
+            });
+          }
         });
-      } else {
-        setState(() {
-          requestReceived = true;
-        });
-      }
-    });
+    }
+
   }
+
+  checkFriend() async {
+    if(isFriend == false){
+        _fSystem.friendChecker(ownUserID, peerID).then((val) {
+          if (val.documents.isEmpty) {
+            setState(() {
+              isFriend = false;
+            });
+          } else {
+            setState(() {
+              isFriend = true;
+            });
+          }
+        });
+    }
+  }
+
 
   addFriend() {
 
@@ -208,10 +212,18 @@ class _displayUserProfileState extends State<displayUserProfile> {
     });
 
     _fSystem.acceptRequest(ownUserID,ownMap,peerID,retrievePeerMap);
+
+    checkSentRequest();
+    checkFriend();
+    checkReceivedRequest();
   }
 
   deleteRequest(){
     _fSystem.deleteRequest(ownUserID, peerID);
+
+    checkSentRequest();
+    checkFriend();
+    checkReceivedRequest();
   }
 
   buttonStateChange() {
@@ -265,12 +277,6 @@ class _displayUserProfileState extends State<displayUserProfile> {
           child: GestureDetector(
             onTap: () {
               acceptRequest();
-
-              checkSentRequest();
-              checkFriend();
-              checkReceivedRequest();
-
-              print("$peerID");
             },
             child: Container(
               margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15),
@@ -289,13 +295,6 @@ class _displayUserProfileState extends State<displayUserProfile> {
           child: GestureDetector(
             onTap: () {
               deleteRequest();
-
-              checkSentRequest();
-              checkFriend();
-              checkReceivedRequest();
-
-              print(peerID);
-
             },
             child: Container(
               margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15),
@@ -434,11 +433,12 @@ class _displayUserProfileState extends State<displayUserProfile> {
               emailBar,
               birthDateBar,
               FloatingActionButton(onPressed: () {
+                //print("$peerID\n$peerUsername\n$peerEmail\n$ownUserID\n$ownEmail\n$ownUserName");
+                print("Friend: $isFriend \nSent: $requestSent \nReceived: $requestReceived");
+
                 checkSentRequest();
                 checkFriend();
                 checkReceivedRequest();
-
-                print("$peerID\n$peerUsername\n$peerEmail\n$ownUserID\n$ownEmail\n$ownUserName");
               }),
             ],
           )),
