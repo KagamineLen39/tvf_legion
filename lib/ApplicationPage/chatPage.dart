@@ -4,6 +4,7 @@ import 'package:relative_scale/relative_scale.dart';
 import 'package:tvf_legion/ApplicationPage/chatRoom.dart';
 import 'package:tvf_legion/ApplicationPage/searchNewFriendPage.dart';
 import 'package:tvf_legion/Function%20Classes/AddorRemoveFriends.dart';
+import 'package:tvf_legion/Function%20Classes/Messaging.dart';
 import 'package:tvf_legion/services/database.dart';
 import 'package:tvf_legion/services/helper.dart';
 
@@ -22,6 +23,8 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   friendSystem _fSystem = new friendSystem();
   QuerySnapshot searchResultSnapshot;
   QuerySnapshot requestSnapshot;
+
+  Stream chatRooms;
 
   bool isLoading = false;
   bool hasFriends = false;
@@ -137,8 +140,6 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
             )
           );
         }
-
-
       },
     );
   }
@@ -150,7 +151,36 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     getUserPreferences();
   }
 
-  Future checkSentRequest(peerID) async {
+  sendMessage(String userName,String _peerID){
+    List<String> users = [ownUsername,userName];
+
+    String chatRoomID = getChatRoomId(ownUsername,userName);
+
+    Map<String, dynamic> chatRoom = {
+      "users": users,
+      "chatRoomId" : chatRoomID,
+    };
+
+    Messaging().addChatRoom(chatRoom, chatRoomID);
+
+    Navigator.push(
+        context, MaterialPageRoute(
+      builder: (context)=> ChatRoom(peerID: _peerID,peerUsername: userName,chatRoomId: chatRoomID),
+    )
+    );
+
+  }
+
+  getChatRoomId(String a, String b) {
+    if (a.substring(0, 1).codeUnitAt(0) > b.substring(0, 1).codeUnitAt(0)) {
+      return "$b\_$a";
+    } else {
+      return "$a\_$b";
+    }
+  }
+
+
+  checkSentRequest(peerID) async {
     bool _requestSent = false;
 
     if(_requestSent == false){
@@ -172,7 +202,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     return _requestSent;
   }
 
-  Future checkReceivedRequest(peerID) async {
+  checkReceivedRequest(peerID) async {
     bool _requestReceived;
 
     if(_requestReceived == false){
@@ -194,7 +224,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
 
   }
 
-  Future checkFriend(peerID) async {
+  checkFriend(peerID) async {
     bool _isFriend;
 
     if(_isFriend == false){
@@ -263,22 +293,16 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
 
   Widget peerList(String userName,String userEmail,String _peerID){
 
-    String chatRoomID = ("${ownUsername}_$userName");
-
       return GestureDetector(
         onTap: (){
-          Navigator.push(
-              context, MaterialPageRoute(
-            builder: (context)=> ChatRoom(peerID: _peerID,peerUsername: userName,chatRoomId: chatRoomID),
-          )
-          );
+          sendMessage(userName, _peerID);
         },
 
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           child: Row(
             children: [
-              viewUserProfile(userName),
+              viewUserProfile(_peerID,userName),
 
               SizedBox(width: 5),
 
@@ -332,7 +356,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
       padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       child: Row(
         children: [
-          viewUserProfile(userID),
+          viewUserProfile(userID,userName),
 
           Container(
             padding: EdgeInsets.all(10),
@@ -423,7 +447,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   }
 
 
-  viewUserProfile(userID){
+  viewUserProfile(userID,username){
 
     checkReceivedRequest(userID).then((value){
       setState(() {
@@ -455,7 +479,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
         print("Sent: $requestSent");
 
         Navigator.push(context,
-            MaterialPageRoute(builder: (context)=> displayUserProfile(userProfileId: userID,isFriend: isFriend,requestReceived: requestReceived,requestSent: requestSent,))
+            MaterialPageRoute(builder: (context)=> displayUserProfile(userName: username,isFriend: isFriend,requestReceived: requestReceived,requestSent: requestSent,))
         );
       },
     );

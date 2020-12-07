@@ -7,10 +7,10 @@ import 'package:tvf_legion/services/helper.dart';
 
 // ignore: camel_case_types
 class displayUserProfile extends StatefulWidget {
-  final String userProfileId;
+  final String userName;
   final bool isFriend,requestSent,requestReceived;
 
-  displayUserProfile({this.userProfileId,this.isFriend,this.requestSent,this.requestReceived});
+  displayUserProfile({this.userName,this.isFriend,this.requestSent,this.requestReceived});
 
   @override
   _displayUserProfileState createState() => _displayUserProfileState();
@@ -67,7 +67,7 @@ class _displayUserProfileState extends State<displayUserProfile> {
 
 
   getPeerDetails() async {
-    await databaseMethods.getUsername(widget.userProfileId).then((value) {
+    await databaseMethods.getUsername(widget.userName).then((value) {
       userDetails = value;
 
       setState(() {
@@ -375,6 +375,7 @@ class _displayUserProfileState extends State<displayUserProfile> {
               genderBar,
               emailBar,
               birthDateBar,
+
             ],
           )),
     );
