@@ -21,22 +21,31 @@ class _ChatRoomState extends State<ChatRoom> {
   );
   TextEditingController messageController = new TextEditingController();
 
-  String username,userID;
+  String ownUsername,userID;
 
   Messaging _message = new Messaging();
 
   Stream<QuerySnapshot> chats;
 
   Widget chatMessages(){
+    bool meSend;
+
     return StreamBuilder(
       stream: chats,
       builder: (context, snapshot){
         return snapshot.hasData ?  ListView.builder(
             itemCount: snapshot.data.documents.length,
             itemBuilder: (context, index){
+
+              if(ownUsername == snapshot.data.documents[index].data["sendBy"]){
+                meSend = true;
+              }else{
+                meSend = false;
+              }
+
               return MessageTile(
                 message: snapshot.data.documents[index].data["message"],
-                sendByMe: username == snapshot.data.documents[index].data["sendBy"],
+                sendByMe: meSend,
               );
             }) : Container();
       },
@@ -46,14 +55,14 @@ class _ChatRoomState extends State<ChatRoom> {
   addMessage() {
     if (messageController.text.isNotEmpty) {
       Map<String, dynamic> chatMessageMap = {
-        "sendBy": username,
+        "sendBy": ownUsername,
         "message": messageController.text,
         'time': DateTime
             .now()
             .millisecondsSinceEpoch,
       };
 
-      _message.addMessage( widget.chatRoomId, chatMessageMap);
+      _message.addMessage(widget.chatRoomId, chatMessageMap);
 
       setState(() {
         messageController.text = "";
@@ -76,7 +85,7 @@ class _ChatRoomState extends State<ChatRoom> {
   getUserPreferences(){
     Helper.getUserName().then((value){
       setState(() {
-        username = value;
+        ownUsername = value;
       });
     });
     Helper.getUserId().then((value){

@@ -31,11 +31,10 @@ class Messaging{
     });
   }
 
-  getUserChats(String myName) async {
+  chatCheck(String roomCheck) async {
     return await Firestore.instance
         .collection("chatRoom")
-        .where('users', arrayContains: myName)
-        .snapshots();
+        .where("chatRoomId",isEqualTo: roomCheck).getDocuments();
   }
 
 }

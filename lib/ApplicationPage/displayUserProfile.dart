@@ -59,7 +59,7 @@ class _displayUserProfileState extends State<displayUserProfile> {
 
     isFriend = widget.isFriend;
     requestSent = widget.requestSent;
-    requestReceived = widget.requestSent;
+    requestReceived = widget.requestReceived;
 
   }
 
@@ -375,6 +375,13 @@ class _displayUserProfileState extends State<displayUserProfile> {
               genderBar,
               emailBar,
               birthDateBar,
+
+              GestureDetector(
+                onTap: (){
+                  print("${widget.requestReceived}\n${widget.requestSent}\n${widget.isFriend}");
+                },
+                child: Icon(Icons.error),
+              ),
 
             ],
           )),

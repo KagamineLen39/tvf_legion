@@ -119,88 +119,45 @@ class _searchNewFriendPageState extends State<searchNewFriendPage> {
           );
   }
 
-  checkSentRequest(peerID) async {
-    bool _requestSent = false;
-
-    if(_requestSent == false){
-      _fSystem.requestSentChecker(ownUserID, peerID)
-          .then((val) {
-        if (val.documents.isEmpty) {
-          setState(() {
-            _requestSent = false;
-          });
-        } else {
-          print(val.documents[0].data["peerID"]);
-          setState(() {
-            _requestSent = true;
-          });
-        }
-      });
-    }
-
-    return _requestSent;
-  }
-
-  checkReceivedRequest(peerID) async {
-    bool _requestReceived;
-
-    if(_requestReceived == false){
-      _fSystem.receivedRequestChecker(ownUserID, peerID)
-          .then((val) {
-        if (val.documents.isEmpty) {
-          setState(() {
-            _requestReceived = false;
-          });
-        } else {
-          setState(() {
-            _requestReceived = true;
-          });
-        }
-      });
-    }
-
-    return _requestReceived;
-
-  }
-
-  checkFriend(peerID) async {
-    bool _isFriend;
-
-    if(_isFriend == false){
-      _fSystem.friendChecker(ownUserID, peerID).then((val) {
-        if (val.documents.isEmpty) {
-          setState(() {
-            _isFriend = false;
-          });
-        } else {
-          setState(() {
-            _isFriend = true;
-          });
-        }
-      });
-    }
-
-    return _isFriend;
-  }
-
   Widget peerList(String userID,String userName, String userEmail) {
 
-
-
-    checkReceivedRequest(userID).then((value){
-      setState(() {
-        requestReceived = value;
-      });
+    _fSystem.requestSentChecker(ownUserID, userID)
+        .then((val) {
+      if (val.documents.isEmpty) {
+        setState(() {
+          requestSent = false;
+        });
+      } else {
+        print(val.documents[0].data["peerID"]);
+        setState(() {
+          requestSent = true;
+        });
+      }
     });
-    checkFriend(userID).then((value){
-      setState(() {
-        isFriend = value;
-      });
+
+    _fSystem.receivedRequestChecker(ownUserID, userID)
+        .then((val) {
+      if (val.documents.isEmpty) {
+        setState(() {
+          requestReceived = false;
+        });
+      } else {
+        setState(() {
+          requestReceived = true;
+        });
+      }
     });
-    checkSentRequest(userID).then((value){
-      setState(() {
-        requestSent = value;
-      });
+
+    _fSystem.friendChecker(ownUserID, userID).then((val) {
+      if (val.documents.isEmpty) {
+        setState(() {
+          isFriend = false;
+        });
+      } else {
+        setState(() {
+          isFriend = true;
+        });
+      }
     });
 
     return Container(
