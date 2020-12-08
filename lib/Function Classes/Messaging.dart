@@ -34,7 +34,8 @@ class Messaging{
   chatCheck(String roomCheck) async {
     return await Firestore.instance
         .collection("chatRoom")
-        .where("chatRoomId",isEqualTo: roomCheck).getDocuments();
+        .where("chatRoomId",isEqualTo: roomCheck)
+        .getDocuments();
   }
 
 }

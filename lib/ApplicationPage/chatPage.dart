@@ -152,7 +152,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   }
 
   sendMessage(String userName,String _peerID){
-    String idCheck;
+    QuerySnapshot getRoomID;
 
     List<String> users = [ownUsername,userName];
 
@@ -163,25 +163,31 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
       "chatRoomId" : chatRoomID,
     };
 
+    print(chatRoomID);
+
     Messaging().chatCheck(chatRoomID).then((val){
-      idCheck = val;
+      getRoomID = val;
+
+      if(getRoomID.documents[0].data["chatRoomId"] == chatRoomID || getRoomID.documents[0].data["chatRoomId"] =="${userName}_$ownUsername"){
+        if(getRoomID.documents[0].data["chatRoomId"] != chatRoomID){
+          chatRoomID = "${userName}_$ownUsername";
+        }
+        print(chatRoomID);
+        Navigator.push(
+            context, MaterialPageRoute(
+          builder: (context)=> ChatRoom(peerID: _peerID,peerUsername: userName,chatRoomId: chatRoomID),
+        )
+        );
+      }else{
+        Messaging().addChatRoom(chatRoom, chatRoomID);
+        print(chatRoomID);
+        Navigator.push(
+            context, MaterialPageRoute(
+            builder: (context)=> ChatRoom(peerID: _peerID,peerUsername: userName,chatRoomId: chatRoomID),
+          )
+        );
+      }
     });
-
-    if(idCheck == "${ownUsername}_$userName" || idCheck == "${userName}_$ownUsername"){
-      Navigator.push(
-          context, MaterialPageRoute(
-        builder: (context)=> ChatRoom(peerID: _peerID,peerUsername: userName,chatRoomId: chatRoomID),
-      )
-      );
-
-    }else{
-      Messaging().addChatRoom(chatRoom, chatRoomID);
-      Navigator.push(
-          context, MaterialPageRoute(
-        builder: (context)=> ChatRoom(peerID: _peerID,peerUsername: userName,chatRoomId: chatRoomID),
-      )
-      );
-    }
   }
 
   getChatRoomId(String a, String b) {
@@ -191,70 +197,6 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
       return "$a\_$b";
     }
   }
-
-
- /* Future checkSentRequest(peerID) async {
-    bool _requestSent;
-
-    if(_requestSent == null){
-      _fSystem.requestSentChecker(ownUserID, peerID)
-          .then((val) {
-        if (val.documents.isEmpty) {
-          setState(() {
-            _requestSent = false;
-          });
-        } else {
-          print(val.documents[0].data["peerID"]);
-          setState(() {
-            _requestSent = true;
-          });
-        }
-      });
-    }
-
-    return _requestSent;
-  }
-
-  Future checkReceivedRequest(peerID) async {
-    bool _requestReceived;
-
-    if(_requestReceived == null){
-      _fSystem.receivedRequestChecker(ownUserID, peerID)
-          .then((val) {
-        if (val.documents.isEmpty) {
-          setState(() {
-            _requestReceived = false;
-          });
-        } else {
-          setState(() {
-            _requestReceived = true;
-          });
-        }
-      });
-    }
-    return _requestReceived;
-  }
-
-  Future checkFriend(peerID) async {
-    bool _isFriend;
-
-    if(_isFriend == null){
-      _fSystem.friendChecker(ownUserID, peerID).then((val) {
-        if (val.documents.isEmpty) {
-          setState(() {
-            _isFriend = false;
-          });
-        } else {
-          setState(() {
-            _isFriend = true;
-          });
-        }
-      });
-    }
-    return _isFriend;
-  }*/
-
-
 
   //initializations
   getUserPreferences() async{
