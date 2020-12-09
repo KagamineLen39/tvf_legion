@@ -468,11 +468,11 @@ class _InteractingRoomPage extends State<InteractingRoomPage>{
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
                           Expanded(
-                        child: Container(
-                          child: SingleChildScrollView(
-                            child: Column(
-                              children: <Widget>[
-                                memberList(),
+                            child: Container(
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  children: <Widget>[
+                                  memberList(),
                               ],
                             ),
                           ),
@@ -488,7 +488,7 @@ class _InteractingRoomPage extends State<InteractingRoomPage>{
       ):
       Expanded(
         child: Container(
-          padding: EdgeInsets.fromLTRB(15, 20, 15, 0),
+          padding: EdgeInsets.fromLTRB(15, 10, 15, 0),
           alignment: Alignment.topLeft,
           decoration: BoxDecoration(
               color: Colors.white,
@@ -503,9 +503,8 @@ class _InteractingRoomPage extends State<InteractingRoomPage>{
               children: [
 
                 Container(
-
                   alignment: Alignment.topCenter,
-                  padding: EdgeInsets.fromLTRB(0, 0, 0, 75),
+                  padding: EdgeInsets.fromLTRB(0, 0, 0, 90),
                   child: chatMessages(),
                 ),
 
