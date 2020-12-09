@@ -634,8 +634,8 @@ class MessageTile extends StatelessWidget {
           padding: EdgeInsets.only(
               top: 0,
               bottom: 0,
-              left: sendByMe ? 0 : 20,
-              right: sendByMe ? 20 : 0),
+              left: sendByMe ? 0 : 15,
+              right: sendByMe ? 15 : 0),
           alignment: sendByMe ? Alignment.centerRight : Alignment.centerLeft,
           child: Text(sendBy,
           style: TextStyle(
@@ -649,8 +649,8 @@ class MessageTile extends StatelessWidget {
           padding: EdgeInsets.only(
               top: 4,
               bottom: 4,
-              left: sendByMe ? 0 : 10,
-              right: sendByMe ? 10 : 0),
+              left: sendByMe ? 0 : 2,
+              right: sendByMe ? 2 : 0),
           alignment: sendByMe ? Alignment.centerRight : Alignment.centerLeft,
           child: Container(
             margin: sendByMe
