@@ -23,6 +23,9 @@ environment:
 dependencies:
   curved_navigation_bar: ^0.2.11
   toggle_switch: ^0.1.8
+  rflutter_alert: ^1.0.2
+  font_awesome_flutter: ^8.8.1
+  toast: ^0.1.5
   flutter:
     sdk: flutter
 

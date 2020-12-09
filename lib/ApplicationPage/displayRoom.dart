@@ -10,9 +10,9 @@ import 'package:tvf_legion/services/database.dart';
 import 'package:tvf_legion/services/helper.dart';
 
 class DisplayRoomPage extends StatefulWidget {
-  final int roomPosition;
+  final String roomName;
 
-  DisplayRoomPage({Key key, @required this.roomPosition}) : super(key: key);
+  DisplayRoomPage({Key key, @required this.roomName}) : super(key: key);
 
   @override
   _DisplayRoomPage createState() => _DisplayRoomPage();
@@ -29,7 +29,8 @@ class _DisplayRoomPage extends State<DisplayRoomPage> {
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
 
   String roomId;
-  String password;
+  String rName;
+  String description;
   int index = 0;
   int maxP = 1;
   int val = 0;
@@ -38,10 +39,11 @@ class _DisplayRoomPage extends State<DisplayRoomPage> {
 
   String ownUserID, ownEmail, ownUserName;
 
+  List<Room>room = new List();
+
   QuerySnapshot displayResult;
 
   TextEditingController nameController;
-  TextEditingController passController;
   TextEditingController descriptionController;
 
   int stopToggleButtonPublic = 0;
@@ -89,16 +91,9 @@ class _DisplayRoomPage extends State<DisplayRoomPage> {
     roomData.maxPerson = maxP;
     roomData.state = state;
 
-    if (state == "Public") {
-      roomData.rPassword = null;
-    } else {
-      roomData.rPassword = passController.text;
-    }
-
     roomInfoMap = {
       "RoomID": roomData.roomId,
       "Name": roomData.rName,
-      "Password": roomData.rPassword,
       "Picture": roomData.rPic,
       "State": roomData.state,
       "Description": roomData.rDescription,
@@ -112,33 +107,35 @@ class _DisplayRoomPage extends State<DisplayRoomPage> {
   }
 
   roomDisplay() async {
-    await roomService
-        .displayOwnerRoomWithPosition(ownUserID, index)
-        .then((snapshot) {
-      displayResult = snapshot;
 
-      setState(() {
-        hasRequest = true;
-        roomId = displayResult.documents[widget.roomPosition].data["RoomID"];
-        nameController.text =
-            displayResult.documents[widget.roomPosition].data["Name"];
-        state = displayResult.documents[widget.roomPosition].data["State"];
-        passController.text =
-            displayResult.documents[widget.roomPosition].data["Password"];
-        maxP = displayResult.documents[widget.roomPosition].data["MaxPerson"];
-        descriptionController.text =
-            displayResult.documents[widget.roomPosition].data["Description"];
-        //rPic = displayResult.documents[widget.roomPosition].data["Name"];
-        if (state == "Public") {
-          val = 0;
-          isEnabled = false;
-        } else {
-          val = 1;
-          isEnabled = false;
-        }
-      });
-    });
+    room = await roomService.searchRoomName();
+
+    for(int i =0; i < room.length; i++){
+
+        if(widget.roomName == room[i].rName){
+
+          roomId = room[i].roomId;
+          nameController.text =
+              room[i].rName;
+          state = room[i].state;
+          maxP = room[i].maxPerson;
+          descriptionController.text =
+              room[i].rDescription;
+          //rPic = displayResult.documents[widget.roomPosition].data["Name"];
+          setState(() {
+          if (state == "Public") {
+            val = 0;
+            isEnabled = false;
+          } else {
+            val = 1;
+            isEnabled = false;
+          }
+        });
+      }
+
+    }
   }
+
 
   Widget roomDisplayInfo() {
     return Container(
@@ -198,21 +195,6 @@ class _DisplayRoomPage extends State<DisplayRoomPage> {
 
                     })
               ]),
-              SizedBox(height: 20),
-              Text("Password: ",
-                  style: style.copyWith(
-                      color: Colors.black, fontWeight: FontWeight.bold)),
-              SizedBox(height: 20),
-              TextFormField(
-                  enabled: isPasswordEnabled? true : false,
-                  controller: passController,
-                  style: style,
-                  decoration: InputDecoration(
-                      contentPadding:
-                          EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                      hintText: "Password",
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(32.0)))),
               SizedBox(height: 20),
               Row(children: <Widget>[
                 Text("Max person: ",
@@ -335,7 +317,7 @@ class _DisplayRoomPage extends State<DisplayRoomPage> {
                   ? Material(
                       elevation: 5.0,
                       borderRadius: BorderRadius.circular(30.0),
-                      color: Color(0xff01A0C7),
+                      color: Colors.green,
                       child: MaterialButton(
                         minWidth: MediaQuery.of(context).size.width,
                         padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
@@ -351,17 +333,12 @@ class _DisplayRoomPage extends State<DisplayRoomPage> {
                                 fontWeight: FontWeight.bold)),
                       ),
                     )
-                  : Container(
-                      child: Column(
-                        children: <Widget>[
-                          Row(
-                            children: [
-                              Material(
+                  : Material(
                                 elevation: 5.0,
                                 borderRadius: BorderRadius.circular(30.0),
-                                color: Colors.greenAccent,
+                                color: Colors.green,
                                 child: MaterialButton(
-                                  minWidth: 160,
+                                  minWidth: MediaQuery.of(context).size.width,
                                   padding: EdgeInsets.fromLTRB(
                                       20.0, 15.0, 20.0, 15.0),
                                   onPressed: () {
@@ -377,49 +354,7 @@ class _DisplayRoomPage extends State<DisplayRoomPage> {
                                           fontWeight: FontWeight.bold)),
                                 ),
                               ),
-                              SizedBox(width: 20),
-                              Material(
-                                elevation: 5.0,
-                                borderRadius: BorderRadius.circular(30.0),
-                                color: Color(0xff01A0C7),
-                                child: MaterialButton(
-                                  minWidth: 160,
-                                  padding: EdgeInsets.fromLTRB(
-                                      20.0, 15.0, 20.0, 15.0),
-                                  onPressed: () {
-                                    //message
-                                  },
-                                  child: Text("Message",
-                                      textAlign: TextAlign.center,
-                                      style: style.copyWith(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold)),
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 20),
-                          Material(
-                            elevation: 5.0,
-                            borderRadius: BorderRadius.circular(30.0),
-                            color: Colors.redAccent,
-                            child: MaterialButton(
-                              minWidth: MediaQuery.of(context).size.width,
-                              padding:
-                                  EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                              onPressed: () {
-                                //leave
-                              },
-                              child: Text("Leave",
-                                  textAlign: TextAlign.center,
-                                  style: style.copyWith(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold)),
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
+
             ]),
       ),
     );
@@ -428,7 +363,6 @@ class _DisplayRoomPage extends State<DisplayRoomPage> {
   @override
   void initState() {
     nameController = new TextEditingController();
-    passController = new TextEditingController();
     descriptionController = new TextEditingController();
     getOwnDetail();
     roomDisplay();

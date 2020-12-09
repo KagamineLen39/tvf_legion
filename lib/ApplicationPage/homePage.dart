@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import 'package:relative_scale/relative_scale.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'package:tvf_legion/ApplicationPage/SearchPage.dart';
@@ -11,6 +12,8 @@ import 'package:tvf_legion/Function%20Classes/roomManagement.dart';
 import 'package:tvf_legion/modal/room.dart';
 import 'package:tvf_legion/services/database.dart';
 import 'package:tvf_legion/services/helper.dart';
+
+import 'interactionRoomPage.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -27,25 +30,27 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
 
-  String password;
+
   int index = 0;
   int maxP = 1;
   int val = 0;
-  int member = 0;
+
+  List<int>member = new List();
   String state = "Public";
   String creator = "Creator";
 
   String ownUserID, ownEmail, ownUserName;
   String roomID;
 
+
   QuerySnapshot displayRoomResult;
   QuerySnapshot displayMemberResult;
   TextEditingController nameController;
-  TextEditingController passController;
   TextEditingController descriptionController;
 
   bool isEnabled = false;
   bool roomPage = false;
+
 
   final String checkState = "Public";
 
@@ -84,17 +89,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     roomData.rDescription = descriptionController.text;
     roomData.maxPerson = maxP;
     roomData.state = state;
-
-    if (state == "Public") {
-      roomData.rPassword = null;
-    } else {
-      roomData.rPassword = passController.text;
-    }
-
     roomInfoMap = {
       "RoomID": roomData.roomId,
       "Name": roomData.rName,
-      "Password": roomData.rPassword,
       "Picture": roomData.rPic,
       "State": roomData.state,
       "Description": roomData.rDescription,
@@ -111,30 +108,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   roomDisplay() async {
     await roomService.displayOwnerRoom(ownUserID).then((snapshot) {
       displayRoomResult = snapshot;
-      setState(() {});
+
     });
-
-  }
-
-  memberDisplay() async{
-
-    await roomService.displayMember().then((snapshot) {
-      displayMemberResult = snapshot;
-      // print('$snapshot');
-      // print('$displayMemberResult');
-      // int test = displayMemberResult.documents.length;
-      // print('$test');
-      print('$displayMemberResult');
-
-        member = displayMemberResult.documents.length;
-
-
-
-  });
+    member = await roomService.displayOwnerRoomMember(ownUserID);
   }
 
 
-  Widget roomListBuilder(String roomName, String state, int maxPerson) {
+  Widget roomListBuilder(String roomName, String state, int maxPerson, int member) {
 
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
@@ -160,7 +140,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             ],
           ),
           Spacer(),
-          if (checkState != state) Icon(Icons.lock),
+          SizedBox(
+            width: 10,
+          ),
+          checkState != state ? Icon(Icons.lock):new Container(),
         ],
       ),
     );
@@ -169,11 +152,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   void initState() {
     nameController = new TextEditingController();
-    passController = new TextEditingController();
     descriptionController = new TextEditingController();
     getOwnDetail();
     roomDisplay();
-    memberDisplay();
     super.initState();
   }
 
@@ -273,24 +254,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           });
                                         })
                                   ]),
-                                  SizedBox(height: 20),
-                                  Text("Password: ",
-                                      style: style.copyWith(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold)),
-                                  SizedBox(height: 20),
-                                  TextFormField(
-                                      enabled: isEnabled ? true : false,
-                                      controller: passController,
-                                      style: style,
-                                      decoration: InputDecoration(
-                                          contentPadding: EdgeInsets.fromLTRB(
-                                              20.0, 15.0, 20.0, 15.0),
-                                          hintText: "Password",
-                                          border: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                      32.0)))),
+
                                   SizedBox(height: 20),
                                   Row(children: <Widget>[
                                     Text("Max person: ",
@@ -424,12 +388,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                       padding: EdgeInsets.fromLTRB(
                                           20.0, 15.0, 20.0, 15.0),
                                       onPressed: () {
-                                        // roomCreate();
-                                        // nameController.clear();
-                                        // passController.clear();
-                                        // descriptionController.clear();
-                                        // val = 0;
-                                        // maxP = 1;
+                                        roomCreate();
+                                        nameController.clear();
+                                        descriptionController.clear();
+                                        val = 0;
+                                        maxP = 1;
                                       },
                                       child: Text("Confirm",
                                           textAlign: TextAlign.center,
@@ -616,8 +579,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                             context,
                                                             MaterialPageRoute(
                                                                 builder: (context) =>
-                                                                    DisplayRoomPage(
-                                                                        roomPosition: index)));
+                                                                    InteractingRoomPage(roomId:displayRoomResult
+                                                                        .documents[index]
+                                                                        .data["RoomID"],
+                                                                        roomName: displayRoomResult
+                                                                            .documents[index]
+                                                                            .data["Name"],)));
                                                       },
                                                       child: roomListBuilder(
                                                         displayRoomResult
@@ -629,6 +596,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                         displayRoomResult
                                                             .documents[index]
                                                             .data["MaxPerson"],
+                                                        member[index]
                                                       ),
                                                     ),
                                                   );
