@@ -19,6 +19,8 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
   TextEditingController searchController = new TextEditingController();
   Database databaseMethods = new Database();
+  Messaging _messageMethods = new Messaging();
+
   TextEditingController searchEditingController = new TextEditingController();
   friendSystem _fSystem = new friendSystem();
   QuerySnapshot searchResultSnapshot;
@@ -152,42 +154,57 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   }
 
   sendMessage(String userName,String _peerID){
-    QuerySnapshot getRoomID;
-
-    List<String> users = [ownUsername,userName];
+    QuerySnapshot chatCheck;
 
     String chatRoomID = getChatRoomId(ownUsername,userName);
+    String altChatRID = getChatRoomId(userName,ownUsername);
+
+    String accessChatId;
+    String altAccessChatId;
+    try{
+      _messageMethods.chatRoomIdChecker(chatRoomID).then((val){
+        chatCheck = val;
+      });
+
+      accessChatId = chatCheck.documents[0].data["chatRoomId"];
+
+      accessChat(_peerID, userName, accessChatId);
+
+    }catch(e){
+      try{
+        _messageMethods.chatRoomIdChecker(altChatRID).then((val){
+          chatCheck = val;
+
+          altAccessChatId = chatCheck.documents[0].data["chatRoomId"];
+
+          accessChat(_peerID, userName, altAccessChatId);
+        });
+      }catch(e){
+        createNewChat(userName, chatRoomID);
+        accessChat(_peerID, userName, chatRoomID);
+      }
+    }
+
+  }
+
+  createNewChat(userName,chatRoomID){
+
+    List<String> users = [ownUsername,userName];
 
     Map<String, dynamic> chatRoom = {
       "users": users,
       "chatRoomId" : chatRoomID,
     };
 
-    print(chatRoomID);
+    _messageMethods.addChatRoom(chatRoom, chatRoomID);
+  }
 
-    Messaging().chatCheck(chatRoomID).then((val){
-      getRoomID = val;
-
-      if(getRoomID.documents[0].data["chatRoomId"] == chatRoomID || getRoomID.documents[0].data["chatRoomId"] =="${userName}_$ownUsername"){
-        if(getRoomID.documents[0].data["chatRoomId"] != chatRoomID){
-          chatRoomID = "${userName}_$ownUsername";
-        }
-        print(chatRoomID);
-        Navigator.push(
-            context, MaterialPageRoute(
-          builder: (context)=> ChatRoom(peerID: _peerID,peerUsername: userName,chatRoomId: chatRoomID),
-        )
-        );
-      }else{
-        Messaging().addChatRoom(chatRoom, chatRoomID);
-        print(chatRoomID);
-        Navigator.push(
-            context, MaterialPageRoute(
-            builder: (context)=> ChatRoom(peerID: _peerID,peerUsername: userName,chatRoomId: chatRoomID),
-          )
-        );
-      }
-    });
+  accessChat(_peerID,userName,chatRoomID){
+    Navigator.push(
+        context, MaterialPageRoute(
+      builder: (context)=> ChatRoom(peerID: _peerID,peerUsername: userName,chatRoomId: chatRoomID),
+    )
+    );
   }
 
   getChatRoomId(String a, String b) {

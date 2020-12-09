@@ -31,10 +31,10 @@ class Messaging{
     });
   }
 
-  chatCheck(String roomCheck) async {
-    return await Firestore.instance
+  chatRoomIdChecker(String chatRoomId) {
+    return Firestore.instance
         .collection("chatRoom")
-        .where("chatRoomId",isEqualTo: roomCheck)
+        .where("chatRoomId", isEqualTo: chatRoomId)
         .getDocuments();
   }
 
