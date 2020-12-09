@@ -5,6 +5,7 @@ import 'package:relative_scale/relative_scale.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:tvf_legion/ApplicationPage/displayRoom.dart';
 import 'package:tvf_legion/Function%20Classes/roomManagement.dart';
+import 'package:tvf_legion/Function%20Classes/roomMessaging.dart';
 import 'package:tvf_legion/modal/user.dart';
 import 'package:tvf_legion/services/database.dart';
 import 'package:tvf_legion/services/helper.dart';
@@ -24,6 +25,10 @@ class _InteractingRoomPage extends State<InteractingRoomPage>{
   TextStyle defaultStyle = TextStyle(fontSize: 14, color: Colors.white,);
   TextEditingController messageController = new TextEditingController();
   final String checkState = "Public";
+
+  Map<String,dynamic> roomInfo;
+
+  roomMessage _roomMessage = new roomMessage();
 
   bool isLoading = false;
   TextEditingController searchEditingController = new TextEditingController();
@@ -56,6 +61,53 @@ class _InteractingRoomPage extends State<InteractingRoomPage>{
   bool isFriend = false;
   bool requestReceived = false;
   bool requestSent = false;
+
+  Stream<QuerySnapshot> chats;
+
+  Widget chatMessages(){
+    bool meSend;
+
+    return StreamBuilder(
+      stream: chats,
+      builder: (context, snapshot){
+        return snapshot.hasData ?  ListView.builder(
+            itemCount: snapshot.data.documents.length,
+            physics: BouncingScrollPhysics(),
+            itemBuilder: (context, index){
+
+              if(ownUserName == snapshot.data.documents[index].data["sendBy"]){
+                meSend = true;
+              }else{
+                meSend = false;
+              }
+
+              return MessageTile(
+                message: snapshot.data.documents[index].data["message"],
+                sendBy:  snapshot.data.documents[index].data["sendBy"],
+                sendByMe: meSend,
+              );
+            }) : Container();
+      },
+    );
+  }
+
+  addMessage() {
+    if (messageController.text.isNotEmpty) {
+      Map<String, dynamic> chatMessageMap = {
+        "sendBy": ownUserName,
+        "message": messageController.text,
+        'time': DateTime
+            .now()
+            .millisecondsSinceEpoch,
+      };
+
+      _roomMessage.addMessage(widget.roomId, chatMessageMap);
+
+      setState(() {
+        messageController.text = "";
+      });
+    }
+  }
 
   final List<String> chatPageOptions = ["Room Chats","Members"];
   getOwnDetail() {
@@ -151,6 +203,7 @@ class _InteractingRoomPage extends State<InteractingRoomPage>{
           );
         });
   }
+
   Widget memberListBuilder(String id, String userName, String email) {
 
     return Container(
@@ -300,6 +353,18 @@ class _InteractingRoomPage extends State<InteractingRoomPage>{
     memberList();
     getOwnDetail();
 
+    roomInfo = {
+      "chatRoomId": widget.roomId,
+    };
+
+    _roomMessage.addChatRoom(roomInfo,widget.roomId);
+
+    _roomMessage.getChats(widget.roomId).then((val) {
+      setState(() {
+        chats = val;
+      });
+    });
+
     isMember = widget.isMember;
     requestInviteSent = widget.requestInviteSent;
 
@@ -333,7 +398,7 @@ class _InteractingRoomPage extends State<InteractingRoomPage>{
     pageChanger(){
       return Container(
         height: 75,
-        color: Colors.lightBlue[200],
+        color: Colors.grey[900],
         child: ListView.builder(
           physics: NeverScrollableScrollPhysics(),
           scrollDirection: Axis.horizontal,
@@ -432,68 +497,80 @@ class _InteractingRoomPage extends State<InteractingRoomPage>{
                 topRight: Radius.circular(30),
               )
           ),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
+          child: Container(
+            color: Colors.white,
+            child: Stack(
+              children: [
 
-            //chatMessages(),
+                Container(
 
-            Container(
-              alignment:  Alignment.bottomCenter,
-              width: MediaQuery.of(context).size.width,
-              child: Container(
-                height: 75,
-                padding: EdgeInsets.symmetric(horizontal: 24,vertical: 10),
-                color: Colors.grey,
-                child: Row(
-                  children: [
-                    Expanded(
-                      child:TextField(
-                        controller: messageController,
-                        style: defaultStyle,
-                        decoration: InputDecoration(
-                          hintText: "Message",
-                          hintStyle: defaultStyle,
-                          border: InputBorder.none,
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 5),
-
-                    GestureDetector(
-                      onTap: (){
-                        //addMessage();
-                      },
-                      child: Container(
-                        height: 40,
-                        width: 80,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              const Color(0x36FFFFFF),
-                              const Color(0x0FFFFFFF),
-                            ],
-                            begin: FractionalOffset.topLeft,
-                            end: FractionalOffset.bottomRight,
-                          ),
-                          borderRadius: BorderRadius.circular(35),
-                        ),
-                        padding: EdgeInsets.all(12),
-                        child: Text("Send",
-                          //style: defaultStyle,
-                        ),
-                      ),
-                    )
-
-                  ],
+                  alignment: Alignment.topCenter,
+                  padding: EdgeInsets.fromLTRB(0, 0, 0, 75),
+                  child: chatMessages(),
                 ),
-              ),
-            )
-          ],
-        ),
-      ),
+
+                Container(
+                  alignment:  Alignment.bottomCenter,
+                  width: MediaQuery.of(context).size.width,
+
+                  child: Container(
+                    height: 75,
+                    padding: EdgeInsets.symmetric(horizontal: 24,vertical: 10),
+                    margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                    decoration: BoxDecoration(
+                      color: Colors.black87,
+                      borderRadius: BorderRadius.circular(45),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child:TextField(
+                            controller: messageController,
+                            style: defaultStyle,
+                            decoration: InputDecoration(
+                              hintText: "Message",
+                              hintStyle: defaultStyle.copyWith(
+                                  color: Colors.grey
+                              ),
+                              border: InputBorder.none,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 5),
+
+                        GestureDetector(
+                          onTap: (){
+                            addMessage();
+                          },
+                          child: Container(
+                            height: 40,
+                            width: 80,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  const Color(0xff323232),
+                                  const Color(0xff666666),
+                                ],
+                                begin: FractionalOffset.topLeft,
+                                end: FractionalOffset.bottomRight,
+                              ),
+                              borderRadius: BorderRadius.circular(35),
+                            ),
+                            padding: EdgeInsets.all(12),
+                            child: Text("Send",
+                                style: defaultStyle
+                            ),
+                          ),
+                        )
+
+                      ],
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
 
                 ),
 
@@ -506,10 +583,10 @@ class _InteractingRoomPage extends State<InteractingRoomPage>{
     }
 
     return Scaffold(
-      backgroundColor: Colors.lightBlue[200],
+      backgroundColor: Colors.grey[900],
       appBar: AppBar(
         title: roomName,
-        backgroundColor: Colors.lightBlue[600],
+        backgroundColor: Colors.black54,
         actions: <Widget>[
           IconButton(
             icon: Icon(
@@ -537,6 +614,75 @@ class _InteractingRoomPage extends State<InteractingRoomPage>{
           ],
         ),
       ),
+    );
+  }
+}
+
+class MessageTile extends StatelessWidget {
+  final String message;
+  final String sendBy;
+  final bool sendByMe;
+
+  MessageTile({@required this.message,@required this.sendBy, @required this.sendByMe});
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          padding: EdgeInsets.only(
+              top: 0,
+              bottom: 0,
+              left: sendByMe ? 0 : 20,
+              right: sendByMe ? 20 : 0),
+          alignment: sendByMe ? Alignment.centerRight : Alignment.centerLeft,
+          child: Text(sendBy,
+          style: TextStyle(
+            fontSize: 15,
+            color: Colors.grey[600],
+            fontWeight: FontWeight.bold,
+          ),
+          ),
+        ),
+        Container(
+          padding: EdgeInsets.only(
+              top: 4,
+              bottom: 4,
+              left: sendByMe ? 0 : 10,
+              right: sendByMe ? 10 : 0),
+          alignment: sendByMe ? Alignment.centerRight : Alignment.centerLeft,
+          child: Container(
+            margin: sendByMe
+                ? EdgeInsets.only(left: 30)
+                : EdgeInsets.only(right: 30),
+            padding: EdgeInsets.only(
+                top: 17, bottom: 17, left: 20, right: 20),
+            decoration: BoxDecoration(
+              borderRadius: sendByMe ? BorderRadius.only(
+                  topLeft: Radius.circular(23),
+                  topRight: Radius.circular(23),
+                  bottomLeft: Radius.circular(23)
+              ) :
+              BorderRadius.only(
+                  topLeft: Radius.circular(23),
+                  topRight: Radius.circular(23),
+                  bottomRight: Radius.circular(23)),
+              gradient: LinearGradient(
+                colors: sendByMe ? [const Color(0xff000000), const Color(0xff323232)] :
+                [const Color(0xff323232), const Color(0xff000000)],
+              ),
+            ),
+            child: Text(message,
+                textAlign: TextAlign.start,
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontFamily: 'OverpassRegular',
+                    fontWeight: FontWeight.w300)),
+          ),
+        ),
+      ],
     );
   }
 }

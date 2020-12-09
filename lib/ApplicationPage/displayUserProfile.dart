@@ -242,6 +242,10 @@ class _displayUserProfileState extends State<displayUserProfile> {
   }
 
   removeFriend(){
+    setState(() {
+      isFriend = false;
+    });
+
     _fSystem.removeFriend(ownUserID, peerID);
   }
 

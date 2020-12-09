@@ -1,4 +1,6 @@
 
+import 'dart:ui';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +21,6 @@ class _ChatRoomState extends State<ChatRoom> {
     color: Colors.white,
   );
   TextEditingController messageController = new TextEditingController();
-
   String ownUsername,userID;
 
   Messaging _message = new Messaging();
@@ -34,6 +35,7 @@ class _ChatRoomState extends State<ChatRoom> {
       builder: (context, snapshot){
         return snapshot.hasData ?  ListView.builder(
             itemCount: snapshot.data.documents.length,
+            physics: BouncingScrollPhysics(),
             itemBuilder: (context, index){
 
               if(ownUsername == snapshot.data.documents[index].data["sendBy"]){
@@ -106,7 +108,13 @@ class _ChatRoomState extends State<ChatRoom> {
         color: Colors.white,
         child: Stack(
           children: [
-            chatMessages(),
+
+            Container(
+
+              alignment: Alignment.topCenter,
+              padding: EdgeInsets.fromLTRB(0, 0, 0, 75),
+              child: chatMessages(),
+            ),
 
             Container(
               alignment:  Alignment.bottomCenter,

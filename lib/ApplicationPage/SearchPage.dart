@@ -61,7 +61,6 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
         isLoading = true;
         hasRoomSearched = true;
       });
-
   }
 
   getOwnDetail() {
@@ -113,8 +112,8 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
     }
     return false;
   }
-  Future<bool> sendInviteRequestChecker(roomId) async{
 
+  Future<bool> sendInviteRequestChecker(roomId) async{
     checkRequest = await roomService.requestInviteSentChecker(ownUserID, roomId);
     print('$checkRequest');
     if(checkRequest != 0) {
@@ -184,8 +183,8 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
       ),
     );
   }
-  Widget roomListBuilder(String roomId, String roomName, String state, int maxPerson, int member) {
 
+  Widget roomListBuilder(String roomId, String roomName, String state, int maxPerson, int member) {
     return filter == null || filter == ""
         ?Container(
       padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
