@@ -89,6 +89,22 @@ class friendSystem {
         .delete();
   }
 
+  removeFriend(userID,peerID){
+    Firestore.instance
+        .collection("friendSystem")
+        .document(userID)
+        .collection("Friends")
+        .document(peerID)
+        .delete();
+
+    Firestore.instance
+        .collection('friendSystem')
+        .document(peerID)
+        .collection("Friends")
+        .document(userID)
+        .delete();
+  }
+
   requestSentChecker(userID, peerID) {
     return Firestore.instance
         .collection("friendSystem")

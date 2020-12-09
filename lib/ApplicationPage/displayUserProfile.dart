@@ -2,8 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tvf_legion/Function%20Classes/AddorRemoveFriends.dart';
+import 'package:tvf_legion/Function%20Classes/Messaging.dart';
 import 'package:tvf_legion/services/database.dart';
 import 'package:tvf_legion/services/helper.dart';
+
+import 'chatRoom.dart';
 
 // ignore: camel_case_types
 class displayUserProfile extends StatefulWidget {
@@ -30,6 +33,8 @@ class _displayUserProfileState extends State<displayUserProfile> {
   );
 
   Database databaseMethods = new Database();
+  Messaging _messageMethods = new Messaging();
+
   QuerySnapshot userDetails;
 
   bool isFriend;
@@ -64,6 +69,74 @@ class _displayUserProfileState extends State<displayUserProfile> {
   }
 
 
+
+  sendMessage(String userName,String _peerID){
+    String chatRoomID = getChatRoomId(ownUserName,userName);
+    String altChatRID = getChatRoomId(userName, ownUserName);
+    QuerySnapshot roomCheck;
+    QuerySnapshot altRoomCheck;
+
+    String chatAccessID;
+    String altChatAccessID;
+
+    print("$chatRoomID\n$altChatRID");
+
+    _messageMethods.chatRoomIdChecker(chatRoomID).then((val){
+      roomCheck = val;
+      print(roomCheck.documents.length);
+
+      if(roomCheck.documents.length == 0){
+        try{
+          _messageMethods.chatRoomIdChecker(altChatRID).then((val){
+            altRoomCheck = val;
+            print(altRoomCheck.documents.length);
+
+            if(altRoomCheck.documents.length == 0){
+              createNewChat(userName, chatRoomID);
+              accessChat(_peerID, userName, chatRoomID);
+            }else{
+              altChatAccessID = altRoomCheck.documents[0].data["chatRoomId"];
+              accessChat(_peerID, userName, altChatAccessID);
+            }
+          });
+        }catch(e){
+          print(e.toString());
+        }
+      }else{
+        chatAccessID = roomCheck.documents[0].data["chatRoomId"];
+        accessChat(_peerID, userName, chatAccessID);
+      }
+
+    });
+  }
+
+  createNewChat(userName,chatRoomID){
+
+    List<String> users = [ownUserName,userName];
+
+    Map<String, dynamic> chatRoom = {
+      "users": users,
+      "chatRoomId" : chatRoomID,
+    };
+
+    _messageMethods.addChatRoom(chatRoom, chatRoomID);
+  }
+
+  accessChat(_peerID,userName,chatRoomID){
+    Navigator.push(
+        context, MaterialPageRoute(
+      builder: (context)=> ChatRoom(peerID: _peerID,peerUsername: userName,chatRoomId: chatRoomID),
+    )
+    );
+  }
+
+  getChatRoomId(String a, String b) {
+    if (a.substring(0, 1).codeUnitAt(0) > b.substring(0, 1).codeUnitAt(0)) {
+      return "$b\_$a";
+    } else {
+      return "$a\_$b";
+    }
+  }
 
 
   getPeerDetails() async {
@@ -168,6 +241,10 @@ class _displayUserProfileState extends State<displayUserProfile> {
 
   }
 
+  removeFriend(){
+    _fSystem.removeFriend(ownUserID, peerID);
+  }
+
   buttonStateChange() {
     if (requestSent == true) {
       cancelRequest();
@@ -190,9 +267,30 @@ class _displayUserProfileState extends State<displayUserProfile> {
 
   @override
   Widget build(BuildContext context) {
+
+    final messageButton = GestureDetector(
+        onTap: () {
+          sendMessage(peerUsername, peerID);
+        },
+        child: Container(
+          margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 75.0),
+          height: 40,
+          alignment: Alignment.center,
+          decoration: buttonDeco.copyWith(
+            color: Colors.blueAccent,
+          ),
+          child: isLoading
+              ? loadingContainer()
+              : Text(
+            "Message",
+            style: style,
+            textAlign: TextAlign.center,
+          ),
+        ));
+
     final removeFriendButton = GestureDetector(
         onTap: () {
-          //removeFriend,
+          removeFriend();
         },
         child: Container(
           margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 75.0),
@@ -340,9 +438,20 @@ class _displayUserProfileState extends State<displayUserProfile> {
           )),
     );
 
+    isFriendRow(){
+      return Container(
+        child: Column(
+          children: [
+            messageButton,
+            removeFriendButton,
+          ],
+        ),
+      );
+    }
+
     profileCheck() {
       if (isFriend == true) {
-        return removeFriendButton;
+        return isFriendRow();
       } else {
         if (requestReceived == true) {
           return acceptDeleteRequest;
@@ -375,14 +484,6 @@ class _displayUserProfileState extends State<displayUserProfile> {
               genderBar,
               emailBar,
               birthDateBar,
-
-              GestureDetector(
-                onTap: (){
-                  print("${widget.requestReceived}\n${widget.requestSent}\n${widget.isFriend}");
-                },
-                child: Icon(Icons.error),
-              ),
-
             ],
           )),
     );
