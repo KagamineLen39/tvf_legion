@@ -34,8 +34,7 @@ class Messaging{
   chatRoomIdChecker(String chatRoomId) {
     return Firestore.instance
         .collection("chatRoom")
-        .where("chatRoomId", isEqualTo: chatRoomId)
-        .getDocuments();
+        .where("chatRoomId",isEqualTo: chatRoomId).getDocuments();
   }
 
 }

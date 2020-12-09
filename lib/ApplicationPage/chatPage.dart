@@ -154,37 +154,43 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   }
 
   sendMessage(String userName,String _peerID){
-    QuerySnapshot chatCheck;
-
     String chatRoomID = getChatRoomId(ownUsername,userName);
-    String altChatRID = getChatRoomId(userName,ownUsername);
+    String altChatRID = getChatRoomId(userName, ownUsername);
+    QuerySnapshot roomCheck;
+    QuerySnapshot altRoomCheck;
 
-    String accessChatId;
-    String altAccessChatId;
-    try{
-      _messageMethods.chatRoomIdChecker(chatRoomID).then((val){
-        chatCheck = val;
-      });
+    String chatAccessID;
+    String altChatAccessID;
 
-      accessChatId = chatCheck.documents[0].data["chatRoomId"];
+    print("$chatRoomID\n$altChatRID");
 
-      accessChat(_peerID, userName, accessChatId);
+    _messageMethods.chatRoomIdChecker(chatRoomID).then((val){
+      roomCheck = val;
+      print(roomCheck.documents.length);
 
-    }catch(e){
-      try{
-        _messageMethods.chatRoomIdChecker(altChatRID).then((val){
-          chatCheck = val;
+      if(roomCheck.documents.length == 0){
+        try{
+          _messageMethods.chatRoomIdChecker(altChatRID).then((val){
+            altRoomCheck = val;
+            print(altRoomCheck.documents.length);
 
-          altAccessChatId = chatCheck.documents[0].data["chatRoomId"];
-
-          accessChat(_peerID, userName, altAccessChatId);
-        });
-      }catch(e){
-        createNewChat(userName, chatRoomID);
-        accessChat(_peerID, userName, chatRoomID);
+            if(altRoomCheck.documents.length == 0){
+              createNewChat(userName, chatRoomID);
+              accessChat(_peerID, userName, chatRoomID);
+            }else{
+              altChatAccessID = altRoomCheck.documents[0].data["chatRoomId"];
+              accessChat(_peerID, userName, altChatAccessID);
+            }
+          });
+        }catch(e){
+          print(e.toString());
+        }
+      }else{
+        chatAccessID = roomCheck.documents[0].data["chatRoomId"];
+        accessChat(_peerID, userName, chatAccessID);
       }
-    }
 
+    });
   }
 
   createNewChat(userName,chatRoomID){
