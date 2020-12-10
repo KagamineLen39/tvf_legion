@@ -243,7 +243,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                   ),
                   type: AlertType.info,
                   title: "Member exist",
-                  desc: "You are already exist and a member in $roomName room?? Do you want to start messaging with your roommates??",
+                  desc: "You are already a member in $roomName room?? Do you want to start messaging with your roommates??",
                   buttons: [
                     DialogButton(
                       child: Text(
@@ -340,8 +340,8 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                           titleStyle: style
                       ),
                       type: AlertType.info,
-                      title:await sendInviteRequestChecker(roomId)? "Cancel Invite??" : "Send Invite??",
-                      desc: await sendInviteRequestChecker(roomId)?"Are you sure you want to cancel the invite" : "Do you want to send the invitation to the room $roomName's owner??",
+                      title:await sendInviteRequestChecker(roomId)? "Cancel Request??" : "Send Request??",
+                      desc: await sendInviteRequestChecker(roomId)?"Are you sure you want to cancel the invite" : "Do you want to send request to the room $roomName's owner??",
                       buttons: [
                         DialogButton(
                           child: Text(
@@ -356,7 +356,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                         ),
                         DialogButton(
                           child: Text(
-                            await sendInviteRequestChecker(roomId)  ? "Cancel Request" : "Send",
+                            await sendInviteRequestChecker(roomId)  ? "Cancel Request" : "Send Request",
                             style: TextStyle(color: Colors.white, fontSize: 15),
                           ),
                           onPressed: () async{
@@ -458,7 +458,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                   ),
                   type: AlertType.info,
                   title: "Member exist",
-                  desc: "You are already exist and a member in $roomName room?? Do you want to start messaging with your roommates??",
+                  desc: "You are already a member in $roomName room?? Do you want to start messaging with your roommates??",
                   buttons: [
                     DialogButton(
                       child: Text(
@@ -555,8 +555,8 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                           titleStyle: style
                       ),
                       type: AlertType.info,
-                      title:await sendInviteRequestChecker(roomId)? "Cancel Invite??" : "Send Invite??",
-                      desc: await sendInviteRequestChecker(roomId)?"Are you sure you want to cancel the invite" : "Do you want to send the invitation to the room $roomName's owner??",
+                      title:await sendInviteRequestChecker(roomId)? "Cancel Request??" : "Send Request??",
+                      desc: await sendInviteRequestChecker(roomId)?"Are you sure you want to cancel the invite" : "Do you want to send request to the room $roomName's owner??",
                       buttons: [
                         DialogButton(
                           child: Text(
@@ -571,32 +571,22 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                         ),
                         DialogButton(
                           child: Text(
-                            await sendInviteRequestChecker(roomId)  ? "Cancel Request" : "Send",
+                            await sendInviteRequestChecker(roomId)  ? "Cancel Request" : "Send Request",
                             style: TextStyle(color: Colors.white, fontSize: 15),
                           ),
                           onPressed: () async{
-
-                            //print('${await sendInviteRequestChecker(roomId)}');
                             isSent = await sendInviteRequestChecker(roomId);//true
                             if(isSent == false) {
                               sendInvite(roomId);
-                              Toast.show("Sending Invite", context, duration:Toast.LENGTH_SHORT, gravity:  Toast.BOTTOM);
-
+                              Toast.show("Sending Invite", context, duration:Toast.LENGTH_LONG, gravity:  Toast.BOTTOM);
                             }
                             else {
                               cancelInvite(roomId);
-                              Toast.show("Canceling", context, duration:Toast.LENGTH_SHORT, gravity:  Toast.BOTTOM);
+                              Toast.show("Canceling", context, duration:Toast.LENGTH_LONG, gravity:  Toast.BOTTOM);
                             }
 
                             Navigator.pop(context);
-                            // Navigator.push(context,
-                            //   MaterialPageRoute(
-                            //     builder: (context) =>
-                            //         InteractingRoomPage(userName: ownUserName,
-                            //             roomId: roomId,
-                            //             requestInviteSent: requestInviteSent,
-                            //             isMember: isMember),
-                            //   ),);
+
                           },
                           color: Colors.green,
                           radius: BorderRadius.circular(30.0),
