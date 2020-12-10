@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tvf_legion/Login&SignUp/loginPage.dart';
 import 'package:tvf_legion/MenuPage/AboutUs.dart';
+import 'package:tvf_legion/MenuPage/Friends.dart';
 import 'package:tvf_legion/services/auth.dart';
 import 'package:tvf_legion/services/database.dart';
 import 'package:tvf_legion/services/helper.dart';
@@ -134,48 +135,23 @@ class _ProfilePageState extends State<ProfilePage> {
     );
 
     final friendBar = ListTile(
-        title: new Text(
-          'Friends ',
-          style: style.copyWith(fontWeight: FontWeight.bold),
-        ),
-        onTap: () {
-          print("${gender} \n ${fname} \n ${lname} \n ${birthDate} ");
-          /*Navigator.push(
-                context,
-                new MaterialPageRoute(
-                  builder:(BuildContext context) => new Friends())*/
-        });
-    final termServicesBar = ListTile(
-        title: new Text(
-          'Terms & Services ',
-          style: style.copyWith(fontWeight: FontWeight.bold),
-        ),
-        onTap: () {
-          /*Navigator.push(
-                context,
-                new MaterialPageRoute(
-                  builder:(BuildContext context) => new Friends())*/
-        });
-    final privacyBar = ListTile(
-        title: new Text(
-          'Privacy ',
-          style: style.copyWith(fontWeight: FontWeight.bold),
-        ),
-        onTap: () {
-          /*Navigator.push(
-                context,
-                new MaterialPageRoute(
-                  builder:(BuildContext context) => new Friends())*/
-        });
-    /*final settingBar =ListTile(
-              title : new Text ('Settings ',style: style.copyWith(fontWeight: FontWeight.bold),),
-              onTap: (){
 
-                */ /*Navigator.push(
+
+
+        title: new Text(
+          'Friends',
+          style: style.copyWith(fontWeight: FontWeight.bold),
+        ),
+        onTap: () {
+          Navigator.push(
                 context,
                 new MaterialPageRoute(
-                  builder:(BuildContext context) => new Friends())*/ /*}
-          );*/
+                  builder:(BuildContext context) => Friends()
+                )
+          );
+        });
+
+
     final aboutUsBar = ListTile(
         title: new Text(
           'About Us ',
@@ -223,8 +199,6 @@ class _ProfilePageState extends State<ProfilePage> {
                       emailBar,
                       birthDateBar,
                       friendBar,
-                      termServicesBar,
-                      privacyBar,
                       aboutUsBar,
                       logOutBar,
                     ],
