@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:relative_scale/relative_scale.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'package:tvf_legion/ApplicationPage/SearchPage.dart';
-import 'package:tvf_legion/ApplicationPage/displayRoom.dart';
 import 'package:tvf_legion/Function%20Classes/roomManagement.dart';
 import 'package:tvf_legion/modal/room.dart';
 import 'package:tvf_legion/services/database.dart';
@@ -183,7 +182,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     final createButton = Material(
       elevation: 5.0,
       borderRadius: BorderRadius.circular(30.0),
-      color: Color(0xff01A0C7),
+      color: Colors.lightBlue[300],
       child: MaterialButton(
         padding: EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 10.0),
         onPressed: () {
@@ -381,7 +380,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   Material(
                                     elevation: 5.0,
                                     borderRadius: BorderRadius.circular(30.0),
-                                    color: Color(0xff01A0C7),
+                                    color: Colors.lightBlue[400],
                                     child: MaterialButton(
                                       minWidth:
                                           MediaQuery.of(context).size.width,
@@ -397,7 +396,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                       child: Text("Confirm",
                                           textAlign: TextAlign.center,
                                           style: style.copyWith(
-                                              color: Colors.black,
+                                              color: Colors.white,
                                               fontWeight: FontWeight.bold)),
                                     ),
                                   ),
@@ -408,7 +407,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 });
               });
         },
-        child: Icon(Icons.add),
+        child: Icon(Icons.add,
+        color: Colors.white,),
       ),
     );
 
@@ -433,8 +433,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     readOnly: true,
                     decoration: InputDecoration(
                       labelText: "Search for group to join",
-                      hintText: "Search",
-                      prefixIcon: Icon(Icons.search),
+                      labelStyle: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      prefixIcon: Icon(Icons.search,
+                      color: Colors.white
+                      ),
                     ))),
           ],
         ),
@@ -637,6 +642,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       ),
                       SizedBox(height: 20),
                       Container(
+                        padding: EdgeInsets.all(25),
                         height: 150.0,
                         decoration: BoxDecoration(
                           image: DecorationImage(
@@ -680,7 +686,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         ),
       ),
       body: Container(
-          color: Colors.white,
+          color: Colors.lightBlue[200],
           child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,

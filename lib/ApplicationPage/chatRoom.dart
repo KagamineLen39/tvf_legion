@@ -102,7 +102,7 @@ class _ChatRoomState extends State<ChatRoom> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.peerUsername),
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.lightBlueAccent[300],
       ),
       body: Container(
         color: Colors.white,
@@ -123,7 +123,14 @@ class _ChatRoomState extends State<ChatRoom> {
                 height: 75,
                 padding: EdgeInsets.symmetric(horizontal: 24,vertical: 10),
                 decoration: BoxDecoration(
-                  color: Colors.black87,
+                  gradient: LinearGradient(
+                    colors: [
+                      const Color(0xff42a5f5),
+                      const Color(0xff2196f3),
+                    ],
+                    begin: FractionalOffset.topCenter,
+                    end: FractionalOffset.bottomCenter,
+                  ),
                 ),
                 child: Row(
                   children: [
@@ -134,7 +141,9 @@ class _ChatRoomState extends State<ChatRoom> {
                           decoration: InputDecoration(
                             hintText: "Message",
                             hintStyle: defaultStyle.copyWith(
-                              color: Colors.grey
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                              color: Colors.white
                             ),
                             border: InputBorder.none,
                           ),
@@ -151,19 +160,15 @@ class _ChatRoomState extends State<ChatRoom> {
                         width: 80,
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                              colors: [
-                                const Color(0xff323232),
-                                const Color(0xff666666),
-                              ],
-                            begin: FractionalOffset.topLeft,
-                            end: FractionalOffset.bottomRight,
-                          ),
+                          color: Colors.white,
                           borderRadius: BorderRadius.circular(35),
                         ),
                         padding: EdgeInsets.all(12),
                         child: Text("Send",
-                        style: defaultStyle
+                        style: defaultStyle.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xff42a5f5),
+                        )
                         ),
                       ),
                     )
@@ -212,8 +217,12 @@ class MessageTile extends StatelessWidget {
                 topRight: Radius.circular(23),
                 bottomRight: Radius.circular(23)),
             gradient: LinearGradient(
-              colors: sendByMe ? [const Color(0xff000000), const Color(0xff323232)] :
-              [const Color(0xff323232), const Color(0xff000000)],
+              colors: sendByMe ? [
+              const Color(0xff42a5f5),
+                const Color(0xff2196f3)]
+                  :
+              [const Color(0xff2196f3),
+                const Color(0xff42a5f5)],
             ),
         ),
         child: Text(message,
@@ -222,7 +231,7 @@ class MessageTile extends StatelessWidget {
                 color: Colors.white,
                 fontSize: 16,
                 fontFamily: 'OverpassRegular',
-                fontWeight: FontWeight.w300)),
+                fontWeight: FontWeight.w500)),
       ),
     );
   }

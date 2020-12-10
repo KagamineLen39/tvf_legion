@@ -70,24 +70,32 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
               itemCount: snapshot.data.documents.length,
               shrinkWrap: true,
               itemBuilder:(context,index){
-                return snapshot.data.documents[index].data["userID"] == null?
-                Container():
-                Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(45),
-                    side: BorderSide(
-                      color: Colors.black12,
-                    ),
-                  ),
-                  color: Colors.white,
-                  margin: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
 
-                  child: peerList(
-                      snapshot.data.documents[index].data["username"],
-                      snapshot.data.documents[index].data["email"],
-                      snapshot.data.documents[index].data["userID"]
-                  ),
-                );
+                if(snapshot.data.documents[index].data != null){
+                    return Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(45),
+                        side: BorderSide(
+                          color: Colors.black12,
+                        ),
+                      ),
+                      color: Colors.white,
+                      margin: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
+                      child: peerList(
+                          snapshot.data.documents[index].data["username"],
+                          snapshot.data.documents[index].data["email"],
+                          snapshot.data.documents[index].data["userID"]
+                      ),
+                    );
+                }else{
+                  return Container(
+                    margin: EdgeInsets.fromLTRB(0,20, 0, 20),
+                    width: 50,
+                    alignment: Alignment.center,
+                    child: CircularProgressIndicator(),
+                  );
+                }
+
               });
         }
     );
@@ -267,6 +275,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   }
 
   Widget peerList(String userName,String userEmail,String _peerID){
+    try{
       return GestureDetector(
         onTap: (){
           sendMessage(userName, _peerID);
@@ -309,6 +318,10 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
           ),
         ),
       );
+    }catch(e){
+      print(e.toString());
+    }
+
     }
 
   //Requests

@@ -398,7 +398,7 @@ class _InteractingRoomPage extends State<InteractingRoomPage>{
     pageChanger(){
       return Container(
         height: 75,
-        color: Colors.grey[900],
+        color: Color(0xff42a5f5),
         child: ListView.builder(
           physics: NeverScrollableScrollPhysics(),
           scrollDirection: Axis.horizontal,
@@ -517,7 +517,14 @@ class _InteractingRoomPage extends State<InteractingRoomPage>{
                     padding: EdgeInsets.symmetric(horizontal: 24,vertical: 10),
                     margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
                     decoration: BoxDecoration(
-                      color: Colors.black87,
+                      gradient: LinearGradient(
+                        colors: [
+                          const Color(0xff42a5f5),
+                          const Color(0xff2196f3),
+                        ],
+                        begin: FractionalOffset.topCenter,
+                        end: FractionalOffset.bottomCenter,
+                      ),
                       borderRadius: BorderRadius.circular(45),
                     ),
                     child: Row(
@@ -529,7 +536,7 @@ class _InteractingRoomPage extends State<InteractingRoomPage>{
                             decoration: InputDecoration(
                               hintText: "Message",
                               hintStyle: defaultStyle.copyWith(
-                                  color: Colors.grey
+                                  color: Colors.white
                               ),
                               border: InputBorder.none,
                             ),
@@ -546,19 +553,15 @@ class _InteractingRoomPage extends State<InteractingRoomPage>{
                             width: 80,
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  const Color(0xff323232),
-                                  const Color(0xff666666),
-                                ],
-                                begin: FractionalOffset.topLeft,
-                                end: FractionalOffset.bottomRight,
-                              ),
+                              color: Colors.white,
                               borderRadius: BorderRadius.circular(35),
                             ),
                             padding: EdgeInsets.all(12),
                             child: Text("Send",
-                                style: defaultStyle
+                                style: defaultStyle.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xff42a5f5),
+                                )
                             ),
                           ),
                         )
@@ -582,10 +585,10 @@ class _InteractingRoomPage extends State<InteractingRoomPage>{
     }
 
     return Scaffold(
-      backgroundColor: Colors.grey[900],
+      backgroundColor: Color(0xff42a5f5),
       appBar: AppBar(
         title: roomName,
-        backgroundColor: Colors.black54,
+        backgroundColor: Colors.lightBlueAccent[300],
         actions: <Widget>[
           IconButton(
             icon: Icon(
@@ -668,8 +671,12 @@ class MessageTile extends StatelessWidget {
                   topRight: Radius.circular(23),
                   bottomRight: Radius.circular(23)),
               gradient: LinearGradient(
-                colors: sendByMe ? [const Color(0xff000000), const Color(0xff323232)] :
-                [const Color(0xff323232), const Color(0xff000000)],
+                colors: sendByMe ?  [
+                  const Color(0xff42a5f5),
+                  const Color(0xff2196f3)]
+                    :
+                [const Color(0xff2196f3),
+                  const Color(0xff42a5f5)],
               ),
             ),
             child: Text(message,
@@ -678,7 +685,7 @@ class MessageTile extends StatelessWidget {
                     color: Colors.white,
                     fontSize: 16,
                     fontFamily: 'OverpassRegular',
-                    fontWeight: FontWeight.w300)),
+                    fontWeight: FontWeight.w500)),
           ),
         ),
       ],
