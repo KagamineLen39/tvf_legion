@@ -48,18 +48,18 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
   int maxPerson;
 
   initiateSearch() async {
-   setState(() {
-     isLoading = false;
-     hasRoomSearched = false;
-   });
+    setState(() {
+      isLoading = false;
+      hasRoomSearched = false;
+    });
 
     room = await roomService.searchRoomName();
     member = await roomService.displayMember();
 
-      setState(() {
-        isLoading = true;
-        hasRoomSearched = true;
-      });
+    setState(() {
+      isLoading = true;
+      hasRoomSearched = true;
+    });
   }
 
   getOwnDetail() {
@@ -105,9 +105,9 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
 
     for (int i = 0; i < tempMemberList.length; i++) {
 
-        if (ownUserName == tempMemberList[i].userName) {
-          return true;
-        }
+      if (ownUserName == tempMemberList[i].userName) {
+        return true;
+      }
     }
     return false;
   }
@@ -119,7 +119,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
       return true;
     }
     return false;
-}
+  }
 
   sendInvite(roomId){
     memberID = ownUserID;
@@ -158,15 +158,16 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
         shrinkWrap: true,
         itemCount: room.length,
         itemBuilder: (context, index) {
+          print('${room.length}');
           return Card(
             color: Colors.white,
             margin: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
             child: roomListBuilder(
-              room[index].roomId,
-              room[index].rName,
-              room[index].state,
-              room[index].maxPerson,
-              member[index]
+                room[index].roomId,
+                room[index].rName,
+                room[index].state,
+                room[index].maxPerson,
+                member[index]
             ),
           );
         })
@@ -195,22 +196,22 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
           ),
           SizedBox(width: 5),
           Expanded(
-          child:Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-              roomName,
-              maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(color: Colors.black38, fontSize: 15),
-              ),
+            child:Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  roomName,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(color: Colors.black38, fontSize: 15),
+                ),
 
-              Text(
-                (' $member / $maxPerson'),
-                style: TextStyle(color: Colors.black38, fontSize: 15),
-              )
-            ],
-          ),
+                Text(
+                  (' $member / $maxPerson'),
+                  style: TextStyle(color: Colors.black38, fontSize: 15),
+                )
+              ],
+            ),
           ),
           Spacer(),
           SizedBox(
@@ -359,28 +360,18 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                             style: TextStyle(color: Colors.white, fontSize: 15),
                           ),
                           onPressed: () async{
-
-                            //print('${await sendInviteRequestChecker(roomId)}');
                             isSent = await sendInviteRequestChecker(roomId);//true
                             if(isSent == false) {
                               sendInvite(roomId);
-                              Toast.show("Sending Invite", context, duration:Toast.LENGTH_SHORT, gravity:  Toast.BOTTOM);
-
+                              Toast.show("Sending Invite", context, duration:Toast.LENGTH_LONG, gravity:  Toast.BOTTOM);
                             }
                             else {
                               cancelInvite(roomId);
-                              Toast.show("Canceling", context, duration:Toast.LENGTH_SHORT, gravity:  Toast.BOTTOM);
+                              Toast.show("Canceling", context, duration:Toast.LENGTH_LONG, gravity:  Toast.BOTTOM);
                             }
 
                             Navigator.pop(context);
-                            // Navigator.push(context,
-                            //   MaterialPageRoute(
-                            //     builder: (context) =>
-                            //         InteractingRoomPage(userName: ownUserName,
-                            //             roomId: roomId,
-                            //             requestInviteSent: requestInviteSent,
-                            //             isMember: isMember),
-                            //   ),);
+
                           },
                           color: Colors.green,
                           radius: BorderRadius.circular(30.0),
@@ -398,6 +389,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
               padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
                   color: Colors.lightBlue[500],
+
                   borderRadius: BorderRadius.circular(24)),
               child: Text(
                 checkState == state ? "Join" : "Invite",

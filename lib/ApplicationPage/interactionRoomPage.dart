@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:relative_scale/relative_scale.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:tvf_legion/ApplicationPage/acceptMemberpage.dart';
 import 'package:tvf_legion/ApplicationPage/displayRoom.dart';
 import 'package:tvf_legion/Function%20Classes/roomManagement.dart';
 import 'package:tvf_legion/Function%20Classes/roomMessaging.dart';
@@ -129,30 +130,6 @@ class _InteractingRoomPage extends State<InteractingRoomPage>{
     });
   }
 
-  getMemberDetails() async {
-    await databaseMethods.getUsername(widget.userName).then((value) {
-      memberSnapshotDetails = value;
-
-      setState(() {
-        memberUsername = memberSnapshotDetails.documents[0].data["username"];
-        memberID = memberSnapshotDetails.documents[0].data["userID"];
-        memberEmail = memberSnapshotDetails.documents[0].data["email"];
-
-      });
-
-      memberMap = {
-        "MemberID": memberID,
-        "MemberUsername": memberUsername,
-        "MemberEmail": memberEmail,
-      };
-
-      retrieveMemberMap = {
-        "OwnerID": memberID,
-        "OwnerUsername": memberUsername,
-        "OwnerEmail": memberEmail,
-      };
-    });
-  }
   memberDisplay() async {
 
     memberDetails = await roomService.displayMemberDetailed(widget.roomId);
@@ -160,31 +137,6 @@ class _InteractingRoomPage extends State<InteractingRoomPage>{
   }
 
 
-  acceptInviteRequest(){
-
-    setState(() {
-      ownMap = {
-        "OwnerID": ownUserID,
-        "OwnerUsername": ownUserName,
-        "OwnerEmail": ownEmail,
-      };
-    });
-
-    setState(() {
-      retrieveUserMap = {
-        "MemberID": ownUserID,
-        "MemberUsername": ownUserName,
-        "MemberEmail": ownEmail,
-      };
-    });
-
-    roomService.acceptInviteRequest(ownUserID,ownMap,memberID,retrieveMemberMap, widget.roomId);
-  }
-
-  declineInviteRequest(){
-    roomService.declineInviteRequest(ownUserID, memberID);
-
-  }
   Widget memberList() {
     return ListView.builder(
         physics:
@@ -602,6 +554,20 @@ class _InteractingRoomPage extends State<InteractingRoomPage>{
                       builder: (context) =>
                           DisplayRoomPage(
                             roomName: widget.roomName)));
+            },
+          ),
+          IconButton(
+            icon: Icon(
+              Icons.person_add,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          AddMemberPage(
+                              roomName: widget.roomName, roomId: widget.roomId, ownUserID : ownUserID)));
             },
           )
         ],

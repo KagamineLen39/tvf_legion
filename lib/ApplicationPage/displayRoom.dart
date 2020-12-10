@@ -41,6 +41,7 @@ class _DisplayRoomPage extends State<DisplayRoomPage> {
 
   List<Room>room = new List();
 
+
   QuerySnapshot displayResult;
 
   TextEditingController nameController;

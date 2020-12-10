@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:tvf_legion/modal/room.dart';
 import 'package:tvf_legion/modal/user.dart';
 
@@ -241,7 +240,7 @@ class RoomManagement {
 
   displayMemberDetailed(roomId) async{
     List<User> memberDetailed = new List<User>();
-    User member = new User();
+
     final listOwner = await Firestore.instance
         .collection("Owner")
         .getDocuments()
@@ -410,27 +409,58 @@ class RoomManagement {
 
         if(roomId == tempRoom.roomId) {
           ownerId = tempOwner.userId;
-          Firestore.instance
-              .collection("RoomInviteManagementSystem")
-              .document(roomId)
-              .collection("InviteSystem")
-              .document(memberId)
-              .collection("SentInviteRequest")
-              .document(ownerId)
-              .delete();
-          Firestore.instance
-              .collection("RoomInviteManagementSystem")
-              .document(roomId)
-              .collection("InviteSystem")
-              .document(ownerId)
-              .collection("ReceivedInviteRequests")
-              .document(memberId)
-              .delete();
 
+          deleteInvite(ownerId, roomId, memberId);
         }
       }
     }
+  }
 
+  displayMemberInvite(roomId, ownerId) async{
+    List<User> memberInviteDetailed = new List<User>();
+
+   final getInvite =  await Firestore.instance
+       .collection("RoomInviteManagementSystem")
+       .document(roomId)
+       .collection("InviteSystem")
+       .document(ownerId)
+       .collection("ReceivedInviteRequests")
+       .getDocuments()
+        .then((value) => value.documents);
+
+
+   for(int i = 0; i < getInvite.length; i++){
+     User memberRequest = new User();
+     memberRequest.userId = getInvite[i]["MemberID"];
+     memberRequest.userName = getInvite[i]["MemberUsername"];
+     memberRequest.email = getInvite[i]["MemberEmail"];
+
+     memberInviteDetailed.add(memberRequest);
+
+
+   }
+
+  return memberInviteDetailed;
+
+  }
+
+  deleteInvite(ownerId, roomId, memberId) async{
+    Firestore.instance
+        .collection("RoomInviteManagementSystem")
+        .document(roomId)
+        .collection("InviteSystem")
+        .document(memberId)
+        .collection("SentInviteRequest")
+        .document(ownerId)
+        .delete();
+    Firestore.instance
+        .collection("RoomInviteManagementSystem")
+        .document(roomId)
+        .collection("InviteSystem")
+        .document(ownerId)
+        .collection("ReceivedInviteRequests")
+        .document(memberId)
+        .delete();
   }
 
   retrieveInviteRequest(memberId, memberMap, roomId) async{
@@ -508,8 +538,10 @@ class RoomManagement {
     }
   }
 
-  acceptInviteRequest(ownerId, ownMap,memberId, memberMap, roomId) {
+  acceptInviteRequest(ownerId, ownMap,memberId, memberMap, roomId) async {
     Firestore.instance
+        .collection("RoomInviteManagementSystem")
+        .document(roomId)
         .collection("InviteSystem")
         .document(ownerId)
         .collection("AcceptMember")
@@ -517,6 +549,8 @@ class RoomManagement {
         .setData(memberMap);
 
     Firestore.instance
+        .collection("RoomInviteManagementSystem")
+        .document(roomId)
         .collection("InviteSystem")
         .document(memberId)
         .collection("AcceptMember")
@@ -524,6 +558,8 @@ class RoomManagement {
         .setData(ownMap);
 
     Firestore.instance
+        .collection("RoomInviteManagementSystem")
+        .document(roomId)
         .collection("InviteSystem")
         .document(ownerId)
         .collection("ReceivedInviteRequests")
@@ -531,17 +567,54 @@ class RoomManagement {
         .delete();
 
     Firestore.instance
+        .collection("RoomInviteManagementSystem")
+        .document(roomId)
         .collection('InviteSystem')
         .document(memberId)
         .collection("SentInviteRequest")
         .document(ownerId)
         .delete();
 
-    memberJoin(ownerId, ownMap, roomId);
+    String userId;
+    List<User> tempUserList = new List<User>();
+    List<Room> tempRoomList = new List<Room>();
+    final listOwner = await Firestore.instance
+        .collection("Owner")
+        .getDocuments()
+        .then((val) => val.documents);
+
+    for (int i = 0; i < listOwner.length; i++) {
+      User tempOwner = new User();
+      tempOwner.userId = listOwner[i]["userID"];
+      tempUserList.add(tempOwner);
+
+      final listRoom = await Firestore.instance
+          .collection("Owner")
+          .document(listOwner[i].documentID.toString())
+          .collection("Room")
+          .getDocuments()
+          .then((val) => val.documents);
+
+      for (int j = 0; j < listRoom.length; j++) {
+        Room tempRoom = new Room();
+        tempRoom.roomId = listRoom[j]["RoomID"];
+        tempRoomList.add(tempRoom);
+
+        if(roomId == tempRoom.roomId) {
+          userId = tempOwner.userId;
+
+          Firestore.instance.collection("Owner").document(userId)
+              .collection("Room").document(roomId)
+              .collection("Member").document(memberId).setData(memberMap);
+        }
+      }
+    }
   }
 
-  declineInviteRequest(ownerId, memberId) {
+  declineInviteRequest(ownerId, memberId, roomId) {
     Firestore.instance
+        .collection("RoomInviteManagementSystem")
+        .document(roomId)
         .collection("InviteSystem")
         .document(ownerId)
         .collection("ReceivedInviteRequests")
@@ -549,6 +622,8 @@ class RoomManagement {
         .delete();
 
     Firestore.instance
+        .collection("RoomInviteManagementSystem")
+        .document(roomId)
         .collection('InviteSystem')
         .document(memberId)
         .collection("SentInviteRequest")
@@ -585,43 +660,43 @@ class RoomManagement {
     //     .getDocuments();
   }
 
-  memberChecker(memberId, roomId) async {
-    String ownerId;
-    List<User> tempUserList = new List<User>();
-    List<Room> tempRoomList = new List<Room>();
-    final listOwner = await Firestore.instance
-        .collection("Owner")
-        .getDocuments()
-        .then((val) => val.documents);
-
-    for (int i = 0; i < listOwner.length; i++) {
-      User tempOwner = new User();
-      tempOwner.userId = listOwner[i]["userID"];
-      tempUserList.add(tempOwner);
-
-      final listRoom = await Firestore.instance
-          .collection("Owner")
-          .document(listOwner[i].documentID.toString())
-          .collection("Room")
-          .getDocuments()
-          .then((val) => val.documents);
-
-      for (int j = 0; j < listRoom.length; j++) {
-        Room tempRoom = new Room();
-        tempRoom.roomId = listRoom[j]["RoomID"];
-        tempRoomList.add(tempRoom);
-
-        if(roomId == tempRoom.roomId) {
-          ownerId = tempOwner.userId;
-
-          return Firestore.instance.collection("Owner").document(ownerId)
-              .collection("Room").document(roomId)
-              .collection("Member").where("userID", isEqualTo: memberId)
-              .getDocuments();
-        }
-      }
-    }
-  }
+  // memberChecker(memberId, roomId) async {
+  //   String ownerId;
+  //   List<User> tempUserList = new List<User>();
+  //   List<Room> tempRoomList = new List<Room>();
+  //   final listOwner = await Firestore.instance
+  //       .collection("Owner")
+  //       .getDocuments()
+  //       .then((val) => val.documents);
+  //
+  //   for (int i = 0; i < listOwner.length; i++) {
+  //     User tempOwner = new User();
+  //     tempOwner.userId = listOwner[i]["userID"];
+  //     tempUserList.add(tempOwner);
+  //
+  //     final listRoom = await Firestore.instance
+  //         .collection("Owner")
+  //         .document(listOwner[i].documentID.toString())
+  //         .collection("Room")
+  //         .getDocuments()
+  //         .then((val) => val.documents);
+  //
+  //     for (int j = 0; j < listRoom.length; j++) {
+  //       Room tempRoom = new Room();
+  //       tempRoom.roomId = listRoom[j]["RoomID"];
+  //       tempRoomList.add(tempRoom);
+  //
+  //       if(roomId == tempRoom.roomId) {
+  //         ownerId = tempOwner.userId;
+  //
+  //         return Firestore.instance.collection("Owner").document(ownerId)
+  //             .collection("Room").document(roomId)
+  //             .collection("Member").where("userID", isEqualTo: memberId)
+  //             .getDocuments();
+  //       }
+  //     }
+  //   }
+  // }
 }
 
 
