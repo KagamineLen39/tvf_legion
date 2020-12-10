@@ -5,6 +5,7 @@ import 'package:relative_scale/relative_scale.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:tvf_legion/ApplicationPage/acceptMemberpage.dart';
 import 'package:tvf_legion/ApplicationPage/displayRoom.dart';
+import 'package:tvf_legion/ApplicationPage/homePage.dart';
 import 'package:tvf_legion/Function%20Classes/roomManagement.dart';
 import 'package:tvf_legion/Function%20Classes/roomMessaging.dart';
 import 'package:tvf_legion/modal/user.dart';
@@ -135,6 +136,9 @@ class _InteractingRoomPage extends State<InteractingRoomPage>{
     memberDetails = await roomService.displayMemberDetailed(widget.roomId);
 
   }
+  roomLeave(){
+roomService.leaveRoom(ownUserID, widget.roomId);
+  }
 
 
   Widget memberList() {
@@ -144,6 +148,7 @@ class _InteractingRoomPage extends State<InteractingRoomPage>{
         shrinkWrap: true,
         itemCount: memberDetails.length,
         itemBuilder: (context, value) {
+
           return Card(
             color: Colors.white,
             margin: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
@@ -186,54 +191,7 @@ class _InteractingRoomPage extends State<InteractingRoomPage>{
             width: 10,
           ),
           id == ownUserID?
-          ownUserID == roomService.checkRoomOwner(widget.roomId)?
-          GestureDetector(
-            onTap: (){
-              Alert(
-                context: context,
-                style: AlertStyle(
-                    animationType: AnimationType.fromTop,
-                    isCloseButton: false,
-                    isOverlayTapDismiss: false,
-                    descStyle: style,
-                    animationDuration: Duration(milliseconds: 400),
-                    alertBorder: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50.0),
-                      side: BorderSide(
-                        color: Colors.grey,
-                      ),
-                    ),
-                    titleStyle: style
-                ),
-                type: AlertType.info,
-                title: "But, you are the owner ?!??",
-                desc: "You cannot leave this room, cause your the owner!!",
-                buttons: [
-                  DialogButton(
-                    child: Text(
-                      "Cancel",
-                      style: TextStyle(color: Colors.white, fontSize: 20),
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    color: Colors.red,
-                    radius: BorderRadius.circular(30.0),
-                  ),
-                ],
-              ).show();
-            },
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              decoration: BoxDecoration(
-                  color: Colors.red,
-                  borderRadius: BorderRadius.circular(24)),
-              child: Text(
-                "Leave",
-                style: TextStyle(color: Colors.white, fontSize: 20),
-              ),
-            ),
-          ):
+
           GestureDetector(
             onTap: (){
               Alert(
@@ -272,9 +230,54 @@ class _InteractingRoomPage extends State<InteractingRoomPage>{
                       "Sure",
                       style: TextStyle(color: Colors.white, fontSize: 20),
                     ),
-                    onPressed: () {
-                      //delete data and navigate to home page
+                    onPressed: () async {
+                      Navigator.pop(context);
+                      if (ownUserID == await roomService.checkRoomOwner(widget.roomId) && memberDetails.length > 1 ) {
+                        Alert(
+                          context: context,
+                          style: AlertStyle(
+                              animationType: AnimationType.fromTop,
+                              isCloseButton: false,
+                              isOverlayTapDismiss: false,
+                              descStyle: style,
+                              animationDuration: Duration(milliseconds: 400),
+                              alertBorder: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50.0),
+                                side: BorderSide(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              titleStyle: style
+                          ),
+                          type: AlertType.info,
+                          title: "But, you are the owner ?!??",
+                          desc: "You cannot leave this room, cause your the owner!!",
+                          buttons: [
+                            DialogButton(
+                              child: Text(
+                                "Cancel",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 20),
+                              ),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              color: Colors.red,
+                              radius: BorderRadius.circular(30.0),
+                            ),
+                          ],
+                        ).show();
+                      }
+                      else{
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    HomePage()));
+                        roomLeave();
+                      }
                     },
+
                     color: Colors.green,
                     radius: BorderRadius.circular(30.0),
                   ),
@@ -527,11 +530,6 @@ class _InteractingRoomPage extends State<InteractingRoomPage>{
           ),
 
                 ),
-
-                // Container(
-                //   child: SingleChildScrollView(child: fListStreamer()),
-                // ),
-
       );
 
     }

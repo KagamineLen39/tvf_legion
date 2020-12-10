@@ -30,7 +30,7 @@ class _AddMemberPage extends State<AddMemberPage> {
 
   Map<String, String> ownMap;
   Map<String, String> memberMap;
-  Map<String, String> retrieveUserMap;
+  Map<String, String> retrieveOwnerMap;
   Map<String, String> retrieveMemberMap;
 
   List<User> memberInviteDetails = new List<User>();
@@ -88,7 +88,7 @@ class _AddMemberPage extends State<AddMemberPage> {
 
   acceptInviteRequest(memberInviteId,  memberInviteUserName,  memberInviteEmail) {
     setState(() {
-      ownMap = {
+      retrieveOwnerMap = {
         "OwnerID": ownUserID,
         "OwnerUsername": ownUserName,
         "OwnerEmail": ownEmail,
@@ -103,7 +103,24 @@ class _AddMemberPage extends State<AddMemberPage> {
       };
     });
 
-    roomService.acceptInviteRequest(widget.ownUserID, ownMap, memberInviteId, retrieveMemberMap, widget.roomId);
+    setState(() {
+      ownMap = {
+        "userID": ownUserID,
+        "username": ownUserName,
+        "email": ownEmail,
+      };
+    });
+
+    setState(() {
+      memberMap = {
+        "userID": memberInviteId,
+        "username": memberInviteUserName,
+        "email": memberInviteEmail,
+      };
+    });
+
+
+    roomService.acceptInviteRequest(widget.ownUserID, retrieveOwnerMap, memberInviteId, retrieveMemberMap, widget.roomId, ownMap, memberMap);
   }
 
   declineInviteRequest(memberInviteId) {
@@ -154,6 +171,7 @@ class _AddMemberPage extends State<AddMemberPage> {
               ),
               Text(
                 memberInviteEmail,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(color: Colors.black38, fontSize: 15),
               )
             ],
@@ -166,11 +184,7 @@ class _AddMemberPage extends State<AddMemberPage> {
                 onTap: () {
                   deleteRequest(memberInviteId);
                   acceptInviteRequest(memberInviteId,  memberInviteUserName,  memberInviteEmail);
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                      builder: (context) =>
-                          InteractingRoomPage()));
+                  Navigator.pop(context);
                 },
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -190,12 +204,8 @@ class _AddMemberPage extends State<AddMemberPage> {
 
                   deleteRequest(memberInviteId);
                   declineInviteRequest(memberInviteId);
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                      builder: (context) =>
-                          InteractingRoomPage()));
-                },
+                  Navigator.pop(context);
+  },
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
