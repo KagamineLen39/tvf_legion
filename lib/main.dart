@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tvf_legion/ApplicationPage/navigationBar.dart';
 import 'package:tvf_legion/Login&SignUp/loginPage.dart';
 import 'package:tvf_legion/services/helper.dart';
+import 'package:tvf_legion/services/pushNotification.dart';
 
 
 void main(){
@@ -15,10 +16,12 @@ class TvfLegion extends StatefulWidget {
 
 class _TvfLegionState extends State<TvfLegion> {
   bool isLoggedIn = false;
+  PushNotificationService _noti = new PushNotificationService();
 
   @override
   void initState(){
     getLoggedInState();
+    _noti.initialise();
     super.initState();
   }
 
