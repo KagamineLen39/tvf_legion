@@ -341,7 +341,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                       ),
                       type: AlertType.info,
                       title:await sendInviteRequestChecker(roomId)? "Cancel Request??" : "Send Request??",
-                      desc: await sendInviteRequestChecker(roomId)?"Are you sure you want to cancel the invite" : "Do you want to send request to the room $roomName's owner??",
+                      desc: await sendInviteRequestChecker(roomId)?"Are you sure you want to cancel the request" : "Do you want to send request to the room $roomName's owner??",
                       buttons: [
                         DialogButton(
                           child: Text(
@@ -556,7 +556,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                       ),
                       type: AlertType.info,
                       title:await sendInviteRequestChecker(roomId)? "Cancel Request??" : "Send Request??",
-                      desc: await sendInviteRequestChecker(roomId)?"Are you sure you want to cancel the invite" : "Do you want to send request to the room $roomName's owner??",
+                      desc: await sendInviteRequestChecker(roomId)?"Are you sure you want to cancel the request" : "Do you want to send request to the room $roomName's owner??",
                       buttons: [
                         DialogButton(
                           child: Text(
@@ -598,6 +598,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                   }
                 }
               }
+
 
             },
             child: Container(
