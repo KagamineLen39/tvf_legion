@@ -114,6 +114,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
 
   Future<bool> sendInviteRequestChecker(roomId) async{
     checkRequest = await roomService.requestInviteSentChecker(ownUserID, roomId);
+    print('$checkRequest');
     if(checkRequest != 0) {
       return true;
     }
@@ -261,7 +262,6 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                         style: TextStyle(color: Colors.white, fontSize: 20),
                       ),
                       onPressed: () {
-                        Navigator.pop(context);
                         Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -312,7 +312,6 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                 else {
                   if (checkState == state) {
                     // Go to chatting page Firebase -from Room to Member
-                    Navigator.pop(context);
                     Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -440,7 +439,6 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
           GestureDetector(
             onTap: () async {
 
-
               if (checkMemberFound == true && await checkMemberRoom(roomId)) {
                 Alert(
                   context: context,
@@ -479,7 +477,6 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                         style: TextStyle(color: Colors.white, fontSize: 20),
                       ),
                       onPressed: () {
-                        Navigator.pop(context);
                         Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -530,7 +527,6 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                 else {
                   if (checkState == state) {
                     // Go to chatting page Firebase -from Room to Member
-                    Navigator.pop(context);
                     Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -602,7 +598,6 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                   }
                 }
               }
-
 
 
             },

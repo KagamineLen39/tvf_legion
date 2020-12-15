@@ -10,9 +10,9 @@ import 'package:tvf_legion/services/database.dart';
 import 'package:tvf_legion/services/helper.dart';
 
 class DisplayRoomPage extends StatefulWidget {
-  final String roomName, ownUserID, roomId;
+  final String roomName;
 
-  DisplayRoomPage({Key key, @required this.roomName, this.ownUserID, this.roomId}) : super(key: key);
+  DisplayRoomPage({Key key, @required this.roomName}) : super(key: key);
 
   @override
   _DisplayRoomPage createState() => _DisplayRoomPage();
@@ -314,7 +314,6 @@ class _DisplayRoomPage extends State<DisplayRoomPage> {
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(32.0)))),
               SizedBox(height: 20),
-              ownUserID == roomService.checkRoomOwner(widget.roomId)?
               isEditing
                   ? Material(
                       elevation: 5.0,
@@ -355,8 +354,7 @@ class _DisplayRoomPage extends State<DisplayRoomPage> {
                                           color: Colors.black,
                                           fontWeight: FontWeight.bold)),
                                 ),
-                              )
-                  : new Container(),
+                              ),
 
             ]),
       ),

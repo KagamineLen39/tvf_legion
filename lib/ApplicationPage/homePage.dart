@@ -1,10 +1,8 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 
 import 'package:relative_scale/relative_scale.dart';
 import 'package:toggle_switch/toggle_switch.dart';
@@ -59,9 +57,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   Map<String, dynamic> roomInfoMap;
   Map<String, String> ownMap;
-
-
-
 
   getOwnDetail() {
     Helper.getUserId().then((value) {
@@ -222,14 +217,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           ),
                                           Align(
                                               alignment: Alignment.topRight,
-                                              child: IconButton(
-                                                  icon:Icon(Icons.add_circle),
-                                                  onPressed:(){
-                                                    //getImage();
-                                                  }
-                                              ),
-
-                                          ),
+                                              child: Icon(Icons.add_circle)),
                                         ],
                                       ),
                                     ],
@@ -366,7 +354,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           contentPadding: EdgeInsets.fromLTRB(
                                               20.0, 15.0, 20.0, 15.0),
                                           hintText: "Name",
-
                                           border: OutlineInputBorder(
                                               borderRadius:
                                                   BorderRadius.circular(

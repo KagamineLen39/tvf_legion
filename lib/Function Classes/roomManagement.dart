@@ -245,6 +245,8 @@ class RoomManagement {
         .collection("Owner")
         .getDocuments()
         .then((val) => val.documents);
+    print('$listOwner');
+    print('$roomId');
 
     for (int i = 0; i < listOwner.length; i++) {
       final listMember = await Firestore.instance
