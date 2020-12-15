@@ -137,7 +137,7 @@ class _InteractingRoomPage extends State<InteractingRoomPage>{
 
   }
   roomLeave(){
-roomService.leaveRoom(ownUserID, widget.roomId);
+    roomService.leaveRoom(ownUserID, widget.roomId);
   }
 
 
@@ -251,7 +251,7 @@ roomService.leaveRoom(ownUserID, widget.roomId);
                           ),
                           type: AlertType.info,
                           title: "But, you are the owner ?!??",
-                          desc: "You cannot leave this room, cause your the owner!!",
+                          desc: "You cannot leave this room, cause you are the owner!!",
                           buttons: [
                             DialogButton(
                               child: Text(
@@ -550,10 +550,11 @@ roomService.leaveRoom(ownUserID, widget.roomId);
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          DisplayRoomPage(
+                          DisplayRoomPage( ownUserID : ownUserID,roomId: widget.roomId,
                             roomName: widget.roomName)));
             },
           ),
+    if (ownUserID == roomService.checkRoomOwner(widget.roomId))
           IconButton(
             icon: Icon(
               Icons.person_add,
@@ -566,7 +567,8 @@ roomService.leaveRoom(ownUserID, widget.roomId);
                       builder: (context) =>
                           AddMemberPage(
                               roomName: widget.roomName, roomId: widget.roomId, ownUserID : ownUserID)));
-            },
+              },
+
           )
         ],
       ),

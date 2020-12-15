@@ -30,15 +30,3 @@ class Database{
 
 }
 
-class DatabaseService{
-  final Firestore db = Firestore.instance;
-
-  // getUserId(String roomID) async {
-  //   return await Firestore.instance.collection("Users"). where("").getDocuments();
-  // }
-
-  createRoomInfo(roomId,roomMap){
-    Firestore.instance.collection("Room").document(roomId).setData(roomMap);
-  }
-
-}
