@@ -224,6 +224,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
           GestureDetector(
             onTap: () async {
 
+
               if (checkMemberFound == true && await checkMemberRoom(roomId)) {
                 Alert(
                   context: context,
@@ -262,6 +263,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                         style: TextStyle(color: Colors.white, fontSize: 20),
                       ),
                       onPressed: () {
+                        Navigator.pop(context);
                         Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -477,6 +479,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                         style: TextStyle(color: Colors.white, fontSize: 20),
                       ),
                       onPressed: () {
+                        Navigator.pop(context);
                         Navigator.push(
                             context,
                             MaterialPageRoute(
