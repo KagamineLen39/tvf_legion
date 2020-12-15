@@ -132,10 +132,10 @@ class _searchNewFriendPageState extends State<searchNewFriendPage> {
               //getUserProfilePic
               backgroundImage: AssetImage('assets/images/profilePic.png'),
             ),
-            onTap: () {
+            onTap: () async{
               print(peerID);
 
-              _fSystem.requestSentChecker(ownUserID, userID)
+              await _fSystem.requestSentChecker(ownUserID, userID)
                   .then((val) {
                 if (val.documents.isEmpty) {
                   setState(() {
@@ -149,7 +149,7 @@ class _searchNewFriendPageState extends State<searchNewFriendPage> {
                 }
               });
 
-              _fSystem.receivedRequestChecker(ownUserID, userID)
+              await _fSystem.receivedRequestChecker(ownUserID, userID)
                   .then((val) {
                 if (val.documents.isEmpty) {
                   setState(() {
@@ -162,7 +162,7 @@ class _searchNewFriendPageState extends State<searchNewFriendPage> {
                 }
               });
 
-              _fSystem.friendChecker(ownUserID, userID).then((val) {
+              await _fSystem.friendChecker(ownUserID, userID).then((val) {
                 if (val.documents.isEmpty) {
                   setState(() {
                     isFriend = false;
@@ -174,11 +174,11 @@ class _searchNewFriendPageState extends State<searchNewFriendPage> {
                 }
               });
 
-
               if (userName == ownUserName) {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => ProfilePage()));
               } else {
+
                 Navigator.push(
                     context,
                     MaterialPageRoute(

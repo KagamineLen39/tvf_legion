@@ -37,9 +37,9 @@ class _displayUserProfileState extends State<displayUserProfile> {
 
   QuerySnapshot userDetails;
 
-  bool isFriend;
-  bool requestSent;
-  bool requestReceived ;
+  bool isFriend = false;
+  bool requestSent = false;
+  bool requestReceived =false;
   bool isLoading = false;
 
   String peerUsername, gender, peerEmail, doB, peerID;

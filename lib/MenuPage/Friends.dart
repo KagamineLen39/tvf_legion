@@ -215,22 +215,24 @@ class _FriendsState extends State<Friends> {
           "Friends"
         ),
       ),
-      body:Container(
-        child: Column(
-          children: [
-            Container(
-              margin: EdgeInsets.all(15),
-              child: Text(
-                "Friends: $numFriends",
-                style: style.copyWith(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                )
+      body:SingleChildScrollView(
+        child: Container(
+          child: Column(
+            children: [
+              Container(
+                margin: EdgeInsets.all(15),
+                child: Text(
+                  "Friends: $numFriends",
+                  style: style.copyWith(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  )
+                ),
               ),
-            ),
 
-            fListStreamer(),
-          ],
+              fListStreamer(),
+            ],
+          ),
         ),
       ),
     );
